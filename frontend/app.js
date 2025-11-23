@@ -690,17 +690,19 @@ document.getElementById('income-operation-type')?.addEventListener('change', (e)
     if (e.target.value === 'return') {
         form.classList.add('operation-type-return');
         amountInput.style.color = '#D13438'; // Office red
-        sourceObjectRow.style.display = 'none';
+        if (sourceObjectRow) sourceObjectRow.style.display = 'none';
     } else if (e.target.value === 'debt') {
         form.classList.remove('operation-type-return');
         amountInput.style.color = '';
-        sourceObjectRow.style.display = 'flex';
-        // Populate objects list
-        populateSourceObjects();
+        if (sourceObjectRow) {
+            sourceObjectRow.style.display = 'flex';
+            // Populate objects list
+            populateSourceObjects();
+        }
     } else {
         form.classList.remove('operation-type-return');
         amountInput.style.color = '';
-        sourceObjectRow.style.display = 'none';
+        if (sourceObjectRow) sourceObjectRow.style.display = 'none';
     }
 });
 
@@ -737,6 +739,9 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     document.querySelector('.photo-upload-btn').style.display = 'flex';
     document.querySelector('.photo-preview-container').style.display = 'none';
     document.getElementById('income-form').classList.remove('operation-type-return');
-    document.getElementById('source-object-row').style.display = 'none';
-    document.getElementById('income-source-object').value = '';
+
+    const sourceObjectRow = document.getElementById('source-object-row');
+    const sourceObjectSelect = document.getElementById('income-source-object');
+    if (sourceObjectRow) sourceObjectRow.style.display = 'none';
+    if (sourceObjectSelect) sourceObjectSelect.value = '';
 });
