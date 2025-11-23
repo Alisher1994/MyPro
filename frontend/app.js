@@ -204,9 +204,7 @@ window.onclick = function (event) {
     }
 };
 
-document.getElementById('income-photo').onchange = function (e) {
-    // Предпросмотр не нужен, фото отправляется на сервер
-};
+
 
 document.getElementById('income-form').onsubmit = async function (e) {
     e.preventDefault();
