@@ -508,16 +508,38 @@ function makeEditableSelect(element, options, onSave) {
             select.appendChild(option);
         });
 
+        select.size = Math.min(options.length, 8); // Show up to 8 items
+        select.style.position = 'absolute';
+        select.style.zIndex = '1000';
+        select.style.width = Math.max(element.offsetWidth, 80) + 'px'; // Ensure min width
+
+        // Adjust position to align with element
+        // Note: simple absolute positioning relies on parent being relative or static flow
+        // For better UX, we might need to calculate offsets, but let's try simple first
+
         select.onchange = async function () {
             const newValue = select.value;
             if (newValue && newValue !== currentValue) {
                 await onSave(newValue);
             }
             element.textContent = newValue || currentValue;
+            // Remove select is handled by replacing content
         };
 
         select.onblur = function () {
-            element.textContent = select.value || currentValue;
+            // Small delay to allow click to register
+            setTimeout(() => {
+                if (element.contains(select)) {
+                    element.textContent = select.value || currentValue;
+                }
+            }, 100);
+        };
+
+        // Handle click on option directly (for size > 1)
+        select.onclick = function (e) {
+            if (e.target.tagName === 'OPTION') {
+                select.onchange();
+            }
         };
 
         element.textContent = '';
@@ -548,6 +570,12 @@ function makeEditableSelectWithIcons(element, options, onSave) {
             select.appendChild(option);
         });
 
+        select.size = Math.min(options.length, 8);
+        select.style.position = 'absolute';
+        select.style.zIndex = '1000';
+        select.style.width = 'auto';
+        select.style.minWidth = '150px';
+
         select.onchange = async function () {
             const newValue = select.value;
             if (newValue && newValue !== currentValue) {
@@ -558,9 +586,19 @@ function makeEditableSelectWithIcons(element, options, onSave) {
         };
 
         select.onblur = function () {
-            const newValue = select.value || currentValue;
-            const resType = RESOURCE_TYPES[newValue];
-            element.innerHTML = `<div class="res-type-icon" style="background-color: ${resType.color}" title="${newValue}">${resType.icon}</div>`;
+            setTimeout(() => {
+                if (element.contains(select)) {
+                    const newValue = select.value || currentValue;
+                    const resType = RESOURCE_TYPES[newValue];
+                    element.innerHTML = `<div class="res-type-icon" style="background-color: ${resType.color}" title="${newValue}">${resType.icon}</div>`;
+                }
+            }, 100);
+        };
+
+        select.onclick = function (e) {
+            if (e.target.tagName === 'OPTION') {
+                select.onchange();
+            }
         };
 
         const iconHtml = element.innerHTML;
