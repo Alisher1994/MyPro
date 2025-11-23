@@ -80,3 +80,14 @@
 .income-table .icon-btn:focus:not(:focus-visible) {
     outline: none;
 }
+
+
+/* Table Footer - Full Width Coverage */
+.income-table tfoot tr {
+    background: var(--office-gray-100);
+}
+
+.income-table tfoot td {
+    background: var(--office-gray-100) !important;
+    border-top: 2px solid var(--excel-primary) !important;
+}
