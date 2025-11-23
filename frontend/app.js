@@ -135,7 +135,9 @@ function renderIncomeTable() {
             </td>
         `;
         tbody.appendChild(tr);
-        total += Number(row.amount) || 0;
+        if (row.operation_type !== 'return') {
+            total += Number(row.amount) || 0;
+        }
     });
     document.getElementById('income-total').textContent = formatNumber(total);
 

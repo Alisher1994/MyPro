@@ -70,7 +70,10 @@ function calculateAnalysis(budgetData, incomeData, expenseData) {
     analysisData.budget = calculateTotalBudget(budgetData);
 
     // Приход
-    analysisData.income = incomeData.reduce((sum, item) => sum + (item.amount || 0), 0);
+    analysisData.income = incomeData.reduce((sum, item) => {
+        if (item.operation_type === 'return') return sum;
+        return sum + (item.amount || 0);
+    }, 0);
 
     // Расход
     analysisData.expense = calculateTotalExpense(expenseData);
