@@ -320,6 +320,21 @@ async def create_tables():
         await connection.execute("ALTER TABLE objects ADD COLUMN IF NOT EXISTS end_date DATE;")
         await connection.execute("ALTER TABLE objects ADD COLUMN IF NOT EXISTS area NUMERIC(15,3) DEFAULT 0;")
         
+        # Таблица incomes (приходы)
+        await connection.execute("""
+            CREATE TABLE IF NOT EXISTS incomes (
+                id SERIAL PRIMARY KEY,
+                object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
+                date DATE NOT NULL,
+                photo TEXT,
+                amount NUMERIC(15,2) NOT NULL,
+                sender TEXT NOT NULL,
+                receiver TEXT NOT NULL,
+                comment TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        
         # Таблица budget_stages (этапы)
         await connection.execute("""
             CREATE TABLE IF NOT EXISTS budget_stages (
