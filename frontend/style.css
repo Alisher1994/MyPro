@@ -1,4 +1,69 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* ========================================
+   Microsoft Office 2025/2026 Design System
+   Excel Color Palette & Fluent Design
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+
+:root {
+    /* Excel Green Palette */
+    --excel-primary: #217C3E;
+    --excel-primary-hover: #107C41;
+    --excel-primary-light: #E7F4EA;
+    --excel-primary-lighter: #F0F9F2;
+    
+    /* Office Neutrals */
+    --office-white: #FFFFFF;
+    --office-gray-50: #FAFAFA;
+    --office-gray-100: #F3F2F1;
+    --office-gray-200: #EDEBE9;
+    --office-gray-300: #E1DFDD;
+    --office-gray-400: #D2D0CE;
+    --office-gray-500: #C8C6C4;
+    --office-gray-600: #A19F9D;
+    --office-gray-700: #605E5C;
+    --office-gray-800: #323130;
+    --office-gray-900: #201F1E;
+    
+    /* Office Accent Colors */
+    --office-blue: #0078D4;
+    --office-blue-hover: #106EBE;
+    --office-blue-light: #DEECF9;
+    --office-red: #D13438;
+    --office-red-light: #FDE7E9;
+    
+    /* Typography */
+    --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-size-xs: 11px;
+    --font-size-sm: 12px;
+    --font-size-base: 14px;
+    --font-size-md: 15px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    
+    /* Spacing (Office Grid: 4px base) */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    --spacing-2xl: 24px;
+    
+    /* Border Radius (minimal, Office-style) */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    
+    /* Shadows (subtle, Fluent-style) */
+    --shadow-sm: 0 1.6px 3.6px rgba(0, 0, 0, 0.13), 0 0.3px 0.9px rgba(0, 0, 0, 0.11);
+    --shadow-md: 0 3.2px 7.2px rgba(0, 0, 0, 0.13), 0 0.6px 1.8px rgba(0, 0, 0, 0.11);
+    --shadow-lg: 0 6.4px 14.4px rgba(0, 0, 0, 0.13), 0 1.2px 3.6px rgba(0, 0, 0, 0.11);
+    
+    /* Heights (Office standards) */
+    --height-input: 32px;
+    --height-button: 32px;
+    --height-button-sm: 24px;
+    --height-row: 40px;
+}
 
 * {
     box-sizing: border-box;
@@ -7,117 +72,129 @@
 }
 
 body {
-    font-family: 'Segoe UI', 'Inter', sans-serif;
-    background: #f4f7fc;
-    color: #333;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    background: var(--office-gray-100);
+    color: var(--office-gray-900);
     height: 100vh;
     display: flex;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* === SIDEBAR === */
+/* ========================================
+   SIDEBAR (Office Navigation Pane Style)
+   ======================================== */
 .sidebar {
     width: 280px;
-    background: #fff;
-    border-right: 1px solid #e0e0e0;
+    background: var(--office-white);
+    border-right: 1px solid var(--office-gray-300);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     z-index: 10;
-    padding: 16px;
 }
 
 .sidebar-header {
-    height: 40px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
-    padding: 0 4px;
+    padding: 0 var(--spacing-lg);
+    border-bottom: 1px solid var(--office-gray-200);
+    background: var(--office-white);
 }
 
-/* Sidebar logo (optional). To use, put `design_key.png` into `frontend/assets/` */
 #sidebar-logo {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
-    margin-right: 8px;
+    margin-right: var(--spacing-sm);
     display: inline-block;
 }
 
 .sidebar-header h2,
 .sidebar-header span {
-    font-size: 12px;
-    font-weight: 700;
-    color: #888;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--office-gray-700);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .add-obj-btn,
 #add-object {
-    background: #0067c0;
-    color: #fff;
+    background: var(--excel-primary);
+    color: var(--office-white);
     border: none;
-    border-radius: 4px;
-    width: 24px;
-    height: 24px;
-    font-size: 18px;
+    border-radius: var(--radius-sm);
+    width: var(--height-button-sm);
+    height: var(--height-button-sm);
+    font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: background 0.1s ease;
     line-height: 1;
+    font-weight: 600;
 }
 
 .add-obj-btn:hover,
 #add-object:hover {
-    background: #005a9e;
+    background: var(--excel-primary-hover);
+}
+
+.add-obj-btn:active,
+#add-object:active {
+    transform: scale(0.96);
 }
 
 .object-list {
     list-style: none;
     overflow-y: auto;
     flex: 1;
+    padding: var(--spacing-sm);
 }
 
 .object-list li {
-    padding: 10px 12px;
+    padding: 0 var(--spacing-md);
+    height: var(--height-row);
     cursor: pointer;
-    font-size: 14px;
-    color: #444;
-    border-radius: 6px;
-    transition: all 0.1s ease-in-out;
+    font-size: var(--font-size-base);
+    color: var(--office-gray-800);
+    border-radius: var(--radius-sm);
+    transition: background 0.05s ease;
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     border: 1px solid transparent;
-    background: #fff;
+    background: transparent;
 }
 
 .object-list li:hover {
-    background: #f0f0f0;
-    color: #000;
+    background: var(--office-gray-100);
 }
 
 .object-list li.selected {
-    background: #e5f3ff;
-    border-color: #cce8ff;
-    color: #0067c0;
+    background: var(--excel-primary-lighter);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary-hover);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .object-list li svg {
     flex-shrink: 0;
-    margin-right: 10px;
-    color: #888;
+    margin-right: var(--spacing-md);
+    color: var(--office-gray-600);
     transition: color 0.1s;
+    width: 16px;
+    height: 16px;
 }
 
 .object-list li.selected svg {
-    color: #0067c0;
+    color: var(--excel-primary);
 }
 
 .object-list li span {
@@ -126,23 +203,26 @@ body {
     text-overflow: ellipsis;
 }
 
-/* === MAIN CONTENT === */
+/* ========================================
+   MAIN CONTENT (Office Ribbon Style)
+   ======================================== */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    background: var(--office-gray-100);
 }
 
 #tabs-actions-row {
-    height: 60px;
-    background: #fff;
-    border-bottom: 1px solid #e0e0e0;
+    height: 48px;
+    background: var(--office-white);
+    border-bottom: 1px solid var(--office-gray-300);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
+    padding: 0 var(--spacing-2xl);
     flex-shrink: 0;
 }
 
@@ -155,7 +235,7 @@ body {
 
 .tabs-header {
     display: flex;
-    gap: 8px;
+    gap: 0;
     height: 100%;
     align-items: center;
 }
@@ -163,90 +243,116 @@ body {
 .tab-btn {
     background: transparent;
     border: none;
-    font-size: 14px;
-    color: #555;
+    border-bottom: 2px solid transparent;
+    font-size: var(--font-size-base);
+    color: var(--office-gray-700);
     cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.2s;
+    padding: 0 var(--spacing-lg);
+    height: 100%;
+    font-weight: 400;
+    transition: all 0.1s ease;
+    font-family: var(--font-family);
 }
 
 .tab-btn:hover {
-    background: #f5f5f5;
-    color: #333;
+    background: var(--office-gray-100);
+    color: var(--office-gray-900);
 }
 
 .tab-btn.active {
-    background: #e5f3ff;
-    color: #0067c0;
+    background: transparent;
+    color: var(--excel-primary);
     font-weight: 600;
+    border-bottom-color: var(--excel-primary);
 }
 
 #object-actions {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-sm);
     align-items: center;
 }
 
 #rename-btn,
 #delete-btn {
-    background: #fff;
-    border: 1px solid #d1d1d1;
-    padding: 6px 12px;
-    border-radius: 6px;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-400);
+    padding: 0 var(--spacing-lg);
+    height: var(--height-button);
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    font-size: 13px;
-    color: #333;
-    transition: 0.1s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    color: var(--office-gray-800);
+    transition: all 0.05s ease;
+    font-weight: 400;
 }
 
-#rename-btn:hover,
+#rename-btn:hover {
+    background: var(--office-gray-100);
+    border-color: var(--office-gray-500);
+}
+
+#delete-btn {
+    color: var(--office-red);
+    border-color: var(--office-gray-400);
+}
+
 #delete-btn:hover {
-    background: #f8f9fa;
-    border-color: #bbb;
+    background: var(--office-red-light);
+    border-color: var(--office-red);
+}
+
+#rename-btn:active,
+#delete-btn:active {
+    transform: scale(0.98);
 }
 
 .tab-content {
     flex: 1;
     overflow-y: auto;
-    padding: 24px 32px;
+    padding: var(--spacing-2xl);
+    background: var(--office-gray-100);
 }
 
 .tab-actions {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 16px;
-    gap: 8px;
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-sm);
 }
 
 .icon-btn {
-    background: #fff;
-    border: 1px solid #d1d1d1;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-400);
     cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    transition: background 0.1s;
+    padding: 0;
+    width: var(--height-button);
+    height: var(--height-button);
+    border-radius: var(--radius-sm);
+    transition: all 0.05s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0067c0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: var(--excel-primary);
 }
 
 .icon-btn:hover {
-    background: #e5f3ff;
-    border-color: #0067c0;
+    background: var(--excel-primary-light);
+    border-color: var(--excel-primary);
 }
 
-/* === INCOME TABLE === */
+.icon-btn:active {
+    transform: scale(0.96);
+}
+
+/* ========================================
+   TABLES (Excel Grid Style)
+   ======================================== */
 .income-table-wrap {
-    background: #fff;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
     overflow-x: auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: var(--shadow-sm);
 }
 
 .income-table {
@@ -257,20 +363,36 @@ body {
 
 .income-table th,
 .income-table td {
-    padding: 12px 16px;
+    padding: var(--spacing-sm) var(--spacing-md);
     text-align: left;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 14px;
+    border-bottom: 1px solid var(--office-gray-200);
+    border-right: 1px solid var(--office-gray-200);
+    font-size: var(--font-size-base);
+    height: var(--height-row);
 }
 
 .income-table th {
-    background: #f9fafb;
+    background: var(--office-gray-100);
     font-weight: 600;
-    color: #444;
-    border-bottom: 1px solid #e0e0e0;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
+    color: var(--office-gray-800);
+    font-size: var(--font-size-sm);
+    text-transform: none;
+    letter-spacing: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.income-table tbody tr {
+    background: var(--office-white);
+}
+
+.income-table tbody tr:nth-child(even) {
+    background: var(--office-gray-50);
+}
+
+.income-table tbody tr:hover {
+    background: var(--excel-primary-lighter);
 }
 
 .income-table th:nth-child(1),
@@ -286,41 +408,54 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    height: 100%;
+    gap: var(--spacing-xs);
+    height: var(--height-row);
+    border-right: none;
+}
+
+.income-table th:last-child {
+    border-right: none;
 }
 
 .income-table td:last-child .icon-btn {
     border: none;
     background: transparent;
-    padding: 6px;
-    box-shadow: none;
+    width: var(--height-button-sm);
+    height: var(--height-button-sm);
 }
 
 .income-table td:last-child .icon-btn:hover {
-    background: #f0f0f0;
-    border-radius: 4px;
+    background: var(--office-gray-200);
 }
 
 .income-table td {
     vertical-align: middle;
 }
 
+.income-table tfoot td {
+    background: var(--office-gray-100);
+    font-weight: 600;
+    border-top: 2px solid var(--excel-primary);
+}
+
 .income-photo-thumb {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid #eee;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--office-gray-300);
     cursor: pointer;
     transition: transform 0.1s;
 }
 
 .income-photo-thumb:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    box-shadow: var(--shadow-md);
 }
 
-/* === MODAL === */
+/* ========================================
+   MODAL (Office Dialog Style)
+   ======================================== */
 .modal {
     display: none;
     position: fixed;
@@ -332,77 +467,124 @@ body {
     background: rgba(0, 0, 0, 0.4);
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(2px);
 }
 
 .modal-content {
-    background: #fff;
-    padding: 32px;
-    border-radius: 12px;
-    width: 440px;
+    background: var(--office-white);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-md);
+    width: 480px;
     max-width: 90%;
     position: relative;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--office-gray-300);
+}
+
+.modal-content h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--office-gray-900);
+    margin-bottom: var(--spacing-lg);
 }
 
 .modal-close {
     background: none;
     border: none;
-    font-size: 24px;
-    color: #999;
+    font-size: 20px;
+    color: var(--office-gray-600);
     cursor: pointer;
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: var(--height-button-sm);
+    height: var(--height-button-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .modal-close:hover {
-    color: #333;
+    background: var(--office-gray-200);
+    color: var(--office-gray-900);
+}
+
+#income-form label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--office-gray-800);
+    margin-bottom: var(--spacing-xs);
+    margin-top: var(--spacing-md);
 }
 
 #income-form input,
 #income-form textarea {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-    margin-bottom: 16px;
-    transition: border-color 0.2s;
+    padding: 0 var(--spacing-sm);
+    height: var(--height-input);
+    border: 1px solid var(--office-gray-400);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    transition: border-color 0.1s, box-shadow 0.1s;
+    background: var(--office-white);
+    color: var(--office-gray-900);
+}
+
+#income-form textarea {
+    height: 80px;
+    padding: var(--spacing-sm);
+    resize: vertical;
 }
 
 #income-form input:focus,
 #income-form textarea:focus {
     outline: none;
-    border-color: #0067c0;
-    box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.1);
+    border-color: var(--excel-primary);
+    box-shadow: 0 0 0 1px var(--excel-primary);
 }
 
-/* === BUDGET STYLES === */
+#income-form button[type="submit"] {
+    margin-top: var(--spacing-lg);
+    width: 100%;
+    height: var(--height-button);
+    background: var(--excel-primary);
+    color: var(--office-white);
+    border: none;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+}
+
+#income-form button[type="submit"]:hover {
+    background: var(--excel-primary-hover);
+}
+
+/* ========================================
+   BUDGET STYLES (Excel Workbook Style)
+   ======================================== */
 #budget-container {
-    padding: 20px 0;
+    padding: var(--spacing-lg) 0;
 }
 
 .budget-total-row {
-    margin-top: 24px;
-    padding: 16px;
-    background: #f0f7ff;
-    border-radius: 8px;
-    font-size: 18px;
+    margin-top: var(--spacing-2xl);
+    padding: var(--spacing-lg);
+    background: var(--excel-primary-lighter);
+    border: 2px solid var(--excel-primary);
+    font-size: var(--font-size-xl);
     font-weight: 700;
-    color: #0067c0;
+    color: var(--excel-primary-hover);
     display: flex;
     justify-content: space-between;
-    border: 2px solid #cce8ff;
 }
 
 .budget-stage {
-    margin-bottom: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--office-gray-300);
+    background: var(--office-white);
+    box-shadow: var(--shadow-sm);
     cursor: move;
 }
 
@@ -411,77 +593,90 @@ body {
 }
 
 .budget-stage-header {
-    padding: 12px 16px;
-    background: #f5f8fa;
-    border-bottom: 2px solid #e0e0e0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--office-gray-100);
+    border-bottom: 2px solid var(--excel-primary);
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-weight: 700;
-    font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    gap: var(--spacing-md);
+    font-weight: 600;
+    font-size: var(--font-size-md);
+    height: 48px;
 }
 
 .collapse-btn {
     cursor: pointer;
     user-select: none;
-    font-size: 14px;
-    color: #666;
+    font-size: var(--font-size-base);
+    color: var(--office-gray-600);
     width: 20px;
     text-align: center;
+    transition: color 0.1s;
 }
 
 .collapse-btn:hover {
-    color: #0067c0;
+    color: var(--excel-primary);
 }
 
 .stage-name {
     flex: 1;
     cursor: text;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .stage-name:hover {
-    background: #e8f4ff;
+    background: var(--office-gray-200);
 }
 
 .stage-sum {
     font-weight: 700;
-    color: #0067c0;
+    color: var(--excel-primary-hover);
     margin-left: auto;
-    padding: 4px 12px;
-    background: #e5f3ff;
-    border-radius: 4px;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--excel-primary-light);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-md);
 }
 
 .btn-add {
-    color: #0067c0;
-    font-weight: 700;
+    color: var(--excel-primary);
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .btn-add:hover {
-    background: #e5f3ff;
+    background: var(--excel-primary-light);
 }
 
 .btn-delete {
-    color: #d80027;
+    color: var(--office-red);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .btn-delete:hover {
-    background: #ffe5e5;
+    background: var(--office-red-light);
 }
 
 .budget-work-types-container {
-    padding: 8px 0;
+    padding: var(--spacing-sm) 0;
 }
 
 .budget-work-type {
-    margin: 4px 16px;
-    border: 1px solid #e8e8e8;
-    border-radius: 6px;
-    background: #fafafa;
+    margin: var(--spacing-xs) var(--spacing-lg);
+    border: 1px solid var(--office-gray-300);
+    background: var(--office-gray-50);
     cursor: move;
 }
 
@@ -490,29 +685,32 @@ body {
 }
 
 .budget-work-type-header {
-    padding: 10px 12px;
+    padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
     grid-template-columns: 40px 20px 1fr 80px 100px 100px 120px 60px 30px;
-    gap: 8px;
+    gap: var(--spacing-sm);
     align-items: center;
-    font-size: 14px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 1px solid var(--office-gray-300);
+    min-height: var(--height-row);
 }
 
 .wt-num {
-    color: #888;
-    font-weight: 700;
+    color: var(--office-gray-600);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
 }
 
 .wt-name {
     cursor: text;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .wt-name:hover {
-    background: #fff;
+    background: var(--office-white);
 }
 
 .wt-unit,
@@ -520,42 +718,43 @@ body {
 .wt-price,
 .wt-sum {
     text-align: right;
-    padding: 4px 8px;
+    padding: var(--spacing-xs) var(--spacing-sm);
 }
 
 .wt-unit,
 .wt-quantity {
     cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .wt-unit:hover,
 .wt-quantity:hover {
-    background: #fff;
-    border-radius: 4px;
+    background: var(--office-white);
 }
 
 .wt-price,
 .wt-sum {
     font-weight: 600;
-    color: #0067c0;
+    color: var(--excel-primary-hover);
 }
 
 .budget-resources-container {
-    padding: 4px 0;
+    padding: var(--spacing-xs) 0;
 }
 
 .budget-resource {
-    margin: 2px 24px 2px 48px;
-    padding: 8px 12px;
+    margin: 2px var(--spacing-2xl) 2px 48px;
+    padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
     grid-template-columns: 30px 50px 120px 1fr 80px 100px 100px 120px 150px 30px;
-    gap: 8px;
+    gap: var(--spacing-sm);
     align-items: center;
-    font-size: 13px;
-    background: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 4px;
+    font-size: var(--font-size-sm);
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-200);
     cursor: move;
+    min-height: var(--height-row);
 }
 
 .budget-resource.dragging {
@@ -563,13 +762,13 @@ body {
 }
 
 .budget-resource:hover {
-    background: #f9f9f9;
-    border-color: #e0e0e0;
+    background: var(--excel-primary-lighter);
+    border-color: var(--excel-primary);
 }
 
 .res-num {
-    color: #aaa;
-    font-size: 12px;
+    color: var(--office-gray-500);
+    font-size: var(--font-size-xs);
     text-align: center;
 }
 
@@ -578,33 +777,36 @@ body {
 }
 
 .res-photo-thumb {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #e0e0e0;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--office-gray-300);
     cursor: pointer;
+    transition: transform 0.1s;
 }
 
 .res-photo-thumb:hover {
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.15);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-upload-photo {
-    background: #f0f0f0;
-    border: 1px dashed #ccc;
-    border-radius: 4px;
-    width: 40px;
-    height: 40px;
+    background: var(--office-gray-100);
+    border: 1px dashed var(--office-gray-400);
+    border-radius: var(--radius-sm);
+    width: 32px;
+    height: 32px;
     cursor: pointer;
-    font-size: 18px;
-    transition: all 0.2s;
+    font-size: 16px;
+    transition: all 0.1s;
+    color: var(--office-gray-600);
 }
 
 .btn-upload-photo:hover {
-    background: #e5f3ff;
-    border-color: #0067c0;
+    background: var(--excel-primary-light);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary);
 }
 
 .res-type,
@@ -614,8 +816,9 @@ body {
 .res-price,
 .res-supplier {
     cursor: text;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
 }
 
 .res-type:hover,
@@ -624,7 +827,7 @@ body {
 .res-quantity:hover,
 .res-price:hover,
 .res-supplier:hover {
-    background: #f0f7ff;
+    background: var(--office-gray-100);
 }
 
 .res-quantity,
@@ -635,32 +838,31 @@ body {
 
 .res-sum {
     font-weight: 600;
-    color: #0067c0;
+    color: var(--excel-primary-hover);
 }
 
 .inline-edit-input,
 .inline-edit-select {
     width: 100%;
-    padding: 4px 8px;
-    border: 2px solid #0067c0;
-    border-radius: 4px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    height: var(--height-input);
+    border: 1px solid var(--excel-primary);
+    border-radius: var(--radius-sm);
     font-size: inherit;
-    font-family: inherit;
-    background: #fff;
+    font-family: var(--font-family);
+    background: var(--office-white);
     outline: none;
-}
-
-.inline-edit-input:focus,
-.inline-edit-select:focus {
-    box-shadow: 0 0 0 3px rgba(0, 103, 192, 0.1);
+    box-shadow: 0 0 0 1px var(--excel-primary);
 }
 
 .editable,
 .editable-select {
-    transition: background 0.2s;
+    transition: background 0.1s;
 }
 
-/* === MOBILE === */
+/* ========================================
+   MOBILE RESPONSIVE
+   ======================================== */
 .sidebar-toggle {
     display: none;
 }
@@ -668,17 +870,17 @@ body {
 .sidebar-close {
     display: none;
     position: fixed;
-    top: 16px;
+    top: var(--spacing-lg);
     left: 80vw;
     z-index: 201;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 1.5em;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: var(--radius-sm);
+    font-size: 20px;
     width: 44px;
     height: 44px;
     cursor: pointer;
-    box-shadow: 1px 1px 6px #0001;
+    box-shadow: var(--shadow-md);
 }
 
 @media (max-width: 700px) {
@@ -692,7 +894,7 @@ body {
         z-index: 100;
         transform: translateX(-100%);
         transition: transform 0.3s;
-        box-shadow: 2px 0 8px #0002;
+        box-shadow: var(--shadow-lg);
     }
 
     .sidebar.open {
@@ -701,17 +903,17 @@ body {
 
     .main-content {
         margin-left: 0;
-        padding: 24px 8px;
+        padding: var(--spacing-lg) var(--spacing-sm);
     }
 
     .sidebar-toggle {
         display: block !important;
         position: static;
-        margin-right: 12px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
-        font-size: 1.5em;
+        margin-right: var(--spacing-md);
+        background: var(--office-white);
+        border: 1px solid var(--office-gray-300);
+        border-radius: var(--radius-sm);
+        font-size: 20px;
         width: 44px;
         height: 44px;
         cursor: pointer;
@@ -719,7 +921,7 @@ body {
     }
 
     #tabs-actions-row {
-        padding: 0 12px;
+        padding: 0 var(--spacing-md);
     }
 
     .sidebar-close {
@@ -733,10 +935,9 @@ body {
     }
 
     .budget-resource {
-        margin: 2px 16px;
+        margin: 2px var(--spacing-lg);
     }
 
-    /* Make budget and expense sections horizontally scrollable on small screens */
     #budget-container,
     #expense-container,
     .budget-work-types-container,
@@ -745,7 +946,6 @@ body {
         -webkit-overflow-scrolling: touch;
     }
 
-    /* Ensure wide grid elements keep their layout and allow scrolling */
     .budget-work-type-header,
     .budget-resource,
     .budget-resource-header,
@@ -753,7 +953,6 @@ body {
         min-width: 900px;
     }
 
-    /* Hide rename/delete buttons on mobile */
     #rename-btn,
     #delete-btn {
         display: none !important;
@@ -763,11 +962,33 @@ body {
 @media (max-width: 1200px) {
     .budget-work-type-header {
         grid-template-columns: 40px 20px 1fr 60px 80px 80px 100px 50px 30px;
-        font-size: 13px;
+        font-size: var(--font-size-sm);
     }
 
     .budget-resource {
         grid-template-columns: 30px 50px 100px 1fr 60px 80px 80px 100px 120px 30px;
-        font-size: 12px;
+        font-size: var(--font-size-xs);
     }
+}
+
+/* ========================================
+   SCROLLBAR STYLING (Office-like)
+   ======================================== */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--office-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--office-gray-400);
+    border-radius: 6px;
+    border: 2px solid var(--office-gray-100);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--office-gray-500);
 }
