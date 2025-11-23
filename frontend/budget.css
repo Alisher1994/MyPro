@@ -231,7 +231,7 @@
     margin: var(--spacing-sm) var(--spacing-2xl) var(--spacing-xs) 48px;
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(300px, 1fr) 35px 100px 100px 120px 200px 40px;
+    grid-template-columns: 40px 60px 50px minmax(300px, 1fr) 35px 100px 100px 120px 280px 40px;
     gap: var(--spacing-sm);
     align-items: center;
     font-size: var(--font-size-xs);
@@ -248,7 +248,7 @@
     margin: 2px var(--spacing-2xl) 2px 48px;
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(300px, 1fr) 35px 100px 100px 120px 200px 40px;
+    grid-template-columns: 40px 60px 50px minmax(300px, 1fr) 35px 100px 100px 120px 280px 40px;
     gap: var(--spacing-sm);
     align-items: center;
     font-size: var(--font-size-sm);
@@ -516,7 +516,7 @@
 
     .budget-resource-header,
     .budget-resource {
-        grid-template-columns: 40px 60px 50px minmax(250px, 1fr) 40px 80px 80px 100px 150px 40px;
+        grid-template-columns: 40px 60px 50px minmax(250px, 1fr) 40px 80px 80px 100px 200px 40px;
         font-size: var(--font-size-xs);
     }
 }
