@@ -205,7 +205,7 @@ function createWorkTypeElement(workType, num, stageId) {
             <span>Кол-во</span>
             <span>Цена</span>
             <span>Сумма</span>
-            <span>Поставщик</span>
+            <span>Поставщик материала и услуг</span>
             <span></span>
         `;
         resourcesContainer.appendChild(headerRow);
