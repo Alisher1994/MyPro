@@ -288,8 +288,15 @@ async def update_income(object_id: int, income_id: int, date: str = Form(...), a
             WHERE id=$10 AND object_id=$11
             RETURNING id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency;
         """
+        # Convert date string to date object
+        try:
+            date_obj = dtdate.fromisoformat(date)
+        except ValueError:
+            # Fallback if format is not ISO
+            date_obj = dtdate.today()
+
         async with app.state.db.acquire() as connection:
-            row = await connection.fetchrow(query, date, photo_path, amount, sender, receiver, comment, operation_type, source_object_id, currency, income_id, object_id)
+            row = await connection.fetchrow(query, date_obj, photo_path, amount, sender, receiver, comment, operation_type, source_object_id, currency, income_id, object_id)
         if not row:
             raise HTTPException(status_code=404, detail="Строка не найдена")
         return {
