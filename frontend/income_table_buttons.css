@@ -91,3 +91,8 @@
     background: var(--office-gray-100) !important;
     border-top: 2px solid var(--excel-primary) !important;
 }
+
+/* Remove right border from last footer cell */
+.income-table tfoot td:last-child {
+    border-right: none !important;
+}
