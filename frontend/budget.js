@@ -512,6 +512,7 @@ function makeEditableSelect(element, options, onSave) {
         select.style.position = 'absolute';
         select.style.zIndex = '1000';
         select.style.width = Math.max(element.offsetWidth, 80) + 'px'; // Ensure min width
+        select.style.height = 'auto'; // Override fixed height from CSS class
 
         // Adjust position to align with element
         // Note: simple absolute positioning relies on parent being relative or static flow
@@ -575,6 +576,7 @@ function makeEditableSelectWithIcons(element, options, onSave) {
         select.style.zIndex = '1000';
         select.style.width = 'auto';
         select.style.minWidth = '150px';
+        select.style.height = 'auto'; // Override fixed height from CSS class
 
         select.onchange = async function () {
             const newValue = select.value;
