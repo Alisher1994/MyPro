@@ -744,4 +744,4 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const sourceObjectSelect = document.getElementById('income-source-object');
     if (sourceObjectRow) sourceObjectRow.style.display = 'none';
     if (sourceObjectSelect) sourceObjectSelect.value = '';
-});
+}); 
