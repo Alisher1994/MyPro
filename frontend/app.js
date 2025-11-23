@@ -243,7 +243,10 @@ document.getElementById('income-form').onsubmit = async function (e) {
     formData.append('receiver', receiver);
     formData.append('comment', comment);
     formData.append('operation_type', document.getElementById('income-operation-type').value);
-    formData.append('source_object_id', document.getElementById('income-source-object').value || '');
+    const sourceObjectId = document.getElementById('income-source-object').value;
+    if (sourceObjectId) {
+        formData.append('source_object_id', sourceObjectId);
+    }
     formData.append('currency', document.getElementById('income-currency').value);
     if (photoInput.files[0]) {
         formData.append('photo', photoInput.files[0]);
