@@ -1,0 +1,82 @@
+/* Income Table Action Buttons - MS Office 2025/2026 Style */
+
+.income-table .icon-btn {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    border: 1px solid #E1DFDD;
+    border-radius: 4px;
+    background: #FFFFFF;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+}
+
+.income-table .icon-btn:hover {
+    background: #F3F2F1;
+    border-color: #C7C7C7;
+}
+
+.income-table .icon-btn:active {
+    background: #EDEBE9;
+    border-color: #8A8886;
+}
+
+/* Edit button - Excel green accent */
+.income-table .income-edit {
+    border-color: #E1DFDD;
+}
+
+.income-table .income-edit:hover {
+    background: #E7F4E4;
+    border-color: #217346;
+}
+
+.income-table .income-edit:hover svg path,
+.income-table .income-edit:hover svg {
+    stroke: #217346;
+}
+
+.income-table .income-edit:active {
+    background: #D4EDD0;
+}
+
+/* Delete button - Office red accent */
+.income-table .income-delete {
+    border-color: #E1DFDD;
+}
+
+.income-table .income-delete:hover {
+    background: #FDE7E9;
+    border-color: #C50F1F;
+}
+
+.income-table .income-delete:hover svg rect,
+.income-table .income-delete:hover svg path {
+    stroke: #C50F1F;
+    fill: #C50F1F;
+}
+
+.income-table .income-delete:active {
+    background: #F9D7DA;
+}
+
+/* Icon sizing */
+.income-table .icon-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: all 0.1s ease;
+}
+
+/* Focus state for accessibility */
+.income-table .icon-btn:focus {
+    outline: 2px solid #217346;
+    outline-offset: 2px;
+}
+
+.income-table .icon-btn:focus:not(:focus-visible) {
+    outline: none;
+}
