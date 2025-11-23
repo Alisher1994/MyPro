@@ -104,11 +104,24 @@ function renderIncomeTable() {
             ? `<img src="${row.photo}?t=${Date.now()}" class="income-photo-thumb income-photo-view" data-idx="${idx}" alt="Фото">`
             : '<span style="color:#ccc;font-size:0.8em;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera-off-icon lucide-camera-off"><path d="M14.564 14.558a3 3 0 1 1-4.122-4.121"/><path d="m2 2 20 20"/><path d="M20 20H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 .819-.175"/><path d="M9.695 4.024A2 2 0 0 1 10.004 4h3.993a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v7.344"/></svg></span>';
 
+        // Operation type labels
+        const operationTypes = {
+            'income': 'Приход',
+            'debt': 'Долг',
+            'return': 'Возврат'
+        };
+        const operationType = operationTypes[row.operation_type] || 'Приход';
+        const sourceObject = row.source_object_name || '—';
+        const currency = row.currency || 'UZS';
+
         tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>${row.date}</td>
             <td>${photoHtml}</td>
+            <td>${operationType}</td>
+            <td>${sourceObject}</td>
             <td>${formatNumber(row.amount)}</td>
+            <td>${currency}</td>
             <td>${row.sender || row.from || ''}</td>
             <td>${row.receiver || row.to || ''}</td>
             <td>${row.comment || ''}</td>
@@ -152,6 +165,9 @@ function renderIncomeTable() {
             document.getElementById('income-from').value = row.sender || row.from || '';
             document.getElementById('income-to').value = row.receiver || row.to || '';
             document.getElementById('income-comment').value = row.comment;
+            document.getElementById('income-operation-type').value = row.operation_type || 'income';
+            document.getElementById('income-source-object').value = row.source_object_id || '';
+            document.getElementById('income-currency').value = row.currency || 'UZS';
             document.getElementById('income-edit-index').value = idx;
             document.getElementById('income-modal').dataset.photo = row.photo || '';
             editingIncomeId = row.id;
@@ -226,6 +242,9 @@ document.getElementById('income-form').onsubmit = async function (e) {
     formData.append('sender', sender);
     formData.append('receiver', receiver);
     formData.append('comment', comment);
+    formData.append('operation_type', document.getElementById('income-operation-type').value);
+    formData.append('source_object_id', document.getElementById('income-source-object').value || '');
+    formData.append('currency', document.getElementById('income-currency').value);
     if (photoInput.files[0]) {
         formData.append('photo', photoInput.files[0]);
     }

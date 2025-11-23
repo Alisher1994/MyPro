@@ -35,7 +35,14 @@ class IncomeIn(BaseModel):
 @app.get("/objects/{object_id}/incomes/")
 async def get_incomes(object_id: int):
     try:
-        query = "SELECT id, date, photo, amount, sender, receiver, comment FROM incomes WHERE object_id=$1 ORDER BY id;"
+        query = """
+            SELECT i.id, i.date, i.photo, i.amount, i.sender, i.receiver, i.comment, 
+                   i.operation_type, i.source_object_id, i.currency, o.name as source_object_name
+            FROM incomes i
+            LEFT JOIN objects o ON i.source_object_id = o.id
+            WHERE i.object_id=$1 
+            ORDER BY i.id;
+        """
         async with app.state.db.acquire() as connection:
             rows = await connection.fetch(query, object_id)
         return [
@@ -46,7 +53,11 @@ async def get_incomes(object_id: int):
                 "amount": float(row["amount"]),
                 "sender": row["sender"],
                 "receiver": row["receiver"],
-                "comment": row["comment"]
+                "comment": row["comment"],
+                "operation_type": row["operation_type"],
+                "source_object_id": row["source_object_id"],
+                "source_object_name": row["source_object_name"],
+                "currency": row["currency"]
             } for row in rows
         ]
     except Exception as e:
@@ -79,7 +90,7 @@ async def uploads_list():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/objects/{object_id}/incomes/")
-async def add_income(object_id: int, date: str = Form(...), amount: float = Form(...), sender: str = Form(...), receiver: str = Form(...), comment: str = Form(""), photo: UploadFile = File(None)):
+async def add_income(object_id: int, date: str = Form(...), amount: float = Form(...), sender: str = Form(...), receiver: str = Form(...), comment: str = Form(""), photo: UploadFile = File(None), operation_type: str = Form("income"), source_object_id: int = Form(None), currency: str = Form("UZS")):
     try:
         print(f"Adding income for object {object_id}. Date: {date}, Amount: {amount}, Photo: {photo.filename if photo else 'None'}")
         from datetime import date as dtdateclass
@@ -101,12 +112,12 @@ async def add_income(object_id: int, date: str = Form(...), amount: float = Form
         except Exception:
             raise HTTPException(status_code=400, detail="Некорректный формат даты (ожидается YYYY-MM-DD)")
         query = """
-            INSERT INTO incomes (object_id, date, photo, amount, sender, receiver, comment)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING id, date, photo, amount, sender, receiver, comment;
+            INSERT INTO incomes (object_id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency;
         """
         async with app.state.db.acquire() as connection:
-            row = await connection.fetchrow(query, object_id, date_obj, photo_path, amount, sender, receiver, comment)
+            row = await connection.fetchrow(query, object_id, date_obj, photo_path, amount, sender, receiver, comment, operation_type, source_object_id, currency)
         return {
             "id": row["id"],
             "date": row["date"].isoformat() if row["date"] else None,
@@ -114,7 +125,10 @@ async def add_income(object_id: int, date: str = Form(...), amount: float = Form
             "amount": float(row["amount"]),
             "sender": row["sender"],
             "receiver": row["receiver"],
-            "comment": row["comment"]
+            "comment": row["comment"],
+            "operation_type": row["operation_type"],
+            "source_object_id": row["source_object_id"],
+            "currency": row["currency"]
         }
     except Exception as e:
         import traceback
@@ -248,7 +262,7 @@ async def export_analysis_pdf(request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.put("/objects/{object_id}/incomes/{income_id}")
-async def update_income(object_id: int, income_id: int, date: str = Form(...), amount: float = Form(...), sender: str = Form(...), receiver: str = Form(...), comment: str = Form(""), photo: UploadFile = File(None)):
+async def update_income(object_id: int, income_id: int, date: str = Form(...), amount: float = Form(...), sender: str = Form(...), receiver: str = Form(...), comment: str = Form(""), photo: UploadFile = File(None), operation_type: str = Form("income"), source_object_id: int = Form(None), currency: str = Form("UZS")):
     try:
         print(f"Updating income {income_id} for object {object_id}. Photo: {photo.filename if photo else 'None'}")
         # Получаем старую запись для удаления старого фото, если нужно
@@ -270,12 +284,12 @@ async def update_income(object_id: int, income_id: int, date: str = Form(...), a
             print(f"Saved upload (update): {dest} -> {photo_path}")
             # optionally: remove old file
         query = """
-            UPDATE incomes SET date=$1, photo=$2, amount=$3, sender=$4, receiver=$5, comment=$6
-            WHERE id=$7 AND object_id=$8
-            RETURNING id, date, photo, amount, sender, receiver, comment;
+            UPDATE incomes SET date=$1, photo=$2, amount=$3, sender=$4, receiver=$5, comment=$6, operation_type=$7, source_object_id=$8, currency=$9
+            WHERE id=$10 AND object_id=$11
+            RETURNING id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency;
         """
         async with app.state.db.acquire() as connection:
-            row = await connection.fetchrow(query, date, photo_path, amount, sender, receiver, comment, income_id, object_id)
+            row = await connection.fetchrow(query, date, photo_path, amount, sender, receiver, comment, operation_type, source_object_id, currency, income_id, object_id)
         if not row:
             raise HTTPException(status_code=404, detail="Строка не найдена")
         return {
@@ -285,7 +299,10 @@ async def update_income(object_id: int, income_id: int, date: str = Form(...), a
             "amount": float(row["amount"]),
             "sender": row["sender"],
             "receiver": row["receiver"],
-            "comment": row["comment"]
+            "comment": row["comment"],
+            "operation_type": row["operation_type"],
+            "source_object_id": row["source_object_id"],
+            "currency": row["currency"]
         }
     except Exception as e:
         print(f"Error in update_income: {e}")
@@ -334,6 +351,11 @@ async def create_tables():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
+        
+        # Add new columns to incomes table if they don't exist
+        await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS operation_type TEXT DEFAULT 'income';")
+        await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS source_object_id INTEGER REFERENCES objects(id) ON DELETE SET NULL;")
+        await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS';")
         
         # Таблица budget_stages (этапы)
         await connection.execute("""
