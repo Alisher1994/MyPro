@@ -1,0 +1,223 @@
+/* ========================================
+   ENHANCED INCOME MODAL STYLES
+   Microsoft Office 2025 Design
+   ======================================== */
+
+/* Modal Content Enhancement */
+.income-modal-enhanced {
+    width: 600px;
+    max-width: 95%;
+}
+
+/* Form Grid Layout */
+.income-form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.form-row {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    flex: 1 1 100%;
+}
+
+.form-group.flex-2 {
+    flex: 2;
+}
+
+.form-group.flex-1 {
+    flex: 1;
+}
+
+.form-group label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--office-gray-800);
+    margin-bottom: var(--spacing-xs);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0 var(--spacing-md);
+    height: var(--height-input);
+    border: 1px solid var(--office-gray-400);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    background: var(--office-white);
+    color: var(--office-gray-900);
+    transition: border-color 0.1s, box-shadow 0.1s;
+}
+
+.form-group textarea {
+    padding: var(--spacing-sm) var(--spacing-md);
+    height: auto;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--excel-primary);
+    box-shadow: 0 0 0 1px var(--excel-primary);
+}
+
+.form-group select {
+    cursor: pointer;
+    padding-right: var(--spacing-2xl);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23605E5C' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-md) center;
+    appearance: none;
+}
+
+/* Photo Upload Area */
+.photo-upload-area {
+    width: 100%;
+}
+
+.photo-preview-box {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed var(--office-gray-400);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--office-gray-50);
+    transition: all 0.2s;
+}
+
+.photo-preview-box:hover {
+    border-color: var(--excel-primary);
+    background: var(--excel-primary-lighter);
+}
+
+.photo-upload-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--office-gray-600);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    padding: var(--spacing-md);
+    transition: color 0.2s;
+}
+
+.photo-upload-btn:hover {
+    color: var(--excel-primary);
+}
+
+.photo-upload-btn svg {
+    width: 32px;
+    height: 32px;
+}
+
+.photo-preview-container {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.photo-preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-delete-btn {
+    position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-xs);
+    width: 28px;
+    height: 28px;
+    background: rgba(211, 52, 56, 0.9);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.1s;
+    color: white;
+}
+
+.photo-preview-container:hover .photo-delete-btn {
+    opacity: 1;
+}
+
+.photo-delete-btn:hover {
+    transform: scale(1.1);
+    background: var(--office-red);
+}
+
+.photo-delete-btn:active {
+    transform: scale(0.95);
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    height: var(--height-button);
+    background: var(--excel-primary);
+    color: var(--office-white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: background 0.1s, transform 0.05s;
+    margin-top: var(--spacing-sm);
+}
+
+.btn-submit:hover {
+    background: var(--excel-primary-hover);
+}
+
+.btn-submit:active {
+    transform: scale(0.98);
+}
+
+/* Operation Type Specific Styles */
+.operation-type-return .form-group input#income-amount {
+    color: var(--office-red);
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .income-modal-enhanced {
+        width: 100%;
+        padding: var(--spacing-lg);
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .photo-preview-box {
+        width: 100%;
+        height: 160px;
+    }
+}
