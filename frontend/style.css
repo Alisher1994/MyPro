@@ -11,7 +11,7 @@
     --excel-primary-hover: #107C41;
     --excel-primary-light: #E7F4EA;
     --excel-primary-lighter: #F0F9F2;
-    
+
     /* Office Neutrals */
     --office-white: #FFFFFF;
     --office-gray-50: #FAFAFA;
@@ -24,14 +24,14 @@
     --office-gray-700: #605E5C;
     --office-gray-800: #323130;
     --office-gray-900: #201F1E;
-    
+
     /* Office Accent Colors */
     --office-blue: #0078D4;
     --office-blue-hover: #106EBE;
     --office-blue-light: #DEECF9;
     --office-red: #D13438;
     --office-red-light: #FDE7E9;
-    
+
     /* Typography */
     --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-size-xs: 11px;
@@ -40,7 +40,7 @@
     --font-size-md: 15px;
     --font-size-lg: 16px;
     --font-size-xl: 18px;
-    
+
     /* Spacing (Office Grid: 4px base) */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
@@ -48,16 +48,16 @@
     --spacing-lg: 16px;
     --spacing-xl: 20px;
     --spacing-2xl: 24px;
-    
+
     /* Border Radius (minimal, Office-style) */
     --radius-sm: 2px;
     --radius-md: 4px;
-    
+
     /* Shadows (subtle, Fluent-style) */
     --shadow-sm: 0 1.6px 3.6px rgba(0, 0, 0, 0.13), 0 0.3px 0.9px rgba(0, 0, 0, 0.11);
     --shadow-md: 0 3.2px 7.2px rgba(0, 0, 0, 0.13), 0 0.6px 1.8px rgba(0, 0, 0, 0.11);
     --shadow-lg: 0 6.4px 14.4px rgba(0, 0, 0, 0.13), 0 1.2px 3.6px rgba(0, 0, 0, 0.11);
-    
+
     /* Heights (Office standards) */
     --height-input: 32px;
     --height-button: 32px;

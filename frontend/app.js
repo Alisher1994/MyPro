@@ -618,67 +618,6 @@ function downloadIncome() {
             </tr>
         </tbody>
     </table>
-</body>
-</html>
-    `;
-
-    // Открываем в новом окне
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(html);
-    printWindow.document.close();
-
-    // Автоматически открываем диалог печати
-    printWindow.onload = function () {
-        printWindow.print();
-    };
-}
-
-// Download Button Logic
-document.addEventListener('DOMContentLoaded', () => {
-    const downloadBtn = document.getElementById('download-income');
-    if (downloadBtn) {
-        downloadBtn.onclick = () => {
-            downloadIncome();
-        };
-    }
-    // Кнопка "Скачать" для анализа — вызывает уже существующий экспортный метод
-    const downloadAnalysisBtn = document.getElementById('download-analysis');
-    if (downloadAnalysisBtn) {
-        downloadAnalysisBtn.onclick = () => {
-            if (window.exportAnalysisReport) {
-                window.exportAnalysisReport();
-            } else {
-                alert('Экспорт анализа недоступен');
-            }
-        };
-    }
-});
-
-// При старте скрываем вкладки и кнопки
-// clearSelection(); // Don't clear on start, let restoreState handle it
-renderList();
-
-// Try to show sidebar logo if file exists at frontend/assets/design_key.png
-try {
-    const logoEl = document.getElementById('sidebar-logo');
-    if (logoEl) {
-        const img = new Image();
-        img.onload = () => {
-            logoEl.src = img.src;
-            logoEl.style.display = 'inline-block';
-        };
-        img.onerror = () => {
-            // keep hidden if not found
-        };
-        img.src = 'assets/design_key.png';
-    }
-} catch (e) { /* ignore */ }
-
-
-// ========================================
-// ENHANCED INCOME MODAL JAVASCRIPT
-// Add this to the end of app.js
-// ========================================
 
 // Photo preview functionality
 document.getElementById('income-photo-upload-btn')?.addEventListener('click', () => {
