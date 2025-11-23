@@ -1,0 +1,217 @@
+/* === EXPENSE TAB STYLES === */
+
+#expense-container {
+    padding: 20px 0;
+}
+
+/* Expense resource table header and row grid */
+.budget-resource-header,
+.budget-resource {
+    display: grid;
+    grid-template-columns:
+        40px
+        /* Expand Toggle */
+        40px
+        /* № */
+        60px
+        /* Photo */
+        60px
+        /* Type */
+        200px
+        /* Name */
+        60px
+        /* Unit */
+        100px
+        /* Qty Plan */
+        100px
+        /* Price Plan */
+        120px
+        /* Sum Plan */
+        120px
+        /* Sum Fact (Total) */
+        1fr;
+    /* Spacer */
+    gap: 8px;
+    padding: 10px;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
+
+.budget-resource-header {
+    background: #f5f5f5;
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 2px solid #ddd;
+}
+
+.budget-resource {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.budget-resource:hover {
+    background: #f9f9f9;
+}
+
+/* Expand toggle button */
+.expand-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #666;
+    transition: transform 0.2s;
+}
+
+.expand-btn:hover {
+    color: #0057d8;
+    background: #eef4ff;
+    border-radius: 4px;
+}
+
+.expand-btn.expanded {
+    transform: rotate(90deg);
+    color: #0057d8;
+}
+
+/* Details Row (The container for history) */
+.details-row {
+    grid-column: 1 / -1;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    padding: 10px 20px 20px 60px;
+    display: none;
+    box-shadow: inset 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.details-row.active {
+    display: block;
+}
+
+/* Expense History Table */
+.expense-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.expense-history-table th,
+.expense-history-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.expense-history-table th {
+    background: #f0f0f0;
+    font-weight: 600;
+    color: #333;
+    font-size: 12px;
+}
+
+.expense-history-table td {
+    color: #555;
+}
+
+/* Input fields in the table */
+.table-input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.table-input:focus {
+    border-color: #0057d8;
+    outline: none;
+}
+
+/* Save Button in table */
+.btn-save-row {
+    padding: 6px 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-save-row:hover {
+    background: #43a047;
+}
+
+/* Delete Button */
+.btn-delete-row {
+    color: #d32f2f;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-delete-row:hover {
+    background: #ffebee;
+}
+
+/* Receipt Thumbnails */
+.receipt-cell {
+    display: flex;
+    gap: 4px;
+}
+
+.receipt-thumb-box {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #f9f9f9;
+    overflow: hidden;
+    position: relative;
+}
+
+.receipt-thumb-box:hover {
+    border-color: #0057d8;
+}
+
+.receipt-thumb-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.receipt-thumb-box span {
+    font-size: 16px;
+    color: #aaa;
+    line-height: 1;
+}
+
+/* Over budget warning */
+.over-budget {
+    color: #d32f2f;
+    font-weight: 600;
+}
