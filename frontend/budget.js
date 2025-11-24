@@ -785,14 +785,69 @@ async function uploadResourcePhoto(resourceId, file) {
     if (!res.ok) throw new Error('Failed to upload photo');
 }
 
-// Добавление нового этапа
+// Добавление нового этапа с видом работ и ресурсами по умолчанию
 async function addStage(objectId) {
-    const res = await fetch(`/objects/${objectId}/budget/stages/`, {
+    // 1. Создаём этап
+    const stageRes = await fetch(`/objects/${objectId}/budget/stages/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: 'Новый этап' })
     });
-    if (!res.ok) throw new Error('Failed to add stage');
+    if (!stageRes.ok) throw new Error('Failed to add stage');
+    const stage = await stageRes.json();
+    
+    // 2. Создаём вид работ по умолчанию
+    const workTypeRes = await fetch(`/budget/stages/${stage.id}/work-types/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            name: 'Введите название вида работ', 
+            unit: 'шт',
+            quantity: 0 
+        })
+    });
+    if (!workTypeRes.ok) throw new Error('Failed to add default work type');
+    const workType = await workTypeRes.json();
+    
+    // 3. Создаём 3 пустых ресурса
+    const defaultResources = [
+        { resource_type: 'Материал', name: 'Введите название', unit: 'шт', quantity: 0, price: 0, supplier: '' },
+        { resource_type: 'Материал', name: 'Введите название', unit: 'шт', quantity: 0, price: 0, supplier: '' },
+        { resource_type: 'Материал', name: 'Введите название', unit: 'шт', quantity: 0, price: 0, supplier: '' }
+    ];
+    
+    for (const res of defaultResources) {
+        const formData = new FormData();
+        formData.append('resource_type', res.resource_type);
+        formData.append('name', res.name);
+        formData.append('unit', res.unit);
+        formData.append('quantity', res.quantity);
+        formData.append('price', res.price);
+        formData.append('supplier', res.supplier);
+        
+        await fetch(`/budget/work-types/${workType.id}/resources/`, {
+            method: 'POST',
+            body: formData
+        });
+    }
+    
+    return stage.id; // Возвращаем ID для скролла
+}
+
+// Подсветка нового этапа (4 раза мигает)
+function highlightNewStage(stageElement) {
+    if (!stageElement) return;
+    
+    // Скроллим к элементу
+    stageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Добавляем класс для анимации
+    stageElement.classList.add('stage-highlight');
+    
+    // Убираем класс после анимации
+    setTimeout(() => {
+        stageElement.classList.remove('stage-highlight');
+    }, 2400); // 4 мигания по 600ms
 }
 
 // Генерация HTML для скачивания/печати бюджета
@@ -1032,8 +1087,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             try {
-                await addStage(selectedObjectId);
+                const newStageId = await addStage(selectedObjectId);
                 await loadBudget(selectedObjectId);
+                
+                // Найти и подсветить новый этап
+                setTimeout(() => {
+                    const newStageEl = document.querySelector(`.budget-stage[data-stage-id="${newStageId}"]`);
+                    if (newStageEl) {
+                        highlightNewStage(newStageEl);
+                    }
+                }, 100); // Небольшая задержка для рендеринга DOM
             } catch (err) {
                 console.error('Error adding stage:', err);
                 alert('Ошибка при добавлении этапа: ' + err.message);
