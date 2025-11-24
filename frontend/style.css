@@ -243,28 +243,54 @@ body {
 .tab-btn {
     background: transparent;
     border: none;
-    border-bottom: 2px solid transparent;
     font-size: var(--font-size-base);
     color: var(--office-gray-700);
     cursor: pointer;
     padding: 0 var(--spacing-lg);
     height: 100%;
-    font-weight: 400;
-    transition: all 0.1s ease;
+    font-weight: 500;
+    transition: color 0.12s ease, transform 0.12s ease;
     font-family: var(--font-family);
+    position: relative; /* for pseudo underline */
+    display: inline-flex;
+    align-items: center;
 }
 
 .tab-btn:hover {
-    background: var(--office-gray-100);
+    background: transparent;
     color: var(--office-gray-900);
+    transform: translateY(-1px);
 }
 
+/* Active tab: Office-style green accent with rounded underline */
 .tab-btn.active {
-    background: transparent;
     color: var(--excel-primary);
     font-weight: 600;
-    border-bottom-color: var(--excel-primary);
 }
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -8px;
+    width: 56px;
+    height: 6px;
+    background: linear-gradient(180deg, var(--excel-primary) 0%, var(--excel-primary-hover) 100%);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow: 0 2px 6px rgba(33,124,62,0.12);
+}
+
+/* Slightly smaller main tab label to match Office ribbon */
+.main-tabs .main-tab {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--office-gray-800);
+    padding: 8px 14px;
+    background: transparent;
+    border-radius: 6px;
+}
+.main-tabs .main-tab:hover { background: var(--office-gray-50); color: var(--excel-primary); }
+.main-tabs .main-tab.active { color: var(--excel-primary); background: transparent; }
 
 #object-actions {
     display: flex;
