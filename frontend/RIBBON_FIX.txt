@@ -1,3 +1,12 @@
+=== ИСПРАВЛЕНИЕ RIBBON НА ГОРИЗОНТАЛЬНЫЙ СТИЛЬ ===
+
+1. Откройте frontend/budget_ribbon.css
+2. ЗАМЕНИТЕ ВСЁ СОДЕРЖИМОЕ на:
+
+/* ========================================
+   BUDGET RIBBON - Office 2025 Style (True Ribbon)
+   ======================================== */
+
 .budget-ribbon {
     display: none;
     background: var(--office-gray-50);
@@ -105,13 +114,33 @@
     .ribbon-btn {
         padding: var(--spacing-sm) var(--spacing-md);
     }
-
+    
     .ribbon-btn svg {
         width: 18px;
         height: 18px;
     }
-
+    
     .ribbon-btn small {
         display: none;
     }
 }
+
+3. Откройте frontend/index.html
+4. Найдите строки с ribbon-btn (примерно 251-282)
+5. ЗАМЕНИТЕ каждую кнопку так, чтобы span и small были внутри <div class="ribbon-text">:
+
+БЫЛО:
+<svg>...</svg>
+<span>СМР</span>
+<small>Строительно-монтажные работы</small>
+
+СТАЛО:
+<svg>...</svg>
+<div class="ribbon-text">
+    <span>СМР</span>
+    <small>Строительно-монтажные работы</small>
+</div>
+
+Сделайте это для всех 3 кнопок (СМР, Инвестиции, Управление).
+
+4. Сохраните оба файла.
