@@ -29,7 +29,12 @@
             <div class="level-1">
                 <div class="level1-left">
                     <button id="sidebar-toggle" class="sidebar-toggle">☰</button>
-                    <button id="object-select" class="object-select-btn"><span class="caret">▾</span> <span id="selected-object-name">Выбор объекта</span></button>
+                    <div class="object-dropdown-wrapper">
+                        <button id="sidebar-collapse-btn" class="sidebar-collapse-btn" title="Свернуть/Развернуть">◀</button>
+                        <select id="object-dropdown" class="object-dropdown">
+                            <option value="">Выбор объекта</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="level1-right">
                     <div class="search-and-add">
@@ -43,16 +48,17 @@
             <div class="level-2">
                 <nav class="main-tabs">
                     <button class="main-tab" data-main="analysis">Аналитика</button>
-                    <button class="main-tab" data-main="finances">Финансы</button>
                     <button class="main-tab" data-main="budget">Смета</button>
+                    <button class="main-tab" data-main="finances">Финансы</button>
                 </nav>
             </div>
 
             <div class="level-3">
                 <nav class="sub-tabs" id="sub-tabs">
-                    <button class="tab-btn" data-tab="income">Приход</button>
-                    <button class="tab-btn" data-tab="expense">Расход</button>
-                    <button class="tab-btn" data-tab="budget">Бюджет</button>
+                    <button class="tab-btn" data-tab="analysis" data-parent="analysis">Анализ</button>
+                    <button class="tab-btn" data-tab="income" data-parent="finances">Приход</button>
+                    <button class="tab-btn" data-tab="expense" data-parent="finances">Расход</button>
+                    <button class="tab-btn" data-tab="budget" data-parent="budget">Бюджет</button>
                 </nav>
             </div>
 
@@ -73,8 +79,8 @@
         </div>
         <!-- Old tabs-actions-row removed — replaced by four-level-navbar above. -->
         <div id="tab-analysis" class="tab-content" style="display:none;">
-            <div class="tab-actions">
-                <button class="icon-btn" id="download-analysis" title="Скачать">
+                <div class="tab-actions">
+                <button class="icon-btn duplicate-hidden" id="download-analysis" title="Скачать">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="#0057d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-down-icon lucide-file-down">
@@ -89,14 +95,14 @@
             <div id="analysis-container"></div>
         </div>
         <div id="tab-income" class="tab-content" style="display:none;">
-            <div class="tab-actions">
-                <button class="icon-btn" id="add-income" title="Добавить">
+                <div class="tab-actions">
+                <button class="icon-btn duplicate-hidden" id="add-income" title="Добавить">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <circle cx="10" cy="10" r="9" stroke="#0057d8" stroke-width="2" />
                         <path d="M10 6v8M6 10h8" stroke="#0057d8" stroke-width="2" stroke-linecap="round" />
                     </svg>
                 </button>
-                <button class="icon-btn" id="download-income" title="Скачать">
+                <button class="icon-btn duplicate-hidden" id="download-income" title="Скачать">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="#0057d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-down-icon lucide-file-down">
@@ -255,7 +261,7 @@
 
         <div id="tab-budget" class="tab-content" style="display:none;">
             <div class="tab-actions">
-                <button class="icon-btn" id="add-budget-group" title="Добавить этап">
+                <button class="icon-btn duplicate-hidden" id="add-budget-group" title="Добавить этап">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="#0057d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-folder-down-icon lucide-folder-down">
@@ -265,7 +271,7 @@
                         <path d="m15 13-3 3-3-3" />
                     </svg>
                 </button>
-                <button class="icon-btn" id="download-budget" title="Скачать">
+                <button class="icon-btn duplicate-hidden" id="download-budget" title="Скачать">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="#0057d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-down-icon lucide-file-down">
@@ -282,7 +288,7 @@
 
         <div id="tab-expense" class="tab-content" style="display:none;">
             <div class="tab-actions">
-                <button class="icon-btn" id="download-expense" title="Скачать">
+                <button class="icon-btn duplicate-hidden" id="download-expense" title="Скачать">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="#0057d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-down-icon lucide-file-down">

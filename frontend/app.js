@@ -314,6 +314,13 @@ function setActiveTab(tab) {
     if (tab === 'analysis' && selectedId && window.loadAnalysis) {
         window.loadAnalysis(selectedId);
     }
+    // update visible action buttons according to current main tab and subtab
+    try {
+        const mainName = document.querySelector('.main-tab.active')?.dataset.main || 'finances';
+        if (typeof updateActions === 'function') {
+            updateActions(mainName, tab);
+        }
+    } catch (e) { /* ignore */ }
 }
 
 // Вкладки переключение (инициализация сразу после определения)
@@ -344,6 +351,19 @@ async function renderList() {
         if (obj.id === selectedId) li.classList.add('selected');
         list.appendChild(li);
     });
+
+    // Populate objects dropdown (navbar) if present
+    const dropdown = document.getElementById('object-dropdown');
+    if (dropdown) {
+        dropdown.innerHTML = '<option value="">Выбор объекта</option>';
+        objects.forEach(obj => {
+            const opt = document.createElement('option');
+            opt.value = obj.id;
+            opt.textContent = obj.name;
+            if (obj.id === selectedId) opt.selected = true;
+            dropdown.appendChild(opt);
+        });
+    }
 
     // Restore state after list render
     restoreState();
@@ -784,27 +804,95 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const topAdd = document.getElementById('top-add-object');
     if (topAdd) topAdd.onclick = () => document.getElementById('add-object')?.click();
 
-    // Object select button opens sidebar (mobile friendly)
-    const objectSelectBtn = document.getElementById('object-select');
-    if (objectSelectBtn) objectSelectBtn.onclick = () => {
-        const sb = document.getElementById('sidebar');
-        if (sb) sb.classList.toggle('open');
-    };
+    // Object dropdown (navbar) behavior and sidebar collapse
+    const objectDropdown = document.getElementById('object-dropdown');
+    if (objectDropdown) {
+        objectDropdown.onchange = () => {
+            const id = objectDropdown.value;
+            if (!id) return;
+            const li = document.querySelector(`#object-list li[data-id="${id}"]`);
+            // call existing selectObject helper
+            selectObject(Number(id), li);
+        };
+    }
+
+    const sidebarCollapseBtn = document.getElementById('sidebar-collapse-btn');
+    if (sidebarCollapseBtn) {
+        sidebarCollapseBtn.onclick = () => {
+            const sb = document.getElementById('sidebar');
+            if (!sb) return;
+            const collapsed = sb.classList.toggle('collapsed');
+            localStorage.setItem('sidebarCollapsed', collapsed ? '1' : '0');
+            sidebarCollapseBtn.textContent = collapsed ? '▶' : '◀';
+        };
+        // restore saved collapsed state
+        const savedCollapsed = localStorage.getItem('sidebarCollapsed') === '1';
+        if (savedCollapsed) {
+            document.getElementById('sidebar')?.classList.add('collapsed');
+            sidebarCollapseBtn.textContent = '▶';
+        }
+    }
 
     // Main tabs behavior: show/hide sub-tabs and route to correct inner tab
     const mainTabs = document.querySelectorAll('.main-tab');
     const subTabsContainer = document.getElementById('sub-tabs');
     let lastFinanceSub = 'income';
 
+    function updateActions(mainName, activeSub) {
+        const printBtn = document.getElementById('print-btn');
+        const addStage = document.getElementById('add-stage-btn');
+        const addAct = document.getElementById('add-action-btn');
+        // default: show only print
+        if (printBtn) printBtn.style.display = '';
+        if (addStage) addStage.style.display = 'none';
+        if (addAct) addAct.style.display = 'none';
+
+        if (mainName === 'analysis') {
+            // only print
+            if (addStage) addStage.style.display = 'none';
+            if (addAct) addAct.style.display = 'none';
+        } else if (mainName === 'budget') {
+            // in Sмета: print + add-stage
+            if (addStage) addStage.style.display = '';
+            if (addAct) addAct.style.display = 'none';
+        } else if (mainName === 'finances') {
+            // finances depend on subtab
+            if (activeSub === 'income') {
+                if (addAct) addAct.style.display = '';
+                if (addStage) addStage.style.display = 'none';
+            } else if (activeSub === 'expense') {
+                if (addAct) addAct.style.display = 'none';
+                if (addStage) addStage.style.display = 'none';
+            }
+        }
+    }
+
+    // expose to global so setActiveTab can call it
+    window.updateActions = updateActions;
+
     function setMainActive(name) {
         document.querySelectorAll('.main-tab').forEach(t => t.classList.toggle('active', t.dataset.main === name));
+        // show/hide sub-tabs depending on their data-parent attribute
+        const subTabs = document.querySelectorAll('#sub-tabs .tab-btn');
+        let anyVisible = false;
+        subTabs.forEach(btn => {
+            const parent = btn.dataset.parent || '';
+            if (parent === name) {
+                btn.style.display = '';
+                anyVisible = true;
+            } else {
+                btn.style.display = 'none';
+            }
+        });
+        if (subTabsContainer) subTabsContainer.style.display = anyVisible ? 'flex' : 'none';
+
+        // choose default subtab
         if (name === 'finances') {
-            if (subTabsContainer) subTabsContainer.style.display = 'flex';
             setActiveTab(lastFinanceSub);
-        } else {
-            if (subTabsContainer) subTabsContainer.style.display = 'none';
-            if (name === 'analysis') setActiveTab('analysis');
-            if (name === 'budget') setActiveTab('budget');
+        } else if (name === 'budget') {
+            setActiveTab('budget');
+        } else if (name === 'analysis') {
+            setActiveTab('analysis');
         }
     }
 
@@ -815,10 +903,12 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         };
     });
 
-    // If sub-tab changes, remember it for finances
+    // Sub-tab clicks: remember last finance sub and update actions
     document.querySelectorAll('#sub-tabs .tab-btn').forEach(st => {
         st.addEventListener('click', () => {
             if (st.dataset.tab) lastFinanceSub = st.dataset.tab;
+            const mainName = document.querySelector('.main-tab.active')?.dataset.main || 'finances';
+            updateActions(mainName, st.dataset.tab);
         });
     });
 
