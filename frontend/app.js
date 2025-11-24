@@ -394,6 +394,14 @@ function selectObject(id, li) {
 
     showTabs(true);
 
+    // Close object dropdown if open (covers selection from sidebar or dropdown)
+    try {
+        const dd = document.getElementById('object-dropdown');
+        if (dd && dd.style.display && dd.style.display !== 'none') dd.style.display = 'none';
+        // also remove focus from selector button
+        const selBtn = document.getElementById('object-select'); if (selBtn) selBtn.blur();
+    } catch (e) { /* ignore */ }
+
     // Restore tab or default to 'income'
     const savedTab = localStorage.getItem('activeTab') || 'income';
     setActiveTab(savedTab);
