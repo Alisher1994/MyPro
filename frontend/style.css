@@ -294,17 +294,15 @@ body {
 
 /* For sub-tabs (подвкладки) use a light-gray active button instead of green underline */
 .sub-tabs .tab-btn.active {
-.sub-tabs .tab-btn.active {
-    /* light background with thin green stroke (stroke on all sides) */
-    background: var(--office-white);
+    background: var(--office-gray-50);
     color: var(--office-gray-900);
     font-weight: 600;
     border-radius: 6px;
     padding: 6px 12px;
-    border: 1px solid var(--excel-primary);
-    box-shadow: 0 1px 0 rgba(33,124,62,0.06);
 }
-.sub-tabs .tab-btn.active::after { display: none; }
+/* Ensure sub-tabs never show the green underline pseudo-element */
+.sub-tabs .tab-btn::after { display: none !important; }
+.sub-tabs .tab-btn.active::after { display: none !important; }
 
 #object-actions {
     display: flex;
