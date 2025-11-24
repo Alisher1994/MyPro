@@ -345,7 +345,7 @@ async function renderList() {
             // Close sidebar on mobile selection
             if (window.innerWidth <= 700) {
                 sidebar.classList.remove('open');
-                sidebarToggle.style.display = 'block';
+                const st = document.getElementById('sidebar-toggle'); if (st) st.style.display = 'block';
             }
         };
         if (obj.id === selectedId) li.classList.add('selected');
@@ -812,16 +812,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         }
     };
 
-    // Sidebar toggle (collapse/expand) button placed near object select
-    const sidebarToggleBtn = document.getElementById('sidebar-toggle');
-    if (sidebarToggleBtn) {
-        sidebarToggleBtn.onclick = () => {
-            document.body.classList.toggle('sidebar-collapsed');
-            // rotate arrow handled by CSS transform on .sidebar-collapsed
-            // also ensure dropdown closed
-            const dd = document.getElementById('object-dropdown'); if (dd) dd.style.display = 'none';
-        };
-    }
+    // Sidebar toggle button removed — logo handles collapse/expand
 
     // Build/dropdown population from object list
     const objectDropdown = document.getElementById('object-dropdown');
