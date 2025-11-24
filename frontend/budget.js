@@ -515,9 +515,7 @@ function makeEditableSelect(element, options, onSave) {
         select.style.top = rect.top + 'px';
         select.style.left = rect.left + 'px';
         select.style.zIndex = '9999';
-        select.style.width = 'auto';
-        select.style.minWidth = '80px';
-        select.style.maxWidth = '150px';
+        select.style.minWidth = Math.max(rect.width, 80) + 'px';
         select.style.height = 'auto';
 
         select.onchange = async function () {
@@ -580,9 +578,7 @@ function makeEditableSelectWithIcons(element, options, onSave) {
         select.style.top = rect.top + 'px';
         select.style.left = rect.left + 'px';
         select.style.zIndex = '9999';
-        select.style.width = 'auto';
-        select.style.minWidth = '120px';
-        select.style.maxWidth = '200px';
+        select.style.minWidth = '150px';
         select.style.height = 'auto';
 
         select.onchange = async function () {
