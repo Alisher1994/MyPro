@@ -769,3 +769,116 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     if (sourceObjectRow) sourceObjectRow.style.display = 'none';
     if (sourceObjectSelect) sourceObjectSelect.value = '';
 }); 
+
+// =====================
+// Four-level navbar interactions
+// =====================
+(function () {
+    // Wire top add button to existing add-object
+    const topAdd = document.getElementById('top-add-object');
+    if (topAdd) topAdd.onclick = () => document.getElementById('add-object')?.click();
+
+    // Object select button opens sidebar (mobile friendly)
+    const objectSelectBtn = document.getElementById('object-select');
+    if (objectSelectBtn) objectSelectBtn.onclick = () => {
+        const sb = document.getElementById('sidebar');
+        if (sb) sb.classList.toggle('open');
+    };
+
+    // Main tabs behavior: show/hide sub-tabs and route to correct inner tab
+    const mainTabs = document.querySelectorAll('.main-tab');
+    const subTabsContainer = document.getElementById('sub-tabs');
+    let lastFinanceSub = 'income';
+
+    function setMainActive(name) {
+        document.querySelectorAll('.main-tab').forEach(t => t.classList.toggle('active', t.dataset.main === name));
+        if (name === 'finances') {
+            if (subTabsContainer) subTabsContainer.style.display = 'flex';
+            setActiveTab(lastFinanceSub);
+        } else {
+            if (subTabsContainer) subTabsContainer.style.display = 'none';
+            if (name === 'analysis') setActiveTab('analysis');
+            if (name === 'budget') setActiveTab('budget');
+        }
+    }
+
+    mainTabs.forEach(tb => {
+        tb.onclick = () => {
+            const m = tb.dataset.main;
+            setMainActive(m);
+        };
+    });
+
+    // If sub-tab changes, remember it for finances
+    document.querySelectorAll('#sub-tabs .tab-btn').forEach(st => {
+        st.addEventListener('click', () => {
+            if (st.dataset.tab) lastFinanceSub = st.dataset.tab;
+        });
+    });
+
+    // Print button — delegate to existing download handlers when possible
+    const printBtn = document.getElementById('print-btn');
+    if (printBtn) printBtn.onclick = () => {
+        const active = document.querySelector('.tab-btn.active')?.dataset.tab || localStorage.getItem('activeTab') || 'income';
+        if (active === 'income') {
+            // use existing downloadIncome
+            if (typeof downloadIncome === 'function') downloadIncome();
+            else alert('Печать недоступна');
+        } else if (active === 'budget') {
+            if (typeof window.downloadBudget === 'function') window.downloadBudget();
+            else alert('Печать сметы недоступна');
+        } else {
+            alert('Печать для выбранной вкладки недоступна');
+        }
+    };
+
+    // Add stage button -> trigger existing add-budget-group
+    const addStage = document.getElementById('add-stage-btn');
+    if (addStage) addStage.onclick = () => document.getElementById('add-budget-group')?.click();
+
+    // Generic add button -> try to open add-income or add-budget
+    const addAct = document.getElementById('add-action-btn');
+    if (addAct) addAct.onclick = () => {
+        const active = document.querySelector('.tab-btn.active')?.dataset.tab || localStorage.getItem('activeTab') || 'income';
+        if (active === 'income') document.getElementById('add-income')?.click();
+        else if (active === 'budget') document.getElementById('add-budget-group')?.click();
+        else document.getElementById('add-income')?.click();
+    };
+
+    // Sync selected object name using MutationObserver on object-list
+    const objectList = document.getElementById('object-list');
+    const selNameEl = document.getElementById('selected-object-name');
+    if (objectList && selNameEl) {
+        const mo = new MutationObserver(() => {
+            const sel = objectList.querySelector('li.selected');
+            if (sel) selNameEl.textContent = sel.textContent.trim();
+            else selNameEl.textContent = 'Выбор объекта';
+        });
+        mo.observe(objectList, { attributes: true, subtree: true, attributeFilter: ['class'], childList: true });
+        // also sync immediately
+        const sel = objectList.querySelector('li.selected');
+        if (sel) selNameEl.textContent = sel.textContent.trim();
+    }
+
+    // Simple search filter for object list
+    const objectSearch = document.getElementById('object-search');
+    if (objectSearch && objectList) {
+        objectSearch.addEventListener('input', (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            objectList.querySelectorAll('li').forEach(li => {
+                const txt = li.textContent.toLowerCase();
+                li.style.display = txt.indexOf(q) === -1 ? 'none' : '';
+            });
+        });
+    }
+
+    // Initialize visibility based on saved active tab
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('activeTab') || 'income';
+        // If saved tab is analysis or budget, make main active accordingly
+        if (saved === 'analysis') setMainActive('analysis');
+        else if (saved === 'budget') setMainActive('budget');
+        else setMainActive('finances');
+    });
+
+})();
