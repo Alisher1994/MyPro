@@ -1,0 +1,14 @@
+/* Placeholder for income table buttons styles
+   This file existed in the original project and was requested by index.html.
+   Add button-specific rules here if needed. */
+
+.btn-small {
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    height: 28px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-small:hover { background: var(--office-gray-100); }
