@@ -1244,12 +1244,12 @@ body {
 
 /* Title Bar (Quick Access Toolbar) */
 .office-title-bar {
-    height: 32px;
+    height: 38px;
     background: var(--excel-primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 8px;
+    padding: 0 12px;
     flex-shrink: 0;
 }
 
@@ -1296,12 +1296,12 @@ body {
 }
 
 .title-bar-select {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
     color: white;
     font-size: 13px;
     font-weight: 500;
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 4px;
     cursor: pointer;
     display: flex;

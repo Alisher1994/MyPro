@@ -1050,16 +1050,73 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         });
     }
     
-    // Global search
+    // Global search - like browser Ctrl+F, highlights matches in active content area
     const globalSearch = document.getElementById('global-search');
-    const objectListForSearch = document.getElementById('object-list');
-    if (globalSearch && objectListForSearch) {
-        globalSearch.addEventListener('input', (e) => {
-            const q = e.target.value.trim().toLowerCase();
-            objectListForSearch.querySelectorAll('li').forEach(li => {
-                const txt = li.textContent.toLowerCase();
-                li.style.display = txt.indexOf(q) === -1 ? 'none' : '';
+    if (globalSearch) {
+        let lastHighlights = [];
+        
+        function clearHighlights() {
+            lastHighlights.forEach(el => {
+                if (el.parentNode) {
+                    el.outerHTML = el.textContent;
+                }
             });
+            lastHighlights = [];
+        }
+        
+        function highlightMatches(container, query) {
+            if (!query) return;
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+            const matches = [];
+            let node;
+            while (node = walker.nextNode()) {
+                const text = node.textContent;
+                const idx = text.toLowerCase().indexOf(query);
+                if (idx !== -1 && node.parentElement && !['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA'].includes(node.parentElement.tagName)) {
+                    matches.push({ node, idx, len: query.length });
+                }
+            }
+            // Highlight from end to start to preserve positions
+            matches.reverse().forEach(m => {
+                const before = m.node.textContent.substring(0, m.idx);
+                const match = m.node.textContent.substring(m.idx, m.idx + m.len);
+                const after = m.node.textContent.substring(m.idx + m.len);
+                const mark = document.createElement('mark');
+                mark.style.background = '#ffeb3b';
+                mark.style.color = '#000';
+                mark.textContent = match;
+                const parent = m.node.parentNode;
+                parent.insertBefore(document.createTextNode(before), m.node);
+                parent.insertBefore(mark, m.node);
+                parent.insertBefore(document.createTextNode(after), m.node);
+                parent.removeChild(m.node);
+                lastHighlights.push(mark);
+            });
+            // Scroll to first match
+            if (lastHighlights.length > 0) {
+                lastHighlights[lastHighlights.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        globalSearch.addEventListener('input', (e) => {
+            clearHighlights();
+            const q = e.target.value.trim().toLowerCase();
+            if (!q) return;
+            // Find active content area
+            const activeContent = document.querySelector('.tab-content[style*="block"]') || 
+                                  document.querySelector('.tab-content:not([style*="none"])');
+            if (activeContent) {
+                highlightMatches(activeContent, q);
+            }
+        });
+        
+        // Clear highlights on blur or escape
+        globalSearch.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearHighlights();
+                globalSearch.value = '';
+                globalSearch.blur();
+            }
         });
     }
     
@@ -1141,7 +1198,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         });
     }
     
-    // Analysis view switching (Данные объекта, Аналитика по финансам, Аналитика по ресурсам)
+    // Analysis view switching (Данные объекта, Аналитика по финансам, Аналитика по ресурсам, по видам работ)
     const analysisViewBtns = document.querySelectorAll('.analysis-view');
     analysisViewBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1149,7 +1206,10 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             btn.classList.add('active');
             const view = btn.dataset.view;
             localStorage.setItem('analysisView', view);
-            // Can hook into actual view switching logic here
+            // Switch view in analysis container
+            if (typeof switchAnalysisView === 'function') {
+                switchAnalysisView(view);
+            }
         });
     });
 

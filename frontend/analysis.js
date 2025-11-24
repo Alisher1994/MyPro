@@ -12,7 +12,8 @@ let analysisData = {
 analysisData.collapsedSections = {
     cards: true,
     progress: true,
-    resources: true
+    resources: true,
+    worktypes: true
 };
 
 // Icons for resource types in Analysis (black stroke)
@@ -86,6 +87,9 @@ function calculateAnalysis(budgetData, incomeData, expenseData) {
 
     // По типам ресурсов
     analysisData.resources = calculateResourcesByType(budgetData, expenseData);
+    
+    // По видам работ
+    analysisData.workTypes = calculateWorkTypeAnalytics(budgetData, expenseData);
 }
 
 // Расчет общей суммы бюджета
@@ -259,6 +263,21 @@ function renderAnalysis() {
                 <div class="analysis-resources-section">
                     <div class="analysis-resources-grid">
                         ${renderResourceColumns()}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- По видам работ (collapsible) -->
+        <div class="analysis-collapsible ${analysisData.collapsedSections.worktypes ? 'collapsed' : ''}" data-section="worktypes">
+            <div class="analysis-collapsible-header" onclick="toggleAnalysisSection('worktypes')">
+                <span class="analysis-section-title">Аналитика по видам работ</span>
+                <button class="collapser">${analysisData.collapsedSections.worktypes ? '+' : '−'}</button>
+            </div>
+            <div class="analysis-collapsible-body">
+                <div class="analysis-resources-section">
+                    <div class="analysis-resources-grid">
+                        ${renderWorkTypeColumns()}
                     </div>
                 </div>
             </div>
@@ -1124,6 +1143,140 @@ function formatNum(num) {
     return parseFloat(num).toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
-// Экспорт функции для использования в app.js
+// Расчет по видам работ (план из бюджета, факт из расходов)
+function calculateWorkTypeAnalytics(budgetData, expenseData) {
+    const workTypes = {};
+    
+    // План из бюджета - собираем суммы по видам работ
+    budgetData.forEach(stage => {
+        (stage.work_types || []).forEach(wt => {
+            const wtName = wt.name || 'Без названия';
+            if (!workTypes[wtName]) {
+                workTypes[wtName] = { plan: 0, fact: 0 };
+            }
+            // Сумма всех ресурсов данного вида работ
+            const wtTotal = (wt.resources || []).reduce((sum, res) => {
+                return sum + ((res.quantity || 0) * (res.price || 0));
+            }, 0);
+            workTypes[wtName].plan += wtTotal;
+        });
+    });
+    
+    // Факт из расходов
+    expenseData.forEach(stage => {
+        (stage.work_types || []).forEach(wt => {
+            const wtName = wt.name || 'Без названия';
+            if (!workTypes[wtName]) {
+                workTypes[wtName] = { plan: 0, fact: 0 };
+            }
+            // Сумма всех расходов данного вида работ
+            const wtTotal = (wt.resources || []).reduce((sum, res) => {
+                if (!res.expenses) return sum;
+                return sum + res.expenses.reduce((expSum, exp) => {
+                    return expSum + ((exp.actual_quantity || 0) * (exp.actual_price || 0));
+                }, 0);
+            }, 0);
+            workTypes[wtName].fact += wtTotal;
+        });
+    });
+    
+    return workTypes;
+}
+
+// Рендер аналитики по видам работ (аналогично ресурсам)
+function renderWorkTypeColumns() {
+    const workTypes = analysisData.workTypes || {};
+    const keys = Object.keys(workTypes).filter(k => workTypes[k].plan > 0 || workTypes[k].fact > 0);
+    
+    if (keys.length === 0) {
+        return '<p style="padding:20px;color:#999;text-align:center;">Нет данных по видам работ</p>';
+    }
+    
+    return keys.map(name => {
+        const data = workTypes[name];
+        const diff = data.fact - data.plan;
+        const diffClass = diff >= 0 ? 'negative' : 'positive';
+        const diffSign = diff >= 0 ? '-' : '+';
+        
+        const maxValue = Math.max(data.plan, data.fact, 1);
+        const planHeight = (data.plan / maxValue) * 100;
+        const factHeight = (data.fact / maxValue) * 100;
+        
+        // Иконка для вида работ
+        const icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+        
+        return `
+            <div class="analysis-resource-column">
+                <div class="analysis-resource-title">${icon}${name}</div>
+                <div class="analysis-resource-chart">
+                    <div class="analysis-resource-bar-container">
+                        <div class="analysis-resource-bar-label">План</div>
+                        <div class="analysis-resource-bar-wrapper">
+                            <div class="analysis-resource-bar plan" style="height: ${planHeight}%">
+                                ${planHeight > 15 ? formatNum(data.plan) : ''}
+                            </div>
+                        </div>
+                        <div class="analysis-resource-bar-value">${formatNum(data.plan)}</div>
+                    </div>
+                    <div class="analysis-resource-bar-container">
+                        <div class="analysis-resource-bar-label">Факт</div>
+                        <div class="analysis-resource-bar-wrapper">
+                            <div class="analysis-resource-bar fact" style="height: ${factHeight}%">
+                                ${factHeight > 15 ? formatNum(data.fact) : ''}
+                            </div>
+                        </div>
+                        <div class="analysis-resource-bar-value">${formatNum(data.fact)}</div>
+                    </div>
+                </div>
+                <div class="analysis-resource-diff ${diffClass}">
+                    ${diffSign}${formatNum(Math.abs(diff))}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Переключение вида аналитики (показывать только соответствующие секции)
+function switchAnalysisView(view) {
+    const container = document.getElementById('analysis-container');
+    if (!container) return;
+    
+    // Найти все секции
+    const objectSection = container.querySelector('.analysis-object-section');
+    const financeCards = container.querySelector('[data-section="cards"]');
+    const financeProgress = container.querySelector('[data-section="progress"]');
+    const resourcesSection = container.querySelector('[data-section="resources"]');
+    const workTypesSection = container.querySelector('[data-section="worktypes"]');
+    
+    // Скрыть все
+    [objectSection, financeCards, financeProgress, resourcesSection, workTypesSection].forEach(el => {
+        if (el) el.style.display = 'none';
+    });
+    
+    // Показать нужные
+    switch (view) {
+        case 'object-data':
+            if (objectSection) objectSection.style.display = 'block';
+            break;
+        case 'finance-analytics':
+            if (financeCards) financeCards.style.display = 'block';
+            if (financeProgress) financeProgress.style.display = 'block';
+            break;
+        case 'resource-analytics':
+            if (resourcesSection) resourcesSection.style.display = 'block';
+            break;
+        case 'worktype-analytics':
+            if (workTypesSection) workTypesSection.style.display = 'block';
+            break;
+        default:
+            // Показать все по умолчанию
+            [objectSection, financeCards, financeProgress, resourcesSection, workTypesSection].forEach(el => {
+                if (el) el.style.display = 'block';
+            });
+    }
+}
+
+// Экспорт функций для использования в app.js
 window.loadAnalysis = loadAnalysis;
+window.switchAnalysisView = switchAnalysisView;
 
