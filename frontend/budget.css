@@ -266,12 +266,14 @@
     padding: 0;
 }
 
+/* ========================================
+   RESOURCE TABLE - FLEXBOX LAYOUT
+   ======================================== */
 .budget-resource-header {
     margin: var(--spacing-sm) var(--spacing-lg) var(--spacing-xs) 40px;
     padding: var(--spacing-sm) var(--spacing-md);
-    display: grid;
-    grid-template-columns: 40px 55px 45px minmax(200px, 3fr) 55px 70px 80px 90px minmax(100px, 2fr) 35px;
-    gap: 8px;
+    display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     font-size: var(--font-size-xs);
     font-weight: 600;
@@ -286,18 +288,53 @@
 .budget-resource {
     margin: 2px var(--spacing-lg) 2px 40px;
     padding: var(--spacing-sm) var(--spacing-md);
-    display: grid;
-    grid-template-columns: 40px 55px 45px minmax(200px, 3fr) 55px 70px 80px 90px minmax(100px, 2fr) 35px;
-    gap: 8px;
+    display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     font-size: var(--font-size-sm);
     background: var(--office-white);
     border: 1px solid var(--office-gray-200);
     cursor: move;
     min-height: var(--height-row);
-    overflow: visible;
-    position: relative;
 }
+
+/* Column widths */
+.budget-resource-header > span:nth-child(1),
+.budget-resource > .res-num { width: 40px; flex-shrink: 0; text-align: center; }
+
+.budget-resource-header > span:nth-child(2),
+.budget-resource > .res-photo { width: 55px; flex-shrink: 0; text-align: center; }
+
+.budget-resource-header > span:nth-child(3),
+.budget-resource > .res-type { width: 45px; flex-shrink: 0; text-align: center; }
+
+.budget-resource-header > span:nth-child(4),
+.budget-resource > .res-name { 
+    flex: 1 1 250px; 
+    min-width: 150px;
+    margin-right: 10px;
+}
+
+.budget-resource-header > span:nth-child(5),
+.budget-resource > .res-unit { width: 50px; flex-shrink: 0; text-align: center; margin-right: 10px; }
+
+.budget-resource-header > span:nth-child(6),
+.budget-resource > .res-quantity { width: 70px; flex-shrink: 0; text-align: right; }
+
+.budget-resource-header > span:nth-child(7),
+.budget-resource > .res-price { width: 80px; flex-shrink: 0; text-align: right; }
+
+.budget-resource-header > span:nth-child(8),
+.budget-resource > .res-sum { width: 90px; flex-shrink: 0; text-align: right; }
+
+.budget-resource-header > span:nth-child(9),
+.budget-resource > .res-supplier { 
+    flex: 1 1 120px;
+    min-width: 80px;
+}
+
+.budget-resource-header > span:nth-child(10),
+.budget-resource > .btn-delete { width: 35px; flex-shrink: 0; margin-left: auto; }
 
 .budget-resource.dragging {
     opacity: 0.5;
@@ -308,14 +345,9 @@
     border-color: var(--excel-primary);
 }
 
-.budget-resource .btn-delete {
-    justify-self: end;
-}
-
 .res-num {
     color: var(--office-gray-500);
     font-size: var(--font-size-xs);
-    text-align: center;
 }
 
 .res-photo {
@@ -409,7 +441,6 @@
 }
 
 .res-type,
-.res-name,
 .res-unit,
 .res-quantity,
 .res-price,
@@ -423,11 +454,18 @@
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
 .res-name {
-    min-width: 0;
+    cursor: text;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background 0.1s;
+    min-height: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
