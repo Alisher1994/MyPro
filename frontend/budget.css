@@ -267,12 +267,11 @@
 }
 
 .budget-resource-header {
-    margin: var(--spacing-sm) var(--spacing-2xl) var(--spacing-xs) 48px;
+    margin: var(--spacing-sm) var(--spacing-lg) var(--spacing-xs) 40px;
     padding: var(--spacing-sm) var(--spacing-md);
-    padding-right: var(--spacing-lg);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(280px, 2fr) 60px 90px 100px 120px minmax(120px, 1fr) 40px;
-    gap: var(--spacing-md);
+    grid-template-columns: 35px 55px 45px 1fr 50px 80px 90px 100px 1fr 35px;
+    gap: var(--spacing-sm);
     align-items: center;
     font-size: var(--font-size-xs);
     font-weight: 600;
@@ -285,12 +284,11 @@
 }
 
 .budget-resource {
-    margin: 2px var(--spacing-2xl) 2px 48px;
+    margin: 2px var(--spacing-lg) 2px 40px;
     padding: var(--spacing-sm) var(--spacing-md);
-    padding-right: var(--spacing-lg);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(280px, 2fr) 60px 90px 100px 120px minmax(120px, 1fr) 40px;
-    gap: var(--spacing-md);
+    grid-template-columns: 35px 55px 45px 1fr 50px 80px 90px 100px 1fr 35px;
+    gap: var(--spacing-sm);
     align-items: center;
     font-size: var(--font-size-sm);
     background: var(--office-white);
@@ -430,12 +428,9 @@
 
 .res-name {
     min-width: 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 400px;
 }
 
 .res-type {
