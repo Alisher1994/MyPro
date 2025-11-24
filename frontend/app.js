@@ -1001,15 +1001,34 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         ribbonTabs.forEach(t => t.classList.toggle('active', t.dataset.ribbon === tabName));
         ribbonPanels.forEach(p => p.classList.toggle('active', p.dataset.panel === tabName));
         
-        // Also switch the content tab
+        // Also switch the content tab and activate first subtab
         if (tabName === 'analysis') {
             setActiveTab('analysis');
+            // Activate first analysis subtab
+            const analysisViewBtns = document.querySelectorAll('.analysis-view');
+            analysisViewBtns.forEach(b => b.classList.remove('active'));
+            const firstBtn = analysisViewBtns[0];
+            if (firstBtn) {
+                firstBtn.classList.add('active');
+                const view = firstBtn.dataset.view;
+                localStorage.setItem('analysisView', view);
+                if (typeof switchAnalysisView === 'function') {
+                    switchAnalysisView(view);
+                }
+            }
         } else if (tabName === 'budget') {
             setActiveTab('budget');
         } else if (tabName === 'finances') {
-            // Default to income or last selected
-            const lastSub = localStorage.getItem('financesSubtab') || 'income';
-            setActiveTab(lastSub);
+            // Activate first finances subtab
+            const financeSubtabs = document.querySelectorAll('.finances-subtab');
+            financeSubtabs.forEach(b => b.classList.remove('active'));
+            const firstSub = financeSubtabs[0];
+            if (firstSub) {
+                firstSub.classList.add('active');
+                const subtab = firstSub.dataset.subtab;
+                localStorage.setItem('financesSubtab', subtab);
+                setActiveTab(subtab);
+            }
         }
         // Home tab doesn't switch content
     }
