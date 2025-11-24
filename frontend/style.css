@@ -521,15 +521,50 @@ body {
     border-right: none;
 }
 
-.income-table td:last-child .icon-btn {
-    border: none;
-    background: transparent;
-    width: var(--height-button-sm);
-    height: var(--height-button-sm);
+.income-table td:last-child {
+    text-align: center;
 }
 
-.income-table td:last-child .icon-btn:hover {
+.income-actions {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.office-icon-btn {
+    border: none;
+    background: transparent;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    color: var(--office-gray-700);
+    padding: 0;
+}
+
+.office-icon-btn:hover {
+    background: var(--office-gray-100);
+    color: var(--excel-primary);
+}
+
+.office-icon-btn:active {
     background: var(--office-gray-200);
+    transform: scale(0.95);
+}
+
+.office-icon-btn-danger:hover {
+    background: var(--office-red-light);
+    color: var(--office-red);
+}
+
+.office-icon-btn svg {
+    width: 16px;
+    height: 16px;
 }
 
 .income-table td {

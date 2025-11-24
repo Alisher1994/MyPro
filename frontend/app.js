@@ -125,12 +125,12 @@ function renderIncomeTable() {
             <td>${row.sender || row.from || ''}</td>
             <td>${row.receiver || row.to || ''}</td>
             <td>${row.comment || ''}</td>
-            <td>
-                <button class="icon-btn income-edit" title="Изменить" data-idx="${idx}">
-                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 13.5V16h2.5l7.1-7.1-2.5-2.5L4 13.5z" stroke="#0057d8" stroke-width="1.5"/><path d="M13.5 6.5l2 2" stroke="#0057d8" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <td class="income-actions">
+                <button class="office-icon-btn income-edit" title="Изменить" data-idx="${idx}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 </button>
-                <button class="icon-btn income-delete" title="Удалить" data-idx="${idx}">
-                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="5" y="8" width="10" height="7" rx="2" stroke="#d80027" stroke-width="1.5"/><path d="M8 10v3M12 10v3" stroke="#d80027" stroke-width="1.5" stroke-linecap="round"/><rect x="8" y="4" width="4" height="2" rx="1" fill="#d80027"/></svg>
+                <button class="office-icon-btn office-icon-btn-danger income-delete" title="Удалить" data-idx="${idx}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                 </button>
             </td>
         `;
