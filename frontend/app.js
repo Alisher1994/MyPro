@@ -345,7 +345,6 @@ async function renderList() {
             // Close sidebar on mobile selection
             if (window.innerWidth <= 700) {
                 sidebar.classList.remove('open');
-                const st = document.getElementById('sidebar-toggle'); if (st) st.style.display = 'block';
             }
         };
         if (obj.id === selectedId) li.classList.add('selected');
@@ -470,24 +469,13 @@ if (deleteBtnEl) {
     };
 }
 
-// Mobile Sidebar Toggle
-const sidebarToggle = document.getElementById('sidebar-toggle');
+// Sidebar element and close button (mobile)
 const sidebar = document.getElementById('sidebar');
 const sidebarClose = document.getElementById('sidebar-close');
 
-if (sidebarToggle) {
-    sidebarToggle.onclick = function () {
-        sidebar.classList.add('open');
-        sidebarToggle.style.display = 'none';
-    };
-}
 if (sidebarClose) {
     sidebarClose.onclick = function () {
         sidebar.classList.remove('open');
-        // Show toggle button again if on mobile
-        if (window.innerWidth <= 700) {
-            sidebarToggle.style.display = 'block';
-        }
     };
 }
 
@@ -692,8 +680,7 @@ try {
             const dd = document.getElementById('object-dropdown'); if (dd) dd.style.display = 'none';
             // ensure mobile 'open' class removed
             const sb = document.getElementById('sidebar'); if (sb) sb.classList.remove('open');
-            // adjust visibility of sidebar toggle button
-            const st = document.getElementById('sidebar-toggle'); if (st) st.style.display = document.body.classList.contains('sidebar-collapsed') ? 'block' : 'inline-block';
+            // sidebar-toggle removed; nothing to adjust here
         });
     }
 } catch (e) { /* ignore */ }
@@ -812,7 +799,16 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         }
     };
 
-    // Sidebar toggle button removed — logo handles collapse/expand
+    // Sidebar toggle (collapse/expand) button placed near object select
+    const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+    if (sidebarToggleBtn) {
+        sidebarToggleBtn.onclick = () => {
+            document.body.classList.toggle('sidebar-collapsed');
+            // rotate arrow handled by CSS transform on .sidebar-collapsed
+            // also ensure dropdown closed
+            const dd = document.getElementById('object-dropdown'); if (dd) dd.style.display = 'none';
+        };
+    }
 
     // Build/dropdown population from object list
     const objectDropdown = document.getElementById('object-dropdown');
