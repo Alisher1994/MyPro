@@ -270,8 +270,8 @@
     margin: var(--spacing-sm) var(--spacing-lg) var(--spacing-xs) 40px;
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 35px 55px 45px 1fr 50px 80px 90px 100px 1fr 35px;
-    gap: var(--spacing-sm);
+    grid-template-columns: 40px 55px 45px minmax(200px, 3fr) 55px 70px 80px 90px minmax(100px, 2fr) 35px;
+    gap: 8px;
     align-items: center;
     font-size: var(--font-size-xs);
     font-weight: 600;
@@ -287,8 +287,8 @@
     margin: 2px var(--spacing-lg) 2px 40px;
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 35px 55px 45px 1fr 50px 80px 90px 100px 1fr 35px;
-    gap: var(--spacing-sm);
+    grid-template-columns: 40px 55px 45px minmax(200px, 3fr) 55px 70px 80px 90px minmax(100px, 2fr) 35px;
+    gap: 8px;
     align-items: center;
     font-size: var(--font-size-sm);
     background: var(--office-white);
