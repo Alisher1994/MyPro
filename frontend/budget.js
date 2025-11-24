@@ -197,16 +197,20 @@ function createWorkTypeElement(workType, num, stageId) {
         const headerRow = document.createElement('div');
         headerRow.className = 'budget-resource-header';
         headerRow.innerHTML = `
-            <span>№</span>
-            <span class="header-photo">Фото</span>
-            <span>Тип</span>
-            <span>Название</span>
-            <span>Ед.изм</span>
-            <span>Кол-во</span>
-            <span>Цена</span>
-            <span>Сумма</span>
-            <span>Поставщик</span>
-            <span></span>
+            <div class="resource-left">
+                <span>№</span>
+                <span class="header-photo">Фото</span>
+                <span>Тип</span>
+                <span>Название</span>
+            </div>
+            <div class="resource-right">
+                <span>Ед.изм</span>
+                <span>Кол-во</span>
+                <span>Цена</span>
+                <span>Сумма</span>
+                <span>Поставщик</span>
+                <span></span>
+            </div>
         `;
         resourcesContainer.appendChild(headerRow);
     }
@@ -237,29 +241,33 @@ function createResourceElement(resource, workTypeNum, resNum, workTypeId) {
     const resIcon = `<div class="res-type-icon" style="background-color: ${resType.color}" title="${resource.resource_type}">${resType.icon}</div>`;
 
     div.innerHTML = `
-        <span class="res-num">${workTypeNum}.${resNum}</span>
-        <span class="res-photo">
-            ${resource.photo ?
-            `<div class="res-photo-container">
-                <img src="${resource.photo}" alt="Фото" class="res-photo-thumb" data-res-id="${resource.id}">
-                <div class="res-photo-actions">
-                    <button class="res-photo-view" data-photo="${resource.photo}" title="Просмотр">👁</button>
-                    <button class="res-photo-delete" data-res-id="${resource.id}" title="Удалить фото">🗑</button>
-                </div>
-            </div>` :
-            `<button class="btn-upload-photo" data-res-id="${resource.id}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera-icon lucide-camera"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/></svg>
-            </button>`
-        }
-        </span>
-        <span class="res-type editable-select" data-res-id="${resource.id}" data-field="resource_type">${resIcon}</span>
-        <span class="res-name editable" data-res-id="${resource.id}" data-field="name">${resource.name}</span>
-        <span class="res-unit editable-select" data-res-id="${resource.id}" data-field="unit">${resource.unit}</span>
-        <span class="res-quantity editable" data-res-id="${resource.id}" data-field="quantity">${formatNum(resource.quantity)}</span>
-        <span class="res-price editable" data-res-id="${resource.id}" data-field="price">${formatNum(resource.price)}</span>
-        <span class="res-sum">${formatNum(resSum)}</span>
-        <span class="res-supplier editable" data-res-id="${resource.id}" data-field="supplier">${resource.supplier || ''}</span>
-        <button class="btn-icon btn-delete" data-res-id="${resource.id}" title="Удалить ресурс">✕</button>
+        <div class="resource-left">
+            <span class="res-num">${workTypeNum}.${resNum}</span>
+            <span class="res-photo">
+                ${resource.photo ?
+                `<div class="res-photo-container">
+                    <img src="${resource.photo}" alt="Фото" class="res-photo-thumb" data-res-id="${resource.id}">
+                    <div class="res-photo-actions">
+                        <button class="res-photo-view" data-photo="${resource.photo}" title="Просмотр">👁</button>
+                        <button class="res-photo-delete" data-res-id="${resource.id}" title="Удалить фото">🗑</button>
+                    </div>
+                </div>` :
+                `<button class="btn-upload-photo" data-res-id="${resource.id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera-icon lucide-camera"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/></svg>
+                </button>`
+            }
+            </span>
+            <span class="res-type editable-select" data-res-id="${resource.id}" data-field="resource_type">${resIcon}</span>
+            <span class="res-name editable" data-res-id="${resource.id}" data-field="name">${resource.name}</span>
+        </div>
+        <div class="resource-right">
+            <span class="res-unit editable-select" data-res-id="${resource.id}" data-field="unit">${resource.unit}</span>
+            <span class="res-quantity editable" data-res-id="${resource.id}" data-field="quantity">${formatNum(resource.quantity)}</span>
+            <span class="res-price editable" data-res-id="${resource.id}" data-field="price">${formatNum(resource.price)}</span>
+            <span class="res-sum">${formatNum(resSum)}</span>
+            <span class="res-supplier editable" data-res-id="${resource.id}" data-field="supplier">${resource.supplier || ''}</span>
+            <button class="btn-icon btn-delete" data-res-id="${resource.id}" title="Удалить ресурс">✕</button>
+        </div>
     `;
 
     // Обработчики событий
