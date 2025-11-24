@@ -1028,6 +1028,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 const subtab = firstSub.dataset.subtab;
                 localStorage.setItem('financesSubtab', subtab);
                 setActiveTab(subtab);
+                
+                // Hide "Добавить" button if first subtab is expense
+                const addFinanceBtn = document.getElementById('ribbon-add-finance');
+                if (addFinanceBtn && subtab === 'expense') {
+                    addFinanceBtn.style.display = 'none';
+                } else if (addFinanceBtn) {
+                    addFinanceBtn.style.display = '';
+                }
             }
         }
         // Home tab doesn't switch content
@@ -1041,6 +1049,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Finances subtab switching (inside ribbon)
     const financeSubtabs = document.querySelectorAll('.finances-subtab');
+    const addFinanceBtn = document.getElementById('ribbon-add-finance');
+    
     financeSubtabs.forEach(btn => {
         btn.addEventListener('click', () => {
             financeSubtabs.forEach(b => b.classList.remove('active'));
@@ -1048,6 +1058,15 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const subtab = btn.dataset.subtab;
             localStorage.setItem('financesSubtab', subtab);
             setActiveTab(subtab);
+            
+            // Hide "Добавить" button for expense
+            if (addFinanceBtn) {
+                if (subtab === 'expense') {
+                    addFinanceBtn.style.display = 'none';
+                } else {
+                    addFinanceBtn.style.display = '';
+                }
+            }
         });
     });
     
@@ -1258,6 +1277,11 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             financeSubtabs.forEach(b => {
                 b.classList.toggle('active', b.dataset.subtab === saved);
             });
+            // Hide "Добавить" button if expense is active
+            const addFinanceBtn = document.getElementById('ribbon-add-finance');
+            if (addFinanceBtn && saved === 'expense') {
+                addFinanceBtn.style.display = 'none';
+            }
         } else {
             // Default to analysis now that Home is removed
             setActiveRibbonTab('analysis');
