@@ -1291,6 +1291,54 @@ body {
     transform: translateX(-50%);
 }
 
+.title-bar-center .object-select-wrap {
+    position: relative;
+}
+
+.title-bar-select {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+}
+
+.title-bar-select:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.title-bar-select svg {
+    stroke: white;
+    width: 14px;
+    height: 14px;
+}
+
+.title-bar-select .caret {
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.title-bar-center .object-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 4px;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 6px;
+    box-shadow: var(--shadow-lg);
+    min-width: 220px;
+    z-index: 1000;
+}
+
 .app-title {
     color: white;
     font-size: 13px;
@@ -1493,10 +1541,40 @@ body {
     font-weight: 500;
 }
 
+.ribbon-btn.finances-subtab.large {
+    flex-direction: column;
+    min-width: 70px;
+    min-height: 66px;
+    padding: 8px 12px;
+}
+
 .ribbon-btn.finances-subtab.active {
     background: var(--excel-primary-light);
     border-color: var(--excel-primary);
     color: var(--excel-primary);
+}
+
+.ribbon-btn.finances-subtab.active svg {
+    stroke: var(--excel-primary);
+}
+
+/* Analysis view buttons */
+.ribbon-btn.analysis-view.active {
+    background: var(--excel-primary-light);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary);
+}
+
+.ribbon-btn.analysis-view.active svg {
+    stroke: var(--excel-primary);
+}
+
+/* Ribbon placeholder text */
+.ribbon-placeholder {
+    color: var(--office-gray-500);
+    font-size: 12px;
+    font-style: italic;
+    padding: 20px;
 }
 
 /* Object Selection Bar */

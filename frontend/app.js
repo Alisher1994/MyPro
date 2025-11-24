@@ -1141,6 +1141,31 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         });
     }
     
+    // Analysis view switching (Данные объекта, Аналитика по финансам, Аналитика по ресурсам)
+    const analysisViewBtns = document.querySelectorAll('.analysis-view');
+    analysisViewBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            analysisViewBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const view = btn.dataset.view;
+            localStorage.setItem('analysisView', view);
+            // Can hook into actual view switching logic here
+        });
+    });
+
+    // Ribbon Add Finance button (depends on active subtab)
+    const ribbonAddFinance = document.getElementById('ribbon-add-finance');
+    if (ribbonAddFinance) {
+        ribbonAddFinance.addEventListener('click', () => {
+            const sub = localStorage.getItem('financesSubtab') || 'income';
+            if (sub === 'income') {
+                document.getElementById('add-income')?.click();
+            } else {
+                document.getElementById('add-expense')?.click();
+            }
+        });
+    }
+
     // Initialize ribbon based on current tab
     document.addEventListener('DOMContentLoaded', () => {
         const saved = localStorage.getItem('activeTab') || 'income';
@@ -1155,7 +1180,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 b.classList.toggle('active', b.dataset.subtab === saved);
             });
         } else {
-            setActiveRibbonTab('home');
+            // Default to analysis now that Home is removed
+            setActiveRibbonTab('analysis');
         }
     });
 })();
