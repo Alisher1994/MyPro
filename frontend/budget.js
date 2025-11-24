@@ -508,7 +508,7 @@ function makeEditableSelect(element, options, onSave) {
             select.appendChild(option);
         });
 
-        // Позиционируем относительно элемента
+        // Position relative to element
         element.style.position = 'relative';
         select.size = Math.min(options.length, 8);
         select.style.position = 'absolute';
@@ -575,7 +575,7 @@ function makeEditableSelectWithIcons(element, options, onSave) {
             select.appendChild(option);
         });
 
-        // Позиционируем относительно элемента
+        // Position relative to element
         element.style.position = 'relative';
         select.size = Math.min(options.length, 8);
         select.style.position = 'absolute';
