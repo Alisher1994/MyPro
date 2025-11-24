@@ -108,11 +108,21 @@
                     <div class="ribbon-group">
                         <div class="ribbon-group-content row">
                             <button id="ribbon-worktype-analytics" class="ribbon-btn analysis-view" data-view="worktype-analytics">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 13-8.381 8.38a1 1 0 0 1-3.001-3L11 9.999"/><path d="M15.973 4.027A13 13 0 0 0 5.902 2.373c-1.398.342-1.092 2.158.277 2.601a19.9 19.9 0 0 1 5.822 3.024"/><path d="M16.001 11.999a19.9 19.9 0 0 1 3.024 5.824c.444 1.369 2.26 1.676 2.603.278A13 13 0 0 0 20 8.069"/><path d="M18.352 3.352a1.205 1.205 0 0 0-1.704 0l-5.296 5.296a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l5.296-5.296a1.205 1.205 0 0 0 0-1.704z"/></svg>
                                 <span>Аналитика<br>по видам работ</span>
                             </button>
                         </div>
                         <span class="ribbon-group-label">Работы</span>
+                    </div>
+                    <div class="ribbon-separator"></div>
+                    <div class="ribbon-group">
+                        <div class="ribbon-group-content row">
+                            <button id="ribbon-stage-analytics" class="ribbon-btn analysis-view" data-view="stage-analytics">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>
+                                <span>Аналитика<br>по этапам</span>
+                            </button>
+                        </div>
+                        <span class="ribbon-group-label">Этапы</span>
                     </div>
                 </div>
 
@@ -125,7 +135,50 @@
                                 <span>Добавить<br>этап</span>
                             </button>
                         </div>
-                        <span class="ribbon-group-label">Этапы</span>
+                        <span class="ribbon-group-label">Создание</span>
+                    </div>
+                    <div class="ribbon-separator"></div>
+                    <div class="ribbon-group">
+                        <div class="ribbon-group-content row">
+                            <button id="toggle-stages" class="ribbon-btn toggle-btn" data-state="expanded" title="Скрыть/раскрыть этапы">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>
+                                <span>Этапы</span>
+                            </button>
+                            <button id="toggle-worktypes" class="ribbon-btn toggle-btn" data-state="expanded" title="Скрыть/раскрыть виды работ">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 13-8.381 8.38a1 1 0 0 1-3.001-3L11 9.999"/><path d="M15.973 4.027A13 13 0 0 0 5.902 2.373c-1.398.342-1.092 2.158.277 2.601a19.9 19.9 0 0 1 5.822 3.024"/><path d="M16.001 11.999a19.9 19.9 0 0 1 3.024 5.824c.444 1.369 2.26 1.676 2.603.278A13 13 0 0 0 20 8.069"/><path d="M18.352 3.352a1.205 1.205 0 0 0-1.704 0l-5.296 5.296a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l5.296-5.296a1.205 1.205 0 0 0 0-1.704z"/></svg>
+                                <span>Виды работ</span>
+                            </button>
+                        </div>
+                        <span class="ribbon-group-label">Скрыть/Раскрыть</span>
+                    </div>
+                    <div class="ribbon-separator"></div>
+                    <div class="ribbon-group">
+                        <div class="ribbon-group-content row">
+                            <button id="toggle-photos" class="ribbon-btn toggle-btn" data-state="visible" title="Скрыть/показать фото">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <span>Фото</span>
+                            </button>
+                        </div>
+                        <span class="ribbon-group-label">Отображение</span>
+                    </div>
+                    <div class="ribbon-separator"></div>
+                    <div class="ribbon-group">
+                        <div class="ribbon-group-content">
+                            <div class="ribbon-dropdown-wrap">
+                                <select id="resource-type-filter" class="ribbon-select">
+                                    <option value="">-- Все ресурсы --</option>
+                                    <option value="Трудоресурсы">Трудоресурсы</option>
+                                    <option value="Материал">Материал</option>
+                                    <option value="Доставка">Доставка</option>
+                                    <option value="Оборудование">Оборудование</option>
+                                    <option value="Мебель">Мебель</option>
+                                    <option value="Инструменты">Инструменты</option>
+                                    <option value="Коммуналка">Коммуналка</option>
+                                    <option value="Техника">Техника</option>
+                                </select>
+                            </div>
+                        </div>
+                        <span class="ribbon-group-label">Фильтр</span>
                     </div>
                 </div>
 
@@ -220,6 +273,54 @@
                         <path d="M12 18v-6" />
                         <path d="m9 15 3 3 3-3" />
                     </svg>
+                </button>
+            </div>
+            <!-- Фильтры прихода -->
+            <div class="income-filters">
+                <div class="filter-group">
+                    <label>Дата с:</label>
+                    <input type="date" id="filter-date-from" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label>по:</label>
+                    <input type="date" id="filter-date-to" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label>Тип операции:</label>
+                    <select id="filter-operation-type" class="filter-select">
+                        <option value="">Все</option>
+                        <option value="income">Приход</option>
+                        <option value="transfer">Перевод</option>
+                        <option value="return">Возврат</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Сумма от:</label>
+                    <input type="number" id="filter-amount-from" class="filter-input" placeholder="мин">
+                </div>
+                <div class="filter-group">
+                    <label>до:</label>
+                    <input type="number" id="filter-amount-to" class="filter-input" placeholder="макс">
+                </div>
+                <div class="filter-group">
+                    <label>Валюта:</label>
+                    <select id="filter-currency" class="filter-select">
+                        <option value="">Все</option>
+                        <option value="UZS">UZS</option>
+                        <option value="USD">USD</option>
+                        <option value="RUB">RUB</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Кто передал:</label>
+                    <input type="text" id="filter-sender" class="filter-input" placeholder="Поиск...">
+                </div>
+                <div class="filter-group">
+                    <label>Кто получил:</label>
+                    <input type="text" id="filter-receiver" class="filter-input" placeholder="Поиск...">
+                </div>
+                <button type="button" id="clear-filters" class="filter-clear-btn" title="Сбросить фильтры">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
             <div class="income-table-wrap">

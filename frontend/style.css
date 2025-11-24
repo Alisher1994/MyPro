@@ -386,6 +386,72 @@ body {
 /* ========================================
    TABLES (Excel Grid Style)
    ======================================== */
+
+/* Income Filters */
+.income-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--office-gray-50);
+    border: 1px solid var(--office-gray-200);
+    border-bottom: none;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-group label {
+    font-size: 11px;
+    color: var(--office-gray-600);
+    font-weight: 500;
+}
+
+.filter-input,
+.filter-select {
+    padding: 6px 10px;
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--font-family);
+    background: var(--office-white);
+    color: var(--office-gray-800);
+    min-width: 100px;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: var(--excel-primary);
+    box-shadow: 0 0 0 1px var(--excel-primary-light);
+}
+
+.filter-input::placeholder {
+    color: var(--office-gray-400);
+}
+
+.filter-clear-btn {
+    padding: 6px 10px;
+    background: var(--office-gray-200);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--office-gray-600);
+    transition: all 0.15s;
+}
+
+.filter-clear-btn:hover {
+    background: var(--office-gray-300);
+    color: var(--office-gray-800);
+}
+
 .income-table-wrap {
     background: var(--office-white);
     border: 1px solid var(--office-gray-300);
@@ -1575,6 +1641,63 @@ body {
     font-size: 12px;
     font-style: italic;
     padding: 20px;
+}
+
+/* Ribbon toggle buttons */
+.ribbon-btn.toggle-btn {
+    position: relative;
+}
+
+.ribbon-btn.toggle-btn[data-state="collapsed"]::after,
+.ribbon-btn.toggle-btn[data-state="hidden"]::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    background: var(--office-gray-400);
+    border-radius: 50%;
+}
+
+.ribbon-btn.toggle-btn[data-state="expanded"]::after,
+.ribbon-btn.toggle-btn[data-state="visible"]::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    background: var(--excel-primary);
+    border-radius: 50%;
+}
+
+/* Ribbon select dropdown */
+.ribbon-dropdown-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ribbon-select {
+    padding: 6px 8px;
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-family);
+    background: var(--office-white);
+    color: var(--office-gray-800);
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.ribbon-select:hover {
+    border-color: var(--office-gray-400);
+}
+
+.ribbon-select:focus {
+    outline: none;
+    border-color: var(--excel-primary);
 }
 
 /* Object Selection Bar */

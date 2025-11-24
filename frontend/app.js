@@ -1245,3 +1245,196 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         }
     });
 })();
+
+// =====================
+// BUDGET RIBBON CONTROLS
+// =====================
+(function() {
+    // Toggle stages collapse/expand
+    const toggleStages = document.getElementById('toggle-stages');
+    if (toggleStages) {
+        toggleStages.addEventListener('click', () => {
+            const state = toggleStages.dataset.state;
+            const budgetContainer = document.getElementById('budget-container');
+            if (!budgetContainer) return;
+            
+            const stages = budgetContainer.querySelectorAll('.budget-stage');
+            if (state === 'expanded') {
+                stages.forEach(s => {
+                    const content = s.querySelector('.stage-content');
+                    if (content) content.style.display = 'none';
+                });
+                toggleStages.dataset.state = 'collapsed';
+            } else {
+                stages.forEach(s => {
+                    const content = s.querySelector('.stage-content');
+                    if (content) content.style.display = '';
+                });
+                toggleStages.dataset.state = 'expanded';
+            }
+        });
+    }
+    
+    // Toggle work types collapse/expand
+    const toggleWorktypes = document.getElementById('toggle-worktypes');
+    if (toggleWorktypes) {
+        toggleWorktypes.addEventListener('click', () => {
+            const state = toggleWorktypes.dataset.state;
+            const budgetContainer = document.getElementById('budget-container');
+            if (!budgetContainer) return;
+            
+            const workTypes = budgetContainer.querySelectorAll('.work-type');
+            if (state === 'expanded') {
+                workTypes.forEach(wt => {
+                    const content = wt.querySelector('.work-type-content, .resources-list');
+                    if (content) content.style.display = 'none';
+                });
+                toggleWorktypes.dataset.state = 'collapsed';
+            } else {
+                workTypes.forEach(wt => {
+                    const content = wt.querySelector('.work-type-content, .resources-list');
+                    if (content) content.style.display = '';
+                });
+                toggleWorktypes.dataset.state = 'expanded';
+            }
+        });
+    }
+    
+    // Toggle photos visibility
+    const togglePhotos = document.getElementById('toggle-photos');
+    if (togglePhotos) {
+        togglePhotos.addEventListener('click', () => {
+            const state = togglePhotos.dataset.state;
+            const budgetContainer = document.getElementById('budget-container');
+            if (!budgetContainer) return;
+            
+            const photos = budgetContainer.querySelectorAll('.resource-photo, .photo-preview, img[src*="uploads"]');
+            if (state === 'visible') {
+                photos.forEach(p => p.style.display = 'none');
+                togglePhotos.dataset.state = 'hidden';
+            } else {
+                photos.forEach(p => p.style.display = '');
+                togglePhotos.dataset.state = 'visible';
+            }
+        });
+    }
+    
+    // Resource type filter
+    const resourceFilter = document.getElementById('resource-type-filter');
+    if (resourceFilter) {
+        resourceFilter.addEventListener('change', () => {
+            const filterValue = resourceFilter.value;
+            const budgetContainer = document.getElementById('budget-container');
+            if (!budgetContainer) return;
+            
+            const resources = budgetContainer.querySelectorAll('.resource-row, .resource-item');
+            resources.forEach(res => {
+                if (!filterValue) {
+                    res.style.display = '';
+                } else {
+                    const typeEl = res.querySelector('.resource-type, [data-type]');
+                    const type = typeEl?.textContent || typeEl?.dataset?.type || '';
+                    res.style.display = type.includes(filterValue) ? '' : 'none';
+                }
+            });
+        });
+    }
+})();
+
+// =====================
+// INCOME FILTERS
+// =====================
+(function() {
+    const filterDateFrom = document.getElementById('filter-date-from');
+    const filterDateTo = document.getElementById('filter-date-to');
+    const filterOperationType = document.getElementById('filter-operation-type');
+    const filterAmountFrom = document.getElementById('filter-amount-from');
+    const filterAmountTo = document.getElementById('filter-amount-to');
+    const filterCurrency = document.getElementById('filter-currency');
+    const filterSender = document.getElementById('filter-sender');
+    const filterReceiver = document.getElementById('filter-receiver');
+    const clearFilters = document.getElementById('clear-filters');
+    
+    function applyIncomeFilters() {
+        const tbody = document.getElementById('income-tbody');
+        if (!tbody) return;
+        
+        const rows = tbody.querySelectorAll('tr');
+        const dateFrom = filterDateFrom?.value ? new Date(filterDateFrom.value) : null;
+        const dateTo = filterDateTo?.value ? new Date(filterDateTo.value) : null;
+        const opType = filterOperationType?.value || '';
+        const amountFrom = filterAmountFrom?.value ? parseFloat(filterAmountFrom.value) : null;
+        const amountTo = filterAmountTo?.value ? parseFloat(filterAmountTo.value) : null;
+        const currency = filterCurrency?.value || '';
+        const sender = (filterSender?.value || '').toLowerCase();
+        const receiver = (filterReceiver?.value || '').toLowerCase();
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length < 9) return;
+            
+            // Column indices: 0-№, 1-Дата, 2-Фото, 3-Тип, 4-Из объекта, 5-Сумма, 6-Валюта, 7-Кто передал, 8-Кто получил
+            const rowDate = cells[1]?.textContent?.trim();
+            const rowOpType = cells[3]?.textContent?.trim()?.toLowerCase();
+            const rowAmount = parseFloat((cells[5]?.textContent || '0').replace(/[^\d.-]/g, ''));
+            const rowCurrency = cells[6]?.textContent?.trim();
+            const rowSender = (cells[7]?.textContent || '').toLowerCase();
+            const rowReceiver = (cells[8]?.textContent || '').toLowerCase();
+            
+            let show = true;
+            
+            // Date filter
+            if (dateFrom && rowDate) {
+                const rd = new Date(rowDate.split('.').reverse().join('-'));
+                if (rd < dateFrom) show = false;
+            }
+            if (dateTo && rowDate) {
+                const rd = new Date(rowDate.split('.').reverse().join('-'));
+                if (rd > dateTo) show = false;
+            }
+            
+            // Operation type
+            if (opType && rowOpType) {
+                const typeMap = { 'income': 'приход', 'transfer': 'перевод', 'return': 'возврат' };
+                if (!rowOpType.includes(typeMap[opType] || opType)) show = false;
+            }
+            
+            // Amount
+            if (amountFrom !== null && rowAmount < amountFrom) show = false;
+            if (amountTo !== null && rowAmount > amountTo) show = false;
+            
+            // Currency
+            if (currency && rowCurrency !== currency) show = false;
+            
+            // Sender/Receiver
+            if (sender && !rowSender.includes(sender)) show = false;
+            if (receiver && !rowReceiver.includes(receiver)) show = false;
+            
+            row.style.display = show ? '' : 'none';
+        });
+    }
+    
+    // Attach filter listeners
+    [filterDateFrom, filterDateTo, filterOperationType, filterAmountFrom, filterAmountTo, 
+     filterCurrency, filterSender, filterReceiver].forEach(el => {
+        if (el) {
+            el.addEventListener('input', applyIncomeFilters);
+            el.addEventListener('change', applyIncomeFilters);
+        }
+    });
+    
+    // Clear filters
+    if (clearFilters) {
+        clearFilters.addEventListener('click', () => {
+            if (filterDateFrom) filterDateFrom.value = '';
+            if (filterDateTo) filterDateTo.value = '';
+            if (filterOperationType) filterOperationType.value = '';
+            if (filterAmountFrom) filterAmountFrom.value = '';
+            if (filterAmountTo) filterAmountTo.value = '';
+            if (filterCurrency) filterCurrency.value = '';
+            if (filterSender) filterSender.value = '';
+            if (filterReceiver) filterReceiver.value = '';
+            applyIncomeFilters();
+        });
+    }
+})();

@@ -90,6 +90,9 @@ function calculateAnalysis(budgetData, incomeData, expenseData) {
     
     // По видам работ
     analysisData.workTypes = calculateWorkTypeAnalytics(budgetData, expenseData);
+    
+    // По этапам
+    analysisData.stages = calculateStageAnalytics(budgetData, expenseData);
 }
 
 // Расчет общей суммы бюджета
@@ -256,6 +259,14 @@ function renderAnalysis() {
             <h2 class="analysis-section-title">Аналитика по видам работ</h2>
             <div class="analysis-resources-grid">
                 ${renderWorkTypeColumns()}
+            </div>
+        </div>
+
+        <!-- Аналитика по этапам -->
+        <div class="analysis-section" data-section="stage-analytics" style="${currentView === 'stage-analytics' ? '' : 'display:none;'}">
+            <h2 class="analysis-section-title">Аналитика по этапам</h2>
+            <div class="analysis-resources-grid">
+                ${renderStageColumns()}
             </div>
         </div>
     `;
@@ -1167,6 +1178,8 @@ function renderWorkTypeColumns() {
     if (keys.length === 0) {
         return '<p style="padding:20px;color:#999;text-align:center;">Нет данных по видам работ</p>';
     }
+    // Иконка кирка для вида работ
+    const pickaxeIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="m14 13-8.381 8.38a1 1 0 0 1-3.001-3L11 9.999"/><path d="M15.973 4.027A13 13 0 0 0 5.902 2.373c-1.398.342-1.092 2.158.277 2.601a19.9 19.9 0 0 1 5.822 3.024"/><path d="M16.001 11.999a19.9 19.9 0 0 1 3.024 5.824c.444 1.369 2.26 1.676 2.603.278A13 13 0 0 0 20 8.069"/><path d="M18.352 3.352a1.205 1.205 0 0 0-1.704 0l-5.296 5.296a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l5.296-5.296a1.205 1.205 0 0 0 0-1.704z"/></svg>`;
     
     return keys.map(name => {
         const data = workTypes[name];
@@ -1178,12 +1191,101 @@ function renderWorkTypeColumns() {
         const planHeight = (data.plan / maxValue) * 100;
         const factHeight = (data.fact / maxValue) * 100;
         
-        // Иконка для вида работ
-        const icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+        return `
+            <div class="analysis-resource-column">
+                <div class="analysis-resource-title">${pickaxeIcon}${name}</div>
+                <div class="analysis-resource-chart">
+                    <div class="analysis-resource-bar-container">
+                        <div class="analysis-resource-bar-label">План</div>
+                        <div class="analysis-resource-bar-wrapper">
+                            <div class="analysis-resource-bar plan" style="height: ${planHeight}%">
+                                ${planHeight > 15 ? formatNum(data.plan) : ''}
+                            </div>
+                        </div>
+                        <div class="analysis-resource-bar-value">${formatNum(data.plan)}</div>
+                    </div>
+                    <div class="analysis-resource-bar-container">
+                        <div class="analysis-resource-bar-label">Факт</div>
+                        <div class="analysis-resource-bar-wrapper">
+                            <div class="analysis-resource-bar fact" style="height: ${factHeight}%">
+                                ${factHeight > 15 ? formatNum(data.fact) : ''}
+                            </div>
+                        </div>
+                        <div class="analysis-resource-bar-value">${formatNum(data.fact)}</div>
+                    </div>
+                </div>
+                <div class="analysis-resource-diff ${diffClass}">
+                    ${diffSign}${formatNum(Math.abs(diff))}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Расчет по этапам (план из бюджета, факт из расходов)
+function calculateStageAnalytics(budgetData, expenseData) {
+    const stages = {};
+    
+    // План из бюджета - собираем суммы по этапам
+    budgetData.forEach(stage => {
+        const stageName = stage.name || 'Без названия';
+        if (!stages[stageName]) {
+            stages[stageName] = { plan: 0, fact: 0 };
+        }
+        // Сумма всех ресурсов данного этапа
+        const stageTotal = (stage.work_types || []).reduce((wtSum, wt) => {
+            return wtSum + (wt.resources || []).reduce((resSum, res) => {
+                return resSum + ((res.quantity || 0) * (res.price || 0));
+            }, 0);
+        }, 0);
+        stages[stageName].plan += stageTotal;
+    });
+    
+    // Факт из расходов
+    expenseData.forEach(stage => {
+        const stageName = stage.name || 'Без названия';
+        if (!stages[stageName]) {
+            stages[stageName] = { plan: 0, fact: 0 };
+        }
+        const stageTotal = (stage.work_types || []).reduce((wtSum, wt) => {
+            return wtSum + (wt.resources || []).reduce((resSum, res) => {
+                if (!res.expenses) return resSum;
+                return resSum + res.expenses.reduce((expSum, exp) => {
+                    return expSum + ((exp.actual_quantity || 0) * (exp.actual_price || 0));
+                }, 0);
+            }, 0);
+        }, 0);
+        stages[stageName].fact += stageTotal;
+    });
+    
+    return stages;
+}
+
+// Рендер аналитики по этапам
+function renderStageColumns() {
+    const stages = analysisData.stages || {};
+    const keys = Object.keys(stages).filter(k => stages[k].plan > 0 || stages[k].fact > 0);
+    
+    if (keys.length === 0) {
+        return '<p style="padding:20px;color:#999;text-align:center;">Нет данных по этапам</p>';
+    }
+    
+    // Иконка для этапа
+    const stageIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1"><path d="M3 3v18h18"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>`;
+    
+    return keys.map(name => {
+        const data = stages[name];
+        const diff = data.fact - data.plan;
+        const diffClass = diff >= 0 ? 'negative' : 'positive';
+        const diffSign = diff >= 0 ? '-' : '+';
+        
+        const maxValue = Math.max(data.plan, data.fact, 1);
+        const planHeight = (data.plan / maxValue) * 100;
+        const factHeight = (data.fact / maxValue) * 100;
         
         return `
             <div class="analysis-resource-column">
-                <div class="analysis-resource-title">${icon}${name}</div>
+                <div class="analysis-resource-title">${stageIcon}${name}</div>
                 <div class="analysis-resource-chart">
                     <div class="analysis-resource-bar-container">
                         <div class="analysis-resource-bar-label">План</div>
