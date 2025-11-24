@@ -308,15 +308,20 @@
 .budget-resource-header > span:nth-child(3),
 .budget-resource > .res-type { width: 45px; flex-shrink: 0; text-align: center; }
 
+
 .budget-resource-header > span:nth-child(4),
-.budget-resource > .res-name { 
-    flex: 1 1 250px; 
-    min-width: 150px;
-    margin-right: 10px;
+.budget-resource > .res-name {
+    flex: 1 1 320px;
+    min-width: 200px;
+    margin-right: 18px;
 }
 
 .budget-resource-header > span:nth-child(5),
-.budget-resource > .res-unit { width: 50px; flex-shrink: 0; text-align: center; margin-right: 10px; }
+.budget-resource > .res-unit {
+    flex: 0 0 70px;
+    text-align: center;
+    margin-right: 16px;
+}
 
 .budget-resource-header > span:nth-child(6),
 .budget-resource > .res-quantity { width: 70px; flex-shrink: 0; text-align: right; }
@@ -328,13 +333,18 @@
 .budget-resource > .res-sum { width: 90px; flex-shrink: 0; text-align: right; }
 
 .budget-resource-header > span:nth-child(9),
-.budget-resource > .res-supplier { 
-    flex: 1 1 120px;
-    min-width: 80px;
+.budget-resource > .res-supplier {
+    flex: 1 1 160px;
+    min-width: 120px;
 }
 
 .budget-resource-header > span:nth-child(10),
-.budget-resource > .btn-delete { width: 35px; flex-shrink: 0; margin-left: auto; }
+.budget-resource > .btn-delete {
+    width: 35px;
+    flex-shrink: 0;
+    margin-left: auto;
+    align-self: center;
+}
 
 .budget-resource.dragging {
     opacity: 0.5;
