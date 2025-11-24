@@ -362,17 +362,17 @@ function showTabs(show) {
     const isMobile = window.innerWidth <= 700;
 
     if (show) {
-        row.style.display = 'flex';
-        tabs.style.display = 'flex';
-        actions.style.display = 'flex';
+        if (row) row.style.display = 'flex';
+        if (tabs) tabs.style.display = 'flex';
+        if (actions) actions.style.display = 'flex';
     } else {
-        tabs.style.display = 'none';
-        actions.style.display = 'none';
+        if (tabs) tabs.style.display = 'none';
+        if (actions) actions.style.display = 'none';
         // On mobile, keep the row visible so the sidebar toggle button is accessible
         if (isMobile) {
-            row.style.display = 'flex';
+            if (row) row.style.display = 'flex';
         } else {
-            row.style.display = 'none';
+            if (row) row.style.display = 'none';
         }
     }
     document.querySelectorAll('.tab-content').forEach(div => div.style.display = 'none');
