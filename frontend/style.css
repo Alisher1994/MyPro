@@ -1237,3 +1237,385 @@ body {
     box-shadow: none;
     background: transparent;
 }
+
+/* ========================================
+   MS OFFICE 2025/2026 RIBBON MENU
+   ======================================== */
+
+/* Title Bar (Quick Access Toolbar) */
+.office-title-bar {
+    height: 32px;
+    background: var(--excel-primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    flex-shrink: 0;
+}
+
+.title-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.qat-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.9);
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+}
+
+.qat-btn:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.qat-btn:active {
+    background: rgba(255,255,255,0.25);
+}
+
+.qat-btn svg {
+    stroke: currentColor;
+}
+
+.title-bar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.app-title {
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.title-bar-right {
+    display: flex;
+    align-items: center;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+    padding: 0 8px;
+    height: 24px;
+    gap: 6px;
+}
+
+.search-box svg {
+    stroke: rgba(255,255,255,0.8);
+    flex-shrink: 0;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 12px;
+    width: 160px;
+    outline: none;
+}
+
+.search-box input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+/* Ribbon Container */
+.office-ribbon {
+    background: var(--office-white);
+    border-bottom: 1px solid var(--office-gray-300);
+    flex-shrink: 0;
+}
+
+/* Ribbon Tabs */
+.ribbon-tabs {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 8px;
+    gap: 4px;
+    background: var(--office-gray-100);
+    border-bottom: 1px solid var(--office-gray-200);
+}
+
+.ribbon-tab {
+    background: transparent;
+    border: none;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--office-gray-700);
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.1s;
+    font-family: var(--font-family);
+    position: relative;
+}
+
+.ribbon-tab:hover {
+    background: var(--office-gray-200);
+    color: var(--office-gray-900);
+}
+
+.ribbon-tab.active {
+    background: var(--office-white);
+    color: var(--excel-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 0 var(--office-white);
+}
+
+/* Ribbon Content */
+.ribbon-content {
+    min-height: 94px;
+    padding: 6px 12px;
+    display: flex;
+    background: var(--office-white);
+}
+
+.ribbon-panel {
+    display: none;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.ribbon-panel.active {
+    display: flex;
+}
+
+/* Ribbon Groups */
+.ribbon-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 12px;
+    min-width: 60px;
+}
+
+.ribbon-group-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.ribbon-group-content.row {
+    flex-direction: row;
+    gap: 4px;
+}
+
+.ribbon-group-label {
+    font-size: 10px;
+    color: var(--office-gray-600);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ribbon-separator {
+    width: 1px;
+    height: 80px;
+    background: var(--office-gray-300);
+    margin: 0 4px;
+    align-self: center;
+}
+
+/* Ribbon Buttons */
+.ribbon-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 10px;
+    min-width: 56px;
+    color: var(--office-gray-800);
+    font-size: 11px;
+    font-family: var(--font-family);
+    transition: all 0.1s;
+}
+
+.ribbon-btn:hover {
+    background: var(--office-gray-100);
+    border-color: var(--office-gray-300);
+}
+
+.ribbon-btn:active {
+    background: var(--office-gray-200);
+}
+
+.ribbon-btn.large {
+    min-height: 66px;
+    padding: 8px 12px;
+}
+
+.ribbon-btn.large svg {
+    width: 28px;
+    height: 28px;
+}
+
+.ribbon-btn.small {
+    min-width: 32px;
+    padding: 6px;
+    flex-direction: row;
+}
+
+.ribbon-btn svg {
+    stroke: var(--excel-primary);
+}
+
+.ribbon-btn span {
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Finances subtab buttons */
+.ribbon-btn.finances-subtab {
+    flex-direction: row;
+    min-width: auto;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.ribbon-btn.finances-subtab.active {
+    background: var(--excel-primary-light);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary);
+}
+
+/* Object Selection Bar */
+.object-bar {
+    height: 40px;
+    background: var(--office-gray-50);
+    border-bottom: 1px solid var(--office-gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    flex-shrink: 0;
+}
+
+.object-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.object-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.object-select-btn {
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--font-family);
+    color: var(--office-gray-800);
+    transition: all 0.1s;
+    min-width: 180px;
+}
+
+.object-select-btn:hover {
+    background: var(--office-gray-50);
+    border-color: var(--office-gray-400);
+}
+
+.object-select-btn svg {
+    stroke: var(--excel-primary);
+    flex-shrink: 0;
+}
+
+.object-select-btn .caret {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--office-gray-500);
+}
+
+.object-bar-btn {
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--font-family);
+    color: var(--office-gray-700);
+    transition: all 0.1s;
+}
+
+.object-bar-btn:hover {
+    background: var(--excel-primary-light);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary);
+}
+
+.object-bar-btn svg {
+    stroke: currentColor;
+}
+
+/* Object dropdown styling (keep existing) */
+.object-select-wrap {
+    position: relative;
+}
+
+.object-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 240px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    box-shadow: var(--shadow-md);
+    border-radius: 6px;
+    z-index: 300;
+    padding: 8px;
+}
+
+.object-dropdown .dropdown-item {
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--office-gray-800);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.object-dropdown .dropdown-item:hover {
+    background: var(--office-gray-100);
+}
+
+.object-dropdown .dropdown-item.selected {
+    background: var(--excel-primary-light);
+    color: var(--excel-primary);
+}

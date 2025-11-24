@@ -988,3 +988,174 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     });
 
 })();
+
+// =====================
+// MS OFFICE RIBBON MENU INTERACTIONS
+// =====================
+(function() {
+    // Ribbon Tab Switching
+    const ribbonTabs = document.querySelectorAll('.ribbon-tab');
+    const ribbonPanels = document.querySelectorAll('.ribbon-panel');
+    
+    function setActiveRibbonTab(tabName) {
+        ribbonTabs.forEach(t => t.classList.toggle('active', t.dataset.ribbon === tabName));
+        ribbonPanels.forEach(p => p.classList.toggle('active', p.dataset.panel === tabName));
+        
+        // Also switch the content tab
+        if (tabName === 'analysis') {
+            setActiveTab('analysis');
+        } else if (tabName === 'budget') {
+            setActiveTab('budget');
+        } else if (tabName === 'finances') {
+            // Default to income or last selected
+            const lastSub = localStorage.getItem('financesSubtab') || 'income';
+            setActiveTab(lastSub);
+        }
+        // Home tab doesn't switch content
+    }
+    
+    ribbonTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            setActiveRibbonTab(tab.dataset.ribbon);
+        });
+    });
+    
+    // Finances subtab switching (inside ribbon)
+    const financeSubtabs = document.querySelectorAll('.finances-subtab');
+    financeSubtabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            financeSubtabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const subtab = btn.dataset.subtab;
+            localStorage.setItem('financesSubtab', subtab);
+            setActiveTab(subtab);
+        });
+    });
+    
+    // Quick Access Toolbar - Print
+    const qatPrint = document.getElementById('qat-print');
+    if (qatPrint) {
+        qatPrint.addEventListener('click', () => {
+            // Print active tab content
+            const activeTab = localStorage.getItem('activeTab') || 'income';
+            if (activeTab === 'income' && typeof downloadIncome === 'function') {
+                downloadIncome();
+            } else if (activeTab === 'budget' && typeof window.downloadBudget === 'function') {
+                window.downloadBudget();
+            } else if (activeTab === 'analysis' && typeof window.exportAnalysisReport === 'function') {
+                window.exportAnalysisReport();
+            } else {
+                window.print();
+            }
+        });
+    }
+    
+    // Global search
+    const globalSearch = document.getElementById('global-search');
+    const objectListForSearch = document.getElementById('object-list');
+    if (globalSearch && objectListForSearch) {
+        globalSearch.addEventListener('input', (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            objectListForSearch.querySelectorAll('li').forEach(li => {
+                const txt = li.textContent.toLowerCase();
+                li.style.display = txt.indexOf(q) === -1 ? 'none' : '';
+            });
+        });
+    }
+    
+    // Ribbon Add Buttons
+    const ribbonAddBtn = document.getElementById('ribbon-add-btn');
+    if (ribbonAddBtn) {
+        ribbonAddBtn.addEventListener('click', () => {
+            const activeTab = localStorage.getItem('activeTab') || 'income';
+            if (activeTab === 'income') {
+                document.getElementById('add-income')?.click();
+            } else if (activeTab === 'budget') {
+                document.getElementById('add-budget-group')?.click();
+            } else if (activeTab === 'expense') {
+                // Add expense if available
+                document.getElementById('add-expense')?.click();
+            }
+        });
+    }
+    
+    // Ribbon Add Stage (Budget)
+    const ribbonAddStage = document.getElementById('ribbon-add-stage');
+    if (ribbonAddStage) {
+        ribbonAddStage.addEventListener('click', () => {
+            document.getElementById('add-budget-group')?.click();
+        });
+    }
+    
+    // Ribbon Add Income
+    const ribbonAddIncome = document.getElementById('ribbon-add-income');
+    if (ribbonAddIncome) {
+        ribbonAddIncome.addEventListener('click', () => {
+            document.getElementById('add-income')?.click();
+        });
+    }
+    
+    // Ribbon Add Expense
+    const ribbonAddExpense = document.getElementById('ribbon-add-expense');
+    if (ribbonAddExpense) {
+        ribbonAddExpense.addEventListener('click', () => {
+            // If there's an add-expense button
+            document.getElementById('add-expense')?.click();
+        });
+    }
+    
+    // Export buttons
+    const ribbonExportAnalysis = document.getElementById('ribbon-export-analysis');
+    if (ribbonExportAnalysis) {
+        ribbonExportAnalysis.addEventListener('click', () => {
+            if (typeof window.exportAnalysisReport === 'function') {
+                window.exportAnalysisReport();
+            }
+        });
+    }
+    
+    const ribbonExportBudget = document.getElementById('ribbon-export-budget');
+    if (ribbonExportBudget) {
+        ribbonExportBudget.addEventListener('click', () => {
+            if (typeof window.downloadBudget === 'function') {
+                window.downloadBudget();
+            }
+        });
+    }
+    
+    const ribbonExportFinances = document.getElementById('ribbon-export-finances');
+    if (ribbonExportFinances) {
+        ribbonExportFinances.addEventListener('click', () => {
+            const activeTab = localStorage.getItem('activeTab') || 'income';
+            if (activeTab === 'income' && typeof downloadIncome === 'function') {
+                downloadIncome();
+            }
+        });
+    }
+    
+    // Top add object button
+    const topAddObject = document.getElementById('top-add-object');
+    if (topAddObject) {
+        topAddObject.addEventListener('click', () => {
+            document.getElementById('add-object')?.click();
+        });
+    }
+    
+    // Initialize ribbon based on current tab
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('activeTab') || 'income';
+        if (saved === 'analysis') {
+            setActiveRibbonTab('analysis');
+        } else if (saved === 'budget') {
+            setActiveRibbonTab('budget');
+        } else if (saved === 'income' || saved === 'expense') {
+            setActiveRibbonTab('finances');
+            // Also update finances subtab
+            financeSubtabs.forEach(b => {
+                b.classList.toggle('active', b.dataset.subtab === saved);
+            });
+        } else {
+            setActiveRibbonTab('home');
+        }
+    });
+})();
