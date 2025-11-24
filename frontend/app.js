@@ -1261,16 +1261,18 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const stages = budgetContainer.querySelectorAll('.budget-stage');
             if (state === 'expanded') {
                 stages.forEach(s => {
-                    const content = s.querySelector('.stage-content');
-                    if (content) content.style.display = 'none';
+                    const content = s.querySelector('.budget-work-types-container');
+                    if (content) content.classList.add('collapsed');
                 });
                 toggleStages.dataset.state = 'collapsed';
+                toggleStages.classList.add('active');
             } else {
                 stages.forEach(s => {
-                    const content = s.querySelector('.stage-content');
-                    if (content) content.style.display = '';
+                    const content = s.querySelector('.budget-work-types-container');
+                    if (content) content.classList.remove('collapsed');
                 });
                 toggleStages.dataset.state = 'expanded';
+                toggleStages.classList.remove('active');
             }
         });
     }
@@ -1283,19 +1285,21 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const budgetContainer = document.getElementById('budget-container');
             if (!budgetContainer) return;
             
-            const workTypes = budgetContainer.querySelectorAll('.work-type');
+            const workTypes = budgetContainer.querySelectorAll('.budget-work-type');
             if (state === 'expanded') {
                 workTypes.forEach(wt => {
-                    const content = wt.querySelector('.work-type-content, .resources-list');
-                    if (content) content.style.display = 'none';
+                    const content = wt.querySelector('.budget-resources-container');
+                    if (content) content.classList.add('collapsed');
                 });
                 toggleWorktypes.dataset.state = 'collapsed';
+                toggleWorktypes.classList.add('active');
             } else {
                 workTypes.forEach(wt => {
-                    const content = wt.querySelector('.work-type-content, .resources-list');
-                    if (content) content.style.display = '';
+                    const content = wt.querySelector('.budget-resources-container');
+                    if (content) content.classList.remove('collapsed');
                 });
                 toggleWorktypes.dataset.state = 'expanded';
+                toggleWorktypes.classList.remove('active');
             }
         });
     }
@@ -1308,13 +1312,15 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const budgetContainer = document.getElementById('budget-container');
             if (!budgetContainer) return;
             
-            const photos = budgetContainer.querySelectorAll('.resource-photo, .photo-preview, img[src*="uploads"]');
+            const photoColumns = budgetContainer.querySelectorAll('.res-photo, .res-photo-thumb, .res-photo-container');
             if (state === 'visible') {
-                photos.forEach(p => p.style.display = 'none');
+                photoColumns.forEach(p => p.style.display = 'none');
                 togglePhotos.dataset.state = 'hidden';
+                togglePhotos.classList.add('active');
             } else {
-                photos.forEach(p => p.style.display = '');
+                photoColumns.forEach(p => p.style.display = '');
                 togglePhotos.dataset.state = 'visible';
+                togglePhotos.classList.remove('active');
             }
         });
     }
@@ -1327,14 +1333,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const budgetContainer = document.getElementById('budget-container');
             if (!budgetContainer) return;
             
-            const resources = budgetContainer.querySelectorAll('.resource-row, .resource-item');
+            const resources = budgetContainer.querySelectorAll('.budget-resource');
             resources.forEach(res => {
                 if (!filterValue) {
                     res.style.display = '';
                 } else {
-                    const typeEl = res.querySelector('.resource-type, [data-type]');
-                    const type = typeEl?.textContent || typeEl?.dataset?.type || '';
-                    res.style.display = type.includes(filterValue) ? '' : 'none';
+                    const typeEl = res.querySelector('.res-type');
+                    const typeTitle = typeEl?.querySelector('.res-type-icon')?.title || '';
+                    res.style.display = typeTitle.includes(filterValue) ? '' : 'none';
                 }
             });
         });

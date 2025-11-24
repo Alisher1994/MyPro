@@ -1573,6 +1573,16 @@ body {
     background: var(--office-gray-200);
 }
 
+.ribbon-btn.active {
+    background: var(--excel-primary);
+    color: white;
+    border-color: var(--excel-primary);
+}
+
+.ribbon-btn.active svg {
+    stroke: white;
+}
+
 .ribbon-btn.large {
     min-height: 66px;
     padding: 8px 12px;
