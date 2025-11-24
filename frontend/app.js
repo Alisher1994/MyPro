@@ -814,11 +814,11 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
 
     // Build/dropdown population from object list
     const objectDropdown = document.getElementById('object-dropdown');
-    const objectList = document.getElementById('object-list');
+    const objectListEl = document.getElementById('object-list');
     function populateDropdown() {
-        if (!objectDropdown || !objectList) return;
+        if (!objectDropdown || !objectListEl) return;
         objectDropdown.innerHTML = '';
-        objectList.querySelectorAll('li').forEach(li => {
+        objectListEl.querySelectorAll('li').forEach(li => {
             const item = document.createElement('div');
             item.className = 'dropdown-item';
             item.dataset.id = li.dataset.id;
@@ -834,7 +834,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     }
     // populate initially and on list re-render
     const ro = new MutationObserver(() => populateDropdown());
-    if (objectList) ro.observe(objectList, { childList: true, subtree: true });
+    if (objectListEl) ro.observe(objectListEl, { childList: true, subtree: true });
     populateDropdown();
 
     // Main tabs behavior: show/hide sub-tabs and route to correct inner tab
