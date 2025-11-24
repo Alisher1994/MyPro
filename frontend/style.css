@@ -84,6 +84,54 @@ body {
 }
 
 /* ========================================
+   Four-level Navbar styles
+   ======================================== */
+.four-level-navbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: transparent;
+    padding: 10px 16px;
+}
+.four-level-navbar .level-1 {
+    background: var(--excel-primary);
+    color: var(--office-white);
+    padding: 12px 16px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.object-select-wrap { display: flex; align-items: center; }
+.object-select-btn {
+    background: rgba(255,255,255,0.06);
+    border: none;
+    color: var(--office-white);
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06) inset;
+}
+.object-select-btn .caret { opacity: 0.9; }
+
+/* Tabs background row (light, slightly warm) */
+.four-level-navbar .level-2 {
+    background: #efe9e9; /* warm light background like Excel ribbon base */
+    padding: 18px 0 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Center main tabs and make them large */
+.main-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+    align-items: flex-end;
+}
    SIDEBAR (Office Navigation Pane Style)
    ======================================== */
 .sidebar {
@@ -282,12 +330,13 @@ body {
 
 /* Slightly smaller main tab label to match Office ribbon */
 .main-tabs .main-tab {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--office-gray-800);
-    padding: 8px 14px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--office-gray-900);
+    padding: 6px 10px;
     background: transparent;
     border-radius: 6px;
+    line-height: 1;
 }
 .main-tabs .main-tab:hover { background: var(--office-gray-50); color: var(--excel-primary); }
 .main-tabs .main-tab.active { color: var(--excel-primary); background: transparent; }
