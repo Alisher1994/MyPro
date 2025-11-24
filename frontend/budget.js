@@ -508,11 +508,15 @@ function makeEditableSelect(element, options, onSave) {
             select.appendChild(option);
         });
 
-        select.size = Math.min(options.length, 8); // Show up to 8 items
+        // Позиционируем относительно элемента
+        element.style.position = 'relative';
+        select.size = Math.min(options.length, 8);
         select.style.position = 'absolute';
+        select.style.top = '0';
+        select.style.left = '0';
         select.style.zIndex = '1000';
-        select.style.width = Math.max(element.offsetWidth, 80) + 'px'; // Ensure min width
-        select.style.height = 'auto'; // Override fixed height from CSS class
+        select.style.minWidth = Math.max(element.offsetWidth, 80) + 'px';
+        select.style.height = 'auto';
 
         // Adjust position to align with element
         // Note: simple absolute positioning relies on parent being relative or static flow
@@ -571,12 +575,15 @@ function makeEditableSelectWithIcons(element, options, onSave) {
             select.appendChild(option);
         });
 
+        // Позиционируем относительно элемента
+        element.style.position = 'relative';
         select.size = Math.min(options.length, 8);
         select.style.position = 'absolute';
+        select.style.top = '0';
+        select.style.left = '0';
         select.style.zIndex = '1000';
-        select.style.width = 'auto';
         select.style.minWidth = '150px';
-        select.style.height = 'auto'; // Override fixed height from CSS class
+        select.style.height = 'auto';
 
         select.onchange = async function () {
             const newValue = select.value;

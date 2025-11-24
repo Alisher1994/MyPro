@@ -182,7 +182,7 @@
 .budget-work-type-header {
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 40px 20px 1fr 60px 90px 100px 120px auto;
+    grid-template-columns: 40px 20px 1fr 60px 90px 100px 120px 40px 40px;
     gap: var(--spacing-md);
     align-items: center;
     font-size: var(--font-size-base);
@@ -193,7 +193,6 @@
 
 .budget-work-type-header .btn-delete {
     justify-self: end;
-    margin-left: auto;
 }
 
 .wt-num {
@@ -270,8 +269,9 @@
 .budget-resource-header {
     margin: var(--spacing-sm) var(--spacing-2xl) var(--spacing-xs) 48px;
     padding: var(--spacing-sm) var(--spacing-md);
+    padding-right: var(--spacing-lg);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(250px, 1fr) 60px 90px 100px 120px minmax(200px, 1fr) 40px;
+    grid-template-columns: 40px 60px 50px minmax(180px, 1fr) 60px 90px 100px 120px minmax(150px, 1fr) 40px;
     gap: var(--spacing-md);
     align-items: center;
     font-size: var(--font-size-xs);
@@ -287,8 +287,9 @@
 .budget-resource {
     margin: 2px var(--spacing-2xl) 2px 48px;
     padding: var(--spacing-sm) var(--spacing-md);
+    padding-right: var(--spacing-lg);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(250px, 1fr) 60px 90px 100px 120px minmax(200px, 1fr) 40px;
+    grid-template-columns: 40px 60px 50px minmax(180px, 1fr) 60px 90px 100px 120px minmax(150px, 1fr) 40px;
     gap: var(--spacing-md);
     align-items: center;
     font-size: var(--font-size-sm);
