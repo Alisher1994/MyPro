@@ -28,6 +28,7 @@
         <div class="four-level-navbar">
             <div class="level-1">
                 <div class="level1-left">
+                    <button id="sidebar-toggle" class="sidebar-toggle">☰</button>
                     <button id="object-select" class="object-select-btn"><span class="caret">▾</span> <span id="selected-object-name">Выбор объекта</span></button>
                 </div>
                 <div class="level1-right">
@@ -57,26 +58,15 @@
                     <button id="print-btn" class="icon-btn" title="Печать">Печать</button>
                     <button id="add-stage-btn" class="icon-btn" title="Добавить этап">Добавить этап</button>
                     <button id="add-action-btn" class="icon-btn" title="Добавить">Добавить</button>
+                    <div id="object-actions" style="gap:10px;margin-left:16px;display:flex;align-items:center;">
+                        <input id="rename-input" type="text" style="display:none;">
+                        <button id="rename-btn">Переименовать</button>
+                        <button id="delete-btn">Удалить</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="tabs-actions-row"
-            style="display:none; align-items: center; justify-content: space-between; gap: 10px;">
-            <button id="sidebar-toggle" class="sidebar-toggle">☰</button>
-            <div id="tabs" style="margin-top:30px;">
-                <div class="tabs-header">
-                    <button class="tab-btn" data-tab="analysis">Анализ</button>
-                    <button class="tab-btn" data-tab="income">Приход</button>
-                    <button class="tab-btn" data-tab="budget">Бюджет</button>
-                    <button class="tab-btn" data-tab="expense">Расход</button>
-                </div>
-            </div>
-            <div id="object-actions" style="gap: 10px;">
-                <input id="rename-input" type="text" style="display:none;">
-                <button id="rename-btn">Переименовать</button>
-                <button id="delete-btn">Удалить</button>
-            </div>
-        </div>
+        <!-- Old tabs-actions-row removed — replaced by four-level-navbar above. -->
         <div id="tab-analysis" class="tab-content" style="display:none;">
             <div class="tab-actions">
                 <button class="icon-btn" id="download-analysis" title="Скачать">
