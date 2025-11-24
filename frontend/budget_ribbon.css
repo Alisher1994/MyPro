@@ -1,0 +1,119 @@
+/* ========================================
+   BUDGET RIBBON - Office 2025 Style
+   ======================================== */
+
+.budget-ribbon {
+    display: none;
+    /* Hidden by default, shown only when Budget tab is active */
+    background: var(--office-gray-50);
+    border-bottom: 1px solid var(--office-gray-300);
+    padding: var(--spacing-md) var(--spacing-lg);
+    gap: var(--spacing-sm);
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.budget-ribbon.active {
+    display: flex;
+}
+
+.ribbon-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-width: 140px;
+    position: relative;
+}
+
+.ribbon-btn svg {
+    width: 32px;
+    height: 32px;
+    color: var(--office-gray-600);
+    transition: all 0.15s ease;
+}
+
+.ribbon-btn span {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--office-gray-800);
+    text-align: center;
+}
+
+.ribbon-btn small {
+    font-size: var(--font-size-xs);
+    color: var(--office-gray-600);
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Hover state */
+.ribbon-btn:hover {
+    background: var(--excel-primary-lighter);
+    border-color: var(--excel-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.ribbon-btn:hover svg {
+    color: var(--excel-primary);
+}
+
+.ribbon-btn:hover span {
+    color: var(--excel-primary-hover);
+}
+
+/* Active state */
+.ribbon-btn.active {
+    background: var(--excel-primary);
+    border-color: var(--excel-primary-hover);
+    box-shadow: var(--shadow-md);
+}
+
+.ribbon-btn.active svg {
+    color: var(--office-white);
+}
+
+.ribbon-btn.active span {
+    color: var(--office-white);
+}
+
+.ribbon-btn.active small {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Active indicator (top border) */
+.ribbon-btn.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--excel-primary-hover);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ribbon-btn {
+        min-width: 100px;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .ribbon-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .ribbon-btn small {
+        display: none;
+    }
+}
