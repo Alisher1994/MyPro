@@ -508,19 +508,15 @@ function makeEditableSelect(element, options, onSave) {
             select.appendChild(option);
         });
 
-        // Position relative to element
-        element.style.position = 'relative';
+        // Position using fixed to avoid overflow clipping
+        const rect = element.getBoundingClientRect();
         select.size = Math.min(options.length, 8);
-        select.style.position = 'absolute';
-        select.style.top = '0';
-        select.style.left = '0';
-        select.style.zIndex = '1000';
-        select.style.minWidth = Math.max(element.offsetWidth, 80) + 'px';
+        select.style.position = 'fixed';
+        select.style.top = rect.top + 'px';
+        select.style.left = rect.left + 'px';
+        select.style.zIndex = '9999';
+        select.style.minWidth = Math.max(rect.width, 80) + 'px';
         select.style.height = 'auto';
-
-        // Adjust position to align with element
-        // Note: simple absolute positioning relies on parent being relative or static flow
-        // For better UX, we might need to calculate offsets, but let's try simple first
 
         select.onchange = async function () {
             const newValue = select.value;
@@ -528,13 +524,13 @@ function makeEditableSelect(element, options, onSave) {
                 await onSave(newValue);
             }
             element.textContent = newValue || currentValue;
-            // Remove select is handled by replacing content
+            select.remove();
         };
 
         select.onblur = function () {
-            // Small delay to allow click to register
             setTimeout(() => {
-                if (element.contains(select)) {
+                if (document.body.contains(select)) {
+                    select.remove();
                     element.textContent = select.value || currentValue;
                 }
             }, 100);
@@ -544,11 +540,11 @@ function makeEditableSelect(element, options, onSave) {
         select.onclick = function (e) {
             if (e.target.tagName === 'OPTION') {
                 select.onchange();
+                select.remove();
             }
         };
 
-        element.textContent = '';
-        element.appendChild(select);
+        document.body.appendChild(select);
         select.focus();
     };
 }
@@ -575,13 +571,13 @@ function makeEditableSelectWithIcons(element, options, onSave) {
             select.appendChild(option);
         });
 
-        // Position relative to element
-        element.style.position = 'relative';
+        // Position using fixed to avoid overflow clipping
+        const rect = element.getBoundingClientRect();
         select.size = Math.min(options.length, 8);
-        select.style.position = 'absolute';
-        select.style.top = '0';
-        select.style.left = '0';
-        select.style.zIndex = '1000';
+        select.style.position = 'fixed';
+        select.style.top = rect.top + 'px';
+        select.style.left = rect.left + 'px';
+        select.style.zIndex = '9999';
         select.style.minWidth = '150px';
         select.style.height = 'auto';
 
@@ -592,11 +588,13 @@ function makeEditableSelectWithIcons(element, options, onSave) {
             }
             const resType = RESOURCE_TYPES[newValue || currentValue];
             element.innerHTML = `<div class="res-type-icon" style="background-color: ${resType.color}" title="${newValue || currentValue}">${resType.icon}</div>`;
+            select.remove();
         };
 
         select.onblur = function () {
             setTimeout(() => {
-                if (element.contains(select)) {
+                if (document.body.contains(select)) {
+                    select.remove();
                     const newValue = select.value || currentValue;
                     const resType = RESOURCE_TYPES[newValue];
                     element.innerHTML = `<div class="res-type-icon" style="background-color: ${resType.color}" title="${newValue}">${resType.icon}</div>`;
@@ -607,12 +605,11 @@ function makeEditableSelectWithIcons(element, options, onSave) {
         select.onclick = function (e) {
             if (e.target.tagName === 'OPTION') {
                 select.onchange();
+                select.remove();
             }
         };
 
-        const iconHtml = element.innerHTML;
-        element.textContent = '';
-        element.appendChild(select);
+        document.body.appendChild(select);
         select.focus();
     };
 }
