@@ -352,19 +352,6 @@ async function renderList() {
         list.appendChild(li);
     });
 
-    // Populate objects dropdown (navbar) if present
-    const dropdown = document.getElementById('object-dropdown');
-    if (dropdown) {
-        dropdown.innerHTML = '<option value="">Выбор объекта</option>';
-        objects.forEach(obj => {
-            const opt = document.createElement('option');
-            opt.value = obj.id;
-            opt.textContent = obj.name;
-            if (obj.id === selectedId) opt.selected = true;
-            dropdown.appendChild(opt);
-        });
-    }
-
     // Restore state after list render
     restoreState();
 }
@@ -804,34 +791,51 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const topAdd = document.getElementById('top-add-object');
     if (topAdd) topAdd.onclick = () => document.getElementById('add-object')?.click();
 
-    // Object dropdown (navbar) behavior and sidebar collapse
-    const objectDropdown = document.getElementById('object-dropdown');
-    if (objectDropdown) {
-        objectDropdown.onchange = () => {
-            const id = objectDropdown.value;
-            if (!id) return;
-            const li = document.querySelector(`#object-list li[data-id="${id}"]`);
-            // call existing selectObject helper
-            selectObject(Number(id), li);
+    // Object select button opens sidebar (mobile friendly)
+    const objectSelectBtn = document.getElementById('object-select');
+    if (objectSelectBtn) objectSelectBtn.onclick = () => {
+        // toggle custom dropdown instead of sidebar
+        const dd = document.getElementById('object-dropdown');
+        if (dd) {
+            dd.style.display = dd.style.display === 'none' || !dd.style.display ? 'block' : 'none';
+        }
+    };
+
+    // Sidebar toggle (collapse/expand) button placed near object select
+    const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+    if (sidebarToggleBtn) {
+        sidebarToggleBtn.onclick = () => {
+            document.body.classList.toggle('sidebar-collapsed');
+            // rotate arrow handled by CSS transform on .sidebar-collapsed
+            // also ensure dropdown closed
+            const dd = document.getElementById('object-dropdown'); if (dd) dd.style.display = 'none';
         };
     }
 
-    const sidebarCollapseBtn = document.getElementById('sidebar-collapse-btn');
-    if (sidebarCollapseBtn) {
-        sidebarCollapseBtn.onclick = () => {
-            const sb = document.getElementById('sidebar');
-            if (!sb) return;
-            const collapsed = sb.classList.toggle('collapsed');
-            localStorage.setItem('sidebarCollapsed', collapsed ? '1' : '0');
-            sidebarCollapseBtn.textContent = collapsed ? '▶' : '◀';
-        };
-        // restore saved collapsed state
-        const savedCollapsed = localStorage.getItem('sidebarCollapsed') === '1';
-        if (savedCollapsed) {
-            document.getElementById('sidebar')?.classList.add('collapsed');
-            sidebarCollapseBtn.textContent = '▶';
-        }
+    // Build/dropdown population from object list
+    const objectDropdown = document.getElementById('object-dropdown');
+    const objectList = document.getElementById('object-list');
+    function populateDropdown() {
+        if (!objectDropdown || !objectList) return;
+        objectDropdown.innerHTML = '';
+        objectList.querySelectorAll('li').forEach(li => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.dataset.id = li.dataset.id;
+            item.innerHTML = li.innerHTML;
+            item.onclick = () => {
+                const id = item.dataset.id;
+                const liEl = document.querySelector(`#object-list li[data-id="${id}"]`);
+                if (liEl) selectObject(Number(id), liEl);
+                objectDropdown.style.display = 'none';
+            };
+            objectDropdown.appendChild(item);
+        });
     }
+    // populate initially and on list re-render
+    const ro = new MutationObserver(() => populateDropdown());
+    if (objectList) ro.observe(objectList, { childList: true, subtree: true });
+    populateDropdown();
 
     // Main tabs behavior: show/hide sub-tabs and route to correct inner tab
     const mainTabs = document.querySelectorAll('.main-tab');

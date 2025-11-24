@@ -15,7 +15,7 @@
     /* Office Neutrals */
     --office-white: #FFFFFF;
     --office-gray-50: #FAFAFA;
-    --office-gray-100: #E9E2E2;
+    --office-gray-100: #F3F2F1;
     --office-gray-200: #EDEBE9;
     --office-gray-300: #E1DFDD;
     --office-gray-400: #D2D0CE;
@@ -202,48 +202,6 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-/* Object dropdown placed in navbar (left) */
-.object-dropdown-wrapper {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-left: var(--spacing-md);
-}
-.object-dropdown {
-    height: var(--height-button);
-    min-width: 180px;
-    padding: 0 var(--spacing-sm);
-    border: 1px solid var(--office-gray-300);
-    border-radius: var(--radius-sm);
-    background: var(--office-white);
-    color: var(--office-gray-900);
-    font-size: var(--font-size-base);
-}
-.sidebar-collapse-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--height-button);
-    height: var(--height-button);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--office-gray-300);
-    background: var(--office-white);
-    color: var(--office-gray-700);
-    cursor: pointer;
-}
-.sidebar-collapse-btn:hover { color: var(--excel-primary); border-color: var(--excel-primary); }
-
-/* Collapsed sidebar state */
-.sidebar.collapsed {
-    width: 56px;
-}
-.sidebar.collapsed .sidebar-header span { display: none; }
-.sidebar.collapsed .object-list li span { display: none; }
-.sidebar.collapsed .object-list { padding-left: 6px; }
-.sidebar.collapsed .object-list li { justify-content: center; }
-.sidebar.collapsed .sidebar-header #add-object { width: 28px; height: 28px; }
-.sidebar { transition: width 0.18s ease; }
 
 /* ========================================
    MAIN CONTENT (Office Ribbon Style)
@@ -1075,6 +1033,9 @@ body {
     background: rgba(255,255,255,0.06);
     color: var(--office-white);
 }
+.object-search::placeholder { color: rgba(255,255,255,0.75); }
+.object-search:-ms-input-placeholder { color: rgba(255,255,255,0.75); }
+.object-search::-ms-input-placeholder { color: rgba(255,255,255,0.75); }
 .search-and-add {
     display: inline-flex;
     align-items: center;
@@ -1094,6 +1055,9 @@ body {
     cursor: pointer;
 }
 .add-obj-square:hover { background: var(--office-gray-50); }
+
+/* hide duplicate small blue icon-buttons inside .tab-actions (we use top-level icons) */
+.tab-actions .icon-btn { display: none !important; }
 .four-level-navbar .level-2 .main-tabs {
     display: flex;
     gap: 28px;
@@ -1171,8 +1135,28 @@ body {
     .object-search { display: none; }
 }
 
-/* Duplicate-hidden helper to visually remove controls but keep DOM for JS */
-.duplicate-hidden { display: none !important; }
+.object-select-wrap { position: relative; display:inline-block; }
+.object-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 240px;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    box-shadow: var(--shadow-md);
+    border-radius: 6px;
+    z-index: 300;
+    padding: 8px;
+}
+.object-dropdown .dropdown-item {
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--office-gray-800);
+}
+.object-dropdown .dropdown-item:hover { background: var(--office-gray-100); }
 
-/* Make placeholder text in the search input white */
-.object-search::placeholder { color: rgba(255,255,255,0.8); }
+/* sidebar collapsed state */
+.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+.sidebar-collapsed .add-obj-square { display: none !important; }
+.sidebar-collapsed .sidebar-toggle .sidebar-arrow { transform: rotate(180deg); }
