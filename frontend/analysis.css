@@ -85,6 +85,14 @@
 /* ========================================
    OBJECT DATA SECTION
    ======================================== */
+.analysis-section {
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
 .analysis-object-section {
     background: var(--office-white);
     border: 1px solid var(--office-gray-300);

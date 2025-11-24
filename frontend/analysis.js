@@ -169,10 +169,13 @@ function renderAnalysis() {
 
     // Ensure analysisPhotos array exists (4 slots)
     if (!analysisData.analysisPhotos) analysisData.analysisPhotos = [null, null, null, null];
+    
+    // Get current view from localStorage or default
+    const currentView = localStorage.getItem('analysisView') || 'object-data';
 
     container.innerHTML = `
         <!-- Данные объекта -->
-        <div class="analysis-object-section">
+        <div class="analysis-section" data-section="object-data" style="${currentView === 'object-data' ? '' : 'display:none;'}">
             <h2 class="analysis-section-title">Данные объекта</h2>
             <div class="analysis-object-header">
                 <div class="object-name-wrap"><span id="object-name" class="object-name editable">Объект</span></div>
@@ -189,97 +192,70 @@ function renderAnalysis() {
 
             <div class="analysis-object-params">
                 <div class="object-param-row prices-row">
-                            <div class="price-m2-section" style="width:100%">
-                                <div class="analysis-progress-item">
-                                    <div class="analysis-progress-header">
-                                        <span class="analysis-progress-label">Цена / м² (план)</span>
-                                        <span class="analysis-progress-value" id="price-plan-value">0 сум</span>
-                                    </div>
-                                    <div class="analysis-progress-bar-container">
-                                        <div class="analysis-progress-bar neutral" id="price-plan-bar" style="width:0%"> </div>
-                                    </div>
-                                </div>
-
-                                <div class="analysis-progress-item">
-                                    <div class="analysis-progress-header">
-                                        <span class="analysis-progress-label">Цена / м² (факт)</span>
-                                        <span class="analysis-progress-value" id="price-fact-value">0 сум</span>
-                                    </div>
-                                    <div class="analysis-progress-bar-container">
-                                        <div class="analysis-progress-bar" id="price-fact-bar" style="width:0%"> </div>
-                                    </div>
-                                </div>
+                    <div class="price-m2-section" style="width:100%">
+                        <div class="analysis-progress-item">
+                            <div class="analysis-progress-header">
+                                <span class="analysis-progress-label">Цена / м² (план)</span>
+                                <span class="analysis-progress-value" id="price-plan-value">0 сум</span>
                             </div>
-                </div>
-            </div>
-        </div>
+                            <div class="analysis-progress-bar-container">
+                                <div class="analysis-progress-bar neutral" id="price-plan-bar" style="width:0%"> </div>
+                            </div>
+                        </div>
 
-        <!-- Финансовые карточки (collapsible) -->
-        <div class="analysis-collapsible ${analysisData.collapsedSections.cards ? 'collapsed' : ''}" data-section="cards">
-            <div class="analysis-collapsible-header" onclick="toggleAnalysisSection('cards')">
-                <span class="analysis-section-title">Аналитика по финансам</span>
-                <button class="collapser">${analysisData.collapsedSections.cards ? '+' : '−'}</button>
-            </div>
-            <div class="analysis-collapsible-body">
-                <div class="analysis-cards-grid single-row">
-                    <div class="analysis-card">
-                        <div class="analysis-card-title"><span class="card-icon">${svgIcon('income')}</span>Приход</div>
-                        <div class="analysis-card-value positive">${formatNum(analysisData.income)} сум</div>
-                    </div>
-                    <div class="analysis-card">
-                        <div class="analysis-card-title"><span class="card-icon">${svgIcon('expense')}</span>Расход</div>
-                        <div class="analysis-card-value negative">${formatNum(analysisData.expense)} сум</div>
-                    </div>
-                    <div class="analysis-card">
-                        <div class="analysis-card-title"><span class="card-icon">${svgIcon('balance')}</span>Остаток</div>
-                        <div class="analysis-card-value ${analysisData.balance >= 0 ? 'positive' : 'negative'}">${formatNum(analysisData.balance)} сум</div>
-                    </div>
-                    <div class="analysis-card">
-                        <div class="analysis-card-title"><span class="card-icon">${svgIcon('overrun')}</span>Перерасход</div>
-                        <div class="analysis-card-value ${analysisData.overrun >= 0 ? 'positive' : 'negative'}">${formatNum(analysisData.overrun)} сум</div>
+                        <div class="analysis-progress-item">
+                            <div class="analysis-progress-header">
+                                <span class="analysis-progress-label">Цена / м² (факт)</span>
+                                <span class="analysis-progress-value" id="price-fact-value">0 сум</span>
+                            </div>
+                            <div class="analysis-progress-bar-container">
+                                <div class="analysis-progress-bar" id="price-fact-bar" style="width:0%"> </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Прогресс-бары (collapsible) -->
-        <div class="analysis-collapsible ${analysisData.collapsedSections.progress ? 'collapsed' : ''}" data-section="progress">
-            <div class="analysis-collapsible-header" onclick="toggleAnalysisSection('progress')">
-                <span class="analysis-section-title">Аналитика по финансам (прогресс-бары)</span>
-                <button class="collapser">${analysisData.collapsedSections.progress ? '+' : '−'}</button>
+        <!-- Аналитика по финансам -->
+        <div class="analysis-section" data-section="finance-analytics" style="${currentView === 'finance-analytics' ? '' : 'display:none;'}">
+            <h2 class="analysis-section-title">Аналитика по финансам</h2>
+            <div class="analysis-cards-grid single-row">
+                <div class="analysis-card">
+                    <div class="analysis-card-title"><span class="card-icon">${svgIcon('income')}</span>ПРИХОД</div>
+                    <div class="analysis-card-value positive">${formatNum(analysisData.income)} сум</div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-card-title"><span class="card-icon">${svgIcon('expense')}</span>РАСХОД</div>
+                    <div class="analysis-card-value negative">${formatNum(analysisData.expense)} сум</div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-card-title"><span class="card-icon">${svgIcon('balance')}</span>ОСТАТОК</div>
+                    <div class="analysis-card-value ${analysisData.balance >= 0 ? 'positive' : 'negative'}">${formatNum(analysisData.balance)} сум</div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-card-title"><span class="card-icon">${svgIcon('overrun')}</span>ПЕРЕРАСХОД</div>
+                    <div class="analysis-card-value ${analysisData.overrun >= 0 ? 'positive' : 'negative'}">${formatNum(analysisData.overrun)} сум</div>
+                </div>
             </div>
-            <div class="analysis-collapsible-body">
+            <div style="margin-top: 20px;">
                 ${renderProgressBars()}
             </div>
         </div>
 
-        <!-- По типам ресурсов (collapsible) -->
-        <div class="analysis-collapsible ${analysisData.collapsedSections.resources ? 'collapsed' : ''}" data-section="resources">
-            <div class="analysis-collapsible-header" onclick="toggleAnalysisSection('resources')">
-                <span class="analysis-section-title">Аналитика по типам ресурсов</span>
-                <button class="collapser">${analysisData.collapsedSections.resources ? '+' : '−'}</button>
-            </div>
-            <div class="analysis-collapsible-body">
-                <div class="analysis-resources-section">
-                    <div class="analysis-resources-grid">
-                        ${renderResourceColumns()}
-                    </div>
-                </div>
+        <!-- Аналитика по ресурсам -->
+        <div class="analysis-section" data-section="resource-analytics" style="${currentView === 'resource-analytics' ? '' : 'display:none;'}">
+            <h2 class="analysis-section-title">Аналитика по типам ресурсов</h2>
+            <div class="analysis-resources-grid">
+                ${renderResourceColumns()}
             </div>
         </div>
 
-        <!-- По видам работ (collapsible) -->
-        <div class="analysis-collapsible ${analysisData.collapsedSections.worktypes ? 'collapsed' : ''}" data-section="worktypes">
-            <div class="analysis-collapsible-header" onclick="toggleAnalysisSection('worktypes')">
-                <span class="analysis-section-title">Аналитика по видам работ</span>
-                <button class="collapser">${analysisData.collapsedSections.worktypes ? '+' : '−'}</button>
-            </div>
-            <div class="analysis-collapsible-body">
-                <div class="analysis-resources-section">
-                    <div class="analysis-resources-grid">
-                        ${renderWorkTypeColumns()}
-                    </div>
-                </div>
+        <!-- Аналитика по видам работ -->
+        <div class="analysis-section" data-section="worktype-analytics" style="${currentView === 'worktype-analytics' ? '' : 'display:none;'}">
+            <h2 class="analysis-section-title">Аналитика по видам работ</h2>
+            <div class="analysis-resources-grid">
+                ${renderWorkTypeColumns()}
             </div>
         </div>
     `;
@@ -1236,43 +1212,21 @@ function renderWorkTypeColumns() {
     }).join('');
 }
 
-// Переключение вида аналитики (показывать только соответствующие секции)
+// Переключение вида аналитики (показывать только соответствующую секцию)
 function switchAnalysisView(view) {
     const container = document.getElementById('analysis-container');
     if (!container) return;
     
-    // Найти все секции
-    const objectSection = container.querySelector('.analysis-object-section');
-    const financeCards = container.querySelector('[data-section="cards"]');
-    const financeProgress = container.querySelector('[data-section="progress"]');
-    const resourcesSection = container.querySelector('[data-section="resources"]');
-    const workTypesSection = container.querySelector('[data-section="worktypes"]');
-    
-    // Скрыть все
-    [objectSection, financeCards, financeProgress, resourcesSection, workTypesSection].forEach(el => {
-        if (el) el.style.display = 'none';
+    // Скрыть все секции
+    const allSections = container.querySelectorAll('.analysis-section');
+    allSections.forEach(el => {
+        el.style.display = 'none';
     });
     
-    // Показать нужные
-    switch (view) {
-        case 'object-data':
-            if (objectSection) objectSection.style.display = 'block';
-            break;
-        case 'finance-analytics':
-            if (financeCards) financeCards.style.display = 'block';
-            if (financeProgress) financeProgress.style.display = 'block';
-            break;
-        case 'resource-analytics':
-            if (resourcesSection) resourcesSection.style.display = 'block';
-            break;
-        case 'worktype-analytics':
-            if (workTypesSection) workTypesSection.style.display = 'block';
-            break;
-        default:
-            // Показать все по умолчанию
-            [objectSection, financeCards, financeProgress, resourcesSection, workTypesSection].forEach(el => {
-                if (el) el.style.display = 'block';
-            });
+    // Показать нужную секцию
+    const targetSection = container.querySelector(`[data-section="${view}"]`);
+    if (targetSection) {
+        targetSection.style.display = 'block';
     }
 }
 
