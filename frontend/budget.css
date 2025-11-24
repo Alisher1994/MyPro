@@ -96,6 +96,11 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-sm);
     transition: background 0.1s;
+    min-height: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .stage-name:hover {
@@ -197,6 +202,11 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-sm);
     transition: background 0.1s;
+    min-height: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .wt-name:hover {
@@ -209,6 +219,12 @@
 .wt-sum {
     text-align: right;
     padding: var(--spacing-xs) var(--spacing-sm);
+    min-height: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
 }
 
 .wt-unit,
@@ -392,6 +408,12 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-sm);
     transition: background 0.1s;
+    min-height: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .res-name {
@@ -446,6 +468,7 @@
 .res-price,
 .res-sum {
     text-align: right;
+    justify-content: flex-end;
 }
 
 .res-sum {
@@ -459,8 +482,9 @@
 .inline-edit-input,
 .inline-edit-select {
     width: 100%;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    height: var(--height-input);
+    height: 100%;
+    padding: 0 var(--spacing-xs);
+    margin: 0;
     border: 1px solid var(--excel-primary);
     border-radius: var(--radius-sm);
     font-size: inherit;
@@ -468,11 +492,17 @@
     background: var(--office-white);
     outline: none;
     box-shadow: 0 0 0 1px var(--excel-primary);
+    box-sizing: border-box;
+    line-height: normal;
 }
 
 .editable,
 .editable-select {
     transition: background 0.1s;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 /* ========================================
