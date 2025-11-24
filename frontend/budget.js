@@ -198,14 +198,14 @@ function createWorkTypeElement(workType, num, stageId) {
         headerRow.className = 'budget-resource-header';
         headerRow.innerHTML = `
             <span>№</span>
-            <span>Фото</span>
+            <span class="header-photo">Фото</span>
             <span>Тип</span>
             <span>Название</span>
             <span>Ед.изм</span>
             <span>Кол-во</span>
             <span>Цена</span>
             <span>Сумма</span>
-            <span>Поставщик материала и услуг</span>
+            <span>Поставщик</span>
             <span></span>
         `;
         resourcesContainer.appendChild(headerRow);

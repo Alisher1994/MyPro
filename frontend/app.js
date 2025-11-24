@@ -1312,7 +1312,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const budgetContainer = document.getElementById('budget-container');
             if (!budgetContainer) return;
             
-            const photoColumns = budgetContainer.querySelectorAll('.res-photo, .res-photo-thumb, .res-photo-container');
+            // Скрываем колонку фото и заголовок
+            const photoColumns = budgetContainer.querySelectorAll('.res-photo, .res-photo-thumb, .res-photo-container, .header-photo');
             if (state === 'visible') {
                 photoColumns.forEach(p => p.style.display = 'none');
                 togglePhotos.dataset.state = 'hidden';

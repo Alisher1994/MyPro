@@ -182,13 +182,18 @@
 .budget-work-type-header {
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 40px 20px 1fr 50px 100px 100px 120px 60px 30px;
-    gap: var(--spacing-sm);
+    grid-template-columns: 40px 20px 1fr 60px 90px 100px 120px auto;
+    gap: var(--spacing-md);
     align-items: center;
     font-size: var(--font-size-base);
     font-weight: 600;
     border-bottom: 1px solid var(--office-gray-300);
     min-height: var(--height-row);
+}
+
+.budget-work-type-header .btn-delete {
+    justify-self: end;
+    margin-left: auto;
 }
 
 .wt-num {
@@ -266,8 +271,8 @@
     margin: var(--spacing-sm) var(--spacing-2xl) var(--spacing-xs) 48px;
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(300px, 1fr) 35px 100px 100px 120px 280px 40px;
-    gap: var(--spacing-sm);
+    grid-template-columns: 40px 60px 50px minmax(250px, 1fr) 60px 90px 100px 120px minmax(200px, 1fr) 40px;
+    gap: var(--spacing-md);
     align-items: center;
     font-size: var(--font-size-xs);
     font-weight: 600;
@@ -283,8 +288,8 @@
     margin: 2px var(--spacing-2xl) 2px 48px;
     padding: var(--spacing-sm) var(--spacing-md);
     display: grid;
-    grid-template-columns: 40px 60px 50px minmax(300px, 1fr) 35px 100px 100px 120px 280px 40px;
-    gap: var(--spacing-sm);
+    grid-template-columns: 40px 60px 50px minmax(250px, 1fr) 60px 90px 100px 120px minmax(200px, 1fr) 40px;
+    gap: var(--spacing-md);
     align-items: center;
     font-size: var(--font-size-sm);
     background: var(--office-white);
@@ -300,6 +305,10 @@
 .budget-resource:hover {
     background: var(--excel-primary-lighter);
     border-color: var(--excel-primary);
+}
+
+.budget-resource .btn-delete {
+    justify-self: end;
 }
 
 .res-num {
