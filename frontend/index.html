@@ -32,8 +32,11 @@
                     <button id="object-select" class="object-select-btn"><span class="caret">▾</span> <span id="selected-object-name">Выбор объекта</span></button>
                 </div>
                 <div class="level1-right">
-                    <input id="object-search" class="object-search" type="search" placeholder="Поиск..." />
-                    <button id="top-add-object" class="add-obj-btn">Добавить</button>
+                    <div class="search-and-add">
+                        <input id="object-search" class="object-search" type="search" placeholder="Поиск..." />
+                        <button id="top-add-object" class="add-obj-square" title="Добавить объект">+
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -55,9 +58,15 @@
 
             <div class="level-4">
                 <div class="actions-row">
-                    <button id="print-btn" class="icon-btn" title="Печать">Печать</button>
-                    <button id="add-stage-btn" class="icon-btn" title="Добавить этап">Добавить этап</button>
-                    <button id="add-action-btn" class="icon-btn" title="Добавить">Добавить</button>
+                    <button id="print-btn" class="icon-btn" title="Печать">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7" /><rect x="6" y="13" width="12" height="8" rx="2"/></svg>
+                    </button>
+                    <button id="add-stage-btn" class="icon-btn" title="Добавить этап">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v10a2 2 0 0 0 2 2h14V7H3z" /><path d="M9 3v4" /><path d="M12 5h6" /></svg>
+                    </button>
+                    <button id="add-action-btn" class="icon-btn" title="Добавить">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                    </button>
                     <!-- object-actions removed from navbar to avoid duplication; controls live inside Аналитика tab -->
                 </div>
             </div>
