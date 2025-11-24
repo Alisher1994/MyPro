@@ -1001,7 +1001,7 @@ body {
     flex-direction: column;
     gap: 6px;
     background: transparent;
-    padding: 12px 20px;
+    padding: 10px 16px;
 }
 .four-level-navbar .level-1 {
     background: var(--excel-primary);
@@ -1018,7 +1018,7 @@ body {
     color: var(--office-white);
     padding: 8px 14px;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -1042,18 +1042,19 @@ body {
 .main-tab {
     background: transparent;
     border: none;
-    font-size: 22px;
+    /* closer to Office: moderate size */
+    font-size: 18px;
     font-weight: 600;
     color: var(--office-gray-900);
-    padding: 6px 8px;
+    padding: 4px 6px;
     cursor: pointer;
-    letter-spacing: 0.2px;
-    line-height: 1.1;
+    letter-spacing: 0.1px;
+    line-height: 1.05;
 }
 .main-tab.active {
     color: var(--office-gray-900);
-    border-bottom: 4px solid var(--excel-primary);
-    padding-bottom: 6px;
+    border-bottom: 3px solid var(--excel-primary);
+    padding-bottom: 4px;
 }
 .four-level-navbar .level-3 {
     padding-left: 6px;
@@ -1064,7 +1065,7 @@ body {
     align-items: center;
 }
 .sub-tabs .tab-btn {
-    font-size: 14px;
+    font-size: 13px;
     padding: 8px 12px;
     border-radius: 6px;
     color: var(--office-gray-700);
@@ -1086,7 +1087,7 @@ body {
 }
 
 @media (max-width: 900px) {
-    .main-tab { font-size: 20px; }
-    .four-level-navbar { padding: 10px; }
+    .main-tab { font-size: 16px; }
+    .four-level-navbar { padding: 8px; }
     .object-search { display: none; }
 }

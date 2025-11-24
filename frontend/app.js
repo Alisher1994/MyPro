@@ -437,25 +437,31 @@ document.getElementById('add-object').onclick = async () => {
     renderList();
 };
 
-document.getElementById('rename-btn').onclick = async () => {
-    if (!selectedId) return;
-    const name = prompt('Новое имя объекта:');
-    if (!name) return;
-    await fetch(`/objects/${selectedId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
-    });
-    renderList();
-};
+const renameBtnEl = document.getElementById('rename-btn');
+if (renameBtnEl) {
+    renameBtnEl.onclick = async () => {
+        if (!selectedId) return;
+        const name = prompt('Новое имя объекта:');
+        if (!name) return;
+        await fetch(`/objects/${selectedId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        renderList();
+    };
+}
 
-document.getElementById('delete-btn').onclick = async () => {
-    if (!selectedId) return;
-    if (!confirm('Удалить объект?')) return;
-    await fetch(`/objects/${selectedId}`, { method: 'DELETE' });
-    clearSelection();
-    renderList();
-};
+const deleteBtnEl = document.getElementById('delete-btn');
+if (deleteBtnEl) {
+    deleteBtnEl.onclick = async () => {
+        if (!selectedId) return;
+        if (!confirm('Удалить объект?')) return;
+        await fetch(`/objects/${selectedId}`, { method: 'DELETE' });
+        clearSelection();
+        renderList();
+    };
+}
 
 // Mobile Sidebar Toggle
 const sidebarToggle = document.getElementById('sidebar-toggle');
