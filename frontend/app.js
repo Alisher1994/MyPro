@@ -1029,14 +1029,18 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 localStorage.setItem('financesSubtab', subtab);
                 setActiveTab(subtab);
                 
-                // Hide "Добавить" button if first subtab is expense
-                const addFinanceBtn = document.getElementById('ribbon-add-finance');
-                if (addFinanceBtn && subtab === 'expense') {
-                    addFinanceBtn.style.display = 'none';
-                } else if (addFinanceBtn) {
-                    addFinanceBtn.style.display = '';
+                // Hide "Создание" group if first subtab is expense
+                const financeCreationGroup = document.getElementById('finance-creation-group');
+                if (financeCreationGroup && subtab === 'expense') {
+                    financeCreationGroup.style.display = 'none';
+                } else if (financeCreationGroup) {
+                    financeCreationGroup.style.display = '';
                 }
             }
+        } else if (tabName === 'gpr' || tabName === 'smr' || tabName === 'settings') {
+            // Clear all content tabs for undeveloped sections
+            const allContentTabs = document.querySelectorAll('.content-tab');
+            allContentTabs.forEach(tab => tab.classList.remove('active'));
         }
         // Home tab doesn't switch content
     }
@@ -1050,6 +1054,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     // Finances subtab switching (inside ribbon)
     const financeSubtabs = document.querySelectorAll('.finances-subtab');
     const addFinanceBtn = document.getElementById('ribbon-add-finance');
+    const financeCreationGroup = document.getElementById('finance-creation-group');
     
     financeSubtabs.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1059,12 +1064,12 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             localStorage.setItem('financesSubtab', subtab);
             setActiveTab(subtab);
             
-            // Hide "Добавить" button for expense
-            if (addFinanceBtn) {
+            // Hide entire "Создание" group for expense
+            if (financeCreationGroup) {
                 if (subtab === 'expense') {
-                    addFinanceBtn.style.display = 'none';
+                    financeCreationGroup.style.display = 'none';
                 } else {
-                    addFinanceBtn.style.display = '';
+                    financeCreationGroup.style.display = '';
                 }
             }
         });
@@ -1277,10 +1282,10 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             financeSubtabs.forEach(b => {
                 b.classList.toggle('active', b.dataset.subtab === saved);
             });
-            // Hide "Добавить" button if expense is active
-            const addFinanceBtn = document.getElementById('ribbon-add-finance');
-            if (addFinanceBtn && saved === 'expense') {
-                addFinanceBtn.style.display = 'none';
+            // Hide "Создание" group if expense is active
+            const financeCreationGroup = document.getElementById('finance-creation-group');
+            if (financeCreationGroup && saved === 'expense') {
+                financeCreationGroup.style.display = 'none';
             }
         } else {
             // Default to analysis now that Home is removed
