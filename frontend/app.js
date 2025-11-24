@@ -684,6 +684,17 @@ try {
             // keep hidden if not found
         };
         img.src = 'assets/design_key.png';
+        // Click logo to toggle collapse/expand of the sidebar
+        logoEl.style.cursor = 'pointer';
+        logoEl.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-collapsed');
+            // close dropdown if open
+            const dd = document.getElementById('object-dropdown'); if (dd) dd.style.display = 'none';
+            // ensure mobile 'open' class removed
+            const sb = document.getElementById('sidebar'); if (sb) sb.classList.remove('open');
+            // adjust visibility of sidebar toggle button
+            const st = document.getElementById('sidebar-toggle'); if (st) st.style.display = document.body.classList.contains('sidebar-collapsed') ? 'block' : 'inline-block';
+        });
     }
 } catch (e) { /* ignore */ }
 
