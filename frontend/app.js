@@ -1625,9 +1625,6 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         }
     }
     
-    const budgetListTbody = document.getElementById('budget-list-tbody');
-    const budgetTotalEl = document.getElementById('budget-total');
-    
     // Filter inputs
     const filterDateStart = document.getElementById('filter-budget-date-start');
     const filterName = document.getElementById('filter-budget-name');
