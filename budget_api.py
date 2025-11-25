@@ -37,6 +37,12 @@ async def get_budgets(object_id: int):
 async def add_budget(object_id: int, data: dict):
     """Добавить новую смету"""
     try:
+        from datetime import datetime
+        
+        # Parse date strings to date objects
+        date_start = datetime.strptime(data.get("dateStart"), "%Y-%m-%d").date() if data.get("dateStart") else None
+        date_modified = datetime.strptime(data.get("dateModified"), "%Y-%m-%d").date() if data.get("dateModified") else None
+        
         query = """
             INSERT INTO budgets (
                 object_id, date_start, name, block, contract_number, 
@@ -47,14 +53,14 @@ async def add_budget(object_id: int, data: dict):
             row = await conn.fetchrow(
                 query,
                 object_id,
-                data.get("dateStart"),
+                date_start,
                 data.get("name"),
                 data.get("block", ""),
                 data.get("contractNumber", ""),
                 data.get("version", "v1"),
                 data.get("status", "draft"),
                 data.get("statusText", "Черновик"),
-                data.get("dateModified"),
+                date_modified,
                 data.get("totalAmount", 0),
                 data.get("currency", "UZS"),
                 data.get("comment", "")
@@ -83,6 +89,8 @@ async def add_budget(object_id: int, data: dict):
 @app.put("/objects/{object_id}/budgets/{budget_id}")
 async def update_budget(object_id: int, budget_id: int, data: dict):
     """Обновить смету"""
+    from datetime import datetime
+    
     updates = []
     params = []
     param_count = 1
@@ -103,8 +111,12 @@ async def update_budget(object_id: int, budget_id: int, data: dict):
     
     for js_field, db_field in fields_map.items():
         if js_field in data:
+            # Convert date strings to date objects
+            value = data[js_field]
+            if db_field in ["date_start", "date_modified"] and isinstance(value, str):
+                value = datetime.strptime(value, "%Y-%m-%d").date()
             updates.append(f"{db_field}=${param_count}")
-            params.append(data[js_field])
+            params.append(value)
             param_count += 1
     
     if not updates:
