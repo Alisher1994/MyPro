@@ -536,16 +536,30 @@
                             <input type="text" id="budget-name" required placeholder="ЖК Березка Корпус 1">
                         </div>
                         <div class="form-group">
-                            <label>Блок</label>
-                            <input type="text" id="budget-block" placeholder="Блок А">
+                            <label>Раздел сметы *</label>
+                            <select id="budget-section" required>
+                                <option value="">Выберите раздел</option>
+                                <option value="АР">АР - Архитектура</option>
+                                <option value="КР">КР - Конструкция</option>
+                                <option value="ЭО">ЭО - Электрика</option>
+                                <option value="ОВ">ОВ - Отопление и Вентиляция</option>
+                                <option value="ВК">ВК - Водоснабжение и канализация</option>
+                                <option value="БЛ">БЛ - Благоустройство</option>
+                            </select>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
+                            <label>Блок</label>
+                            <input type="text" id="budget-block" placeholder="Блок А" readonly>
+                            <small style="color: #666; font-size: 12px;">Автоматически заполняется из выбранного блока</small>
+                        </div>
+                        <div class="form-group">
                             <label>Версия</label>
                             <input type="text" id="budget-version" required placeholder="v1" value="v1">
                         </div>
+                    </div>
                         <div class="form-group">
                             <label>Статус</label>
                             <select id="budget-status" required>

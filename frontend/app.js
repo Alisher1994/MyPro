@@ -1982,7 +1982,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 <td>${index + 1}</td>
                 <td>${formatDate(dateStart)}</td>
                 <td>${budget.name}</td>
-                <td>${budget.block || '—'}</td>
+                <td>${budget.section ? `<span style="font-weight: 600; color: #0057d8;">${budget.section}</span> - ${budget.block || '—'}` : (budget.block || '—')}</td>
                 <td>${contractNumber}</td>
                 <td>${budget.version}</td>
                 <td>${getStatusBadge(budget.status, statusText)}</td>
@@ -2107,6 +2107,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         document.getElementById('budget-date-start').value = budget.dateStart;
         document.getElementById('budget-name').value = budget.name;
         document.getElementById('budget-block').value = budget.block;
+        document.getElementById('budget-section').value = budget.section || '';
         document.getElementById('budget-contract-number').value = budget.contractNumber;
         document.getElementById('budget-version').value = budget.version;
         document.getElementById('budget-status').value = budget.status;
@@ -2125,6 +2126,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             dateStart: new Date().toISOString().split('T')[0],
             name: budget.name,
             block: budget.block,
+            blockId: budget.block_id || budget.blockId || null,
+            section: budget.section || '',
             contractNumber: '',
             version: budget.version,
             status: budget.status,
@@ -2195,6 +2198,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             form.reset();
             editIdInput.value = '';
             document.getElementById('budget-date-start').value = new Date().toISOString().split('T')[0];
+            
+            // Auto-fill block from currentBlockId
+            if (window.currentBlockId) {
+                const blockHeader = document.querySelector(`.block-header[data-block-id="${window.currentBlockId}"]`);
+                const blockName = blockHeader?.querySelector('.block-name')?.textContent || '';
+                document.getElementById('budget-block').value = blockName;
+            }
+            
             modal.style.display = 'flex';
         });
     }
@@ -2222,6 +2233,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 dateStart: document.getElementById('budget-date-start').value,
                 name: document.getElementById('budget-name').value,
                 block: document.getElementById('budget-block').value,
+                blockId: window.currentBlockId || null,
+                section: document.getElementById('budget-section').value,
                 contractNumber: document.getElementById('budget-contract-number').value,
                 version: document.getElementById('budget-version').value,
                 status: document.getElementById('budget-status').value,
