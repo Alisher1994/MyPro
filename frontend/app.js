@@ -1018,6 +1018,10 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             }
         } else if (tabName === 'budget') {
             setActiveTab('budget');
+            // Show budget list view by default
+            if (typeof window.showBudgetListView === 'function') {
+                window.showBudgetListView();
+            }
         } else if (tabName === 'finances') {
             // Activate first finances subtab
             const financeSubtabs = document.querySelectorAll('.finances-subtab');
@@ -1555,6 +1559,11 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             statusEl.textContent = budgetData.status || 'Черновик';
             statusEl.className = 'budget-status-badge ' + (budgetData.statusClass || 'draft');
         }
+        
+        // Render budget if function exists (from budget.js)
+        if (typeof window.renderBudget === 'function') {
+            window.renderBudget();
+        }
     }
     
     // Back button
@@ -1597,7 +1606,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             statusText: 'Утвержден',
             dateModified: '2024-11-15',
             totalAmount: 50000000,
-            currency: 'UZS'
+            currency: 'UZS',
+            comment: ''
         },
         {
             id: 2,
@@ -1610,7 +1620,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             statusText: 'Черновик',
             dateModified: '2024-11-20',
             totalAmount: 25000000,
-            currency: 'UZS'
+            currency: 'UZS',
+            comment: 'В процессе согласования'
         },
         {
             id: 3,
@@ -1623,7 +1634,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             statusText: 'Не активный',
             dateModified: '2024-10-30',
             totalAmount: 75000000,
-            currency: 'UZS'
+            currency: 'UZS',
+            comment: 'Старая версия'
         },
         {
             id: 4,
@@ -1636,13 +1648,24 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             statusText: 'Новый',
             dateModified: '2024-11-22',
             totalAmount: 120000000,
-            currency: 'UZS'
+            currency: 'UZS',
+            comment: ''
         }
     ];
     
     const budgetListTbody = document.getElementById('budget-list-tbody');
-    const budgetListSearch = document.getElementById('budget-list-search');
-    const showInactiveBudgets = document.getElementById('show-inactive-budgets');
+    const budgetTotalEl = document.getElementById('budget-total');
+    
+    // Filter inputs
+    const filterDateStart = document.getElementById('filter-budget-date-start');
+    const filterName = document.getElementById('filter-budget-name');
+    const filterBlock = document.getElementById('filter-budget-block');
+    const filterContract = document.getElementById('filter-budget-contract');
+    const filterVersion = document.getElementById('filter-budget-version');
+    const filterStatus = document.getElementById('filter-budget-status');
+    const filterDateModified = document.getElementById('filter-budget-date-modified');
+    const filterAmount = document.getElementById('filter-budget-amount');
+    const clearFiltersBtn = document.getElementById('clear-budget-filters');
     
     // Format number with spaces
     function formatNumber(num) {
@@ -1664,6 +1687,60 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         return `<span class="budget-status-badge ${status}">${statusText}</span>`;
     }
     
+    // Apply filters
+    function applyBudgetFilters() {
+        let filtered = budgets;
+        
+        // Filter by date start
+        if (filterDateStart && filterDateStart.value) {
+            filtered = filtered.filter(b => b.dateStart === filterDateStart.value);
+        }
+        
+        // Filter by name
+        if (filterName && filterName.value) {
+            const term = filterName.value.toLowerCase();
+            filtered = filtered.filter(b => b.name.toLowerCase().includes(term));
+        }
+        
+        // Filter by block
+        if (filterBlock && filterBlock.value) {
+            const term = filterBlock.value.toLowerCase();
+            filtered = filtered.filter(b => b.block.toLowerCase().includes(term));
+        }
+        
+        // Filter by contract number
+        if (filterContract && filterContract.value) {
+            const term = filterContract.value.toLowerCase();
+            filtered = filtered.filter(b => b.contractNumber.toLowerCase().includes(term));
+        }
+        
+        // Filter by version
+        if (filterVersion && filterVersion.value) {
+            const term = filterVersion.value.toLowerCase();
+            filtered = filtered.filter(b => b.version.toLowerCase().includes(term));
+        }
+        
+        // Filter by status
+        if (filterStatus && filterStatus.value) {
+            filtered = filtered.filter(b => b.status === filterStatus.value);
+        }
+        
+        // Filter by date modified
+        if (filterDateModified && filterDateModified.value) {
+            filtered = filtered.filter(b => b.dateModified === filterDateModified.value);
+        }
+        
+        // Filter by amount
+        if (filterAmount && filterAmount.value) {
+            const amount = parseFloat(filterAmount.value.replace(/\s/g, ''));
+            if (!isNaN(amount)) {
+                filtered = filtered.filter(b => b.totalAmount >= amount);
+            }
+        }
+        
+        renderBudgetList(filtered);
+    }
+    
     // Render budget list
     function renderBudgetList(filteredBudgets = null) {
         if (!budgetListTbody) return;
@@ -1671,105 +1748,42 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         const budgetsToRender = filteredBudgets || budgets;
         budgetListTbody.innerHTML = '';
         
-        budgetsToRender.forEach(budget => {
-            // Skip inactive if checkbox is unchecked
-            if (!showInactiveBudgets.checked && budget.status === 'inactive') {
-                return;
-            }
-            
+        let totalSum = 0;
+        
+        budgetsToRender.forEach((budget, index) => {
             const row = document.createElement('tr');
             if (budget.status === 'inactive') {
                 row.classList.add('inactive-budget');
             }
             
+            totalSum += budget.totalAmount;
+            
             row.innerHTML = `
+                <td>${index + 1}</td>
                 <td>${formatDate(budget.dateStart)}</td>
                 <td>${budget.name}</td>
-                <td>${budget.block || '-'}</td>
+                <td>${budget.block || '—'}</td>
                 <td>${budget.contractNumber}</td>
                 <td>${budget.version}</td>
                 <td>${getStatusBadge(budget.status, budget.statusText)}</td>
                 <td>${formatDate(budget.dateModified)}</td>
                 <td>${formatNumber(budget.totalAmount)} ${budget.currency}</td>
-                <td>
-                    <div class="budget-actions-dropdown">
-                        <button class="budget-actions-btn" onclick="toggleBudgetActions(event, ${budget.id})">⋮</button>
-                        <div class="budget-actions-menu" id="budget-actions-${budget.id}" style="display:none;">
-                            <button onclick="duplicateBudget(${budget.id})">Дублировать</button>
-                            <button onclick="editBudget(${budget.id})">Изменить</button>
-                            <button onclick="deleteBudget(${budget.id})">Удалить</button>
-                        </div>
-                    </div>
-                </td>
+                <td>${budget.comment || ''}</td>
             `;
             
-            // Click on row to open detail view (except on actions column)
-            row.addEventListener('click', (e) => {
-                if (!e.target.closest('.budget-actions-dropdown')) {
-                    openBudgetDetail(budget);
-                }
+            // Click on row to open detail view
+            row.addEventListener('click', () => {
+                openBudgetDetail(budget);
             });
             
             budgetListTbody.appendChild(row);
         });
-    }
-    
-    // Search filter
-    function applyBudgetSearch() {
-        const searchTerm = budgetListSearch.value.toLowerCase();
-        const filtered = budgets.filter(b => {
-            return b.name.toLowerCase().includes(searchTerm) ||
-                   b.contractNumber.toLowerCase().includes(searchTerm) ||
-                   b.block.toLowerCase().includes(searchTerm);
-        });
-        renderBudgetList(filtered);
-    }
-    
-    // Toggle actions dropdown
-    window.toggleBudgetActions = function(event, budgetId) {
-        event.stopPropagation();
-        const menu = document.getElementById(`budget-actions-${budgetId}`);
         
-        // Close all other menus
-        document.querySelectorAll('.budget-actions-menu').forEach(m => {
-            if (m.id !== `budget-actions-${budgetId}`) {
-                m.style.display = 'none';
-            }
-        });
-        
-        // Toggle current menu
-        if (menu) {
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        // Update total
+        if (budgetTotalEl) {
+            budgetTotalEl.textContent = formatNumber(totalSum) + ' UZS';
         }
-    };
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.budget-actions-dropdown')) {
-            document.querySelectorAll('.budget-actions-menu').forEach(m => {
-                m.style.display = 'none';
-            });
-        }
-    });
-    
-    // Budget actions
-    window.duplicateBudget = function(budgetId) {
-        console.log('Duplicate budget:', budgetId);
-        // TODO: Implement duplicate logic
-    };
-    
-    window.editBudget = function(budgetId) {
-        console.log('Edit budget:', budgetId);
-        // TODO: Show edit modal
-    };
-    
-    window.deleteBudget = function(budgetId) {
-        if (confirm('Вы уверены, что хотите удалить эту смету?')) {
-            budgets = budgets.filter(b => b.id !== budgetId);
-            renderBudgetList();
-            console.log('Deleted budget:', budgetId);
-        }
-    };
+    }
     
     // Open budget detail
     function openBudgetDetail(budget) {
@@ -1781,16 +1795,29 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         window.showBudgetDetailView(budgetData);
     }
     
-    // Event listeners
-    if (budgetListSearch) {
-        budgetListSearch.addEventListener('input', applyBudgetSearch);
+    // Clear filters
+    function clearBudgetFilters() {
+        if (filterDateStart) filterDateStart.value = '';
+        if (filterName) filterName.value = '';
+        if (filterBlock) filterBlock.value = '';
+        if (filterContract) filterContract.value = '';
+        if (filterVersion) filterVersion.value = '';
+        if (filterStatus) filterStatus.value = '';
+        if (filterDateModified) filterDateModified.value = '';
+        if (filterAmount) filterAmount.value = '';
+        applyBudgetFilters();
     }
     
-    if (showInactiveBudgets) {
-        showInactiveBudgets.addEventListener('change', () => {
-            renderBudgetList();
-        });
-    }
+    // Event listeners for filters
+    if (filterDateStart) filterDateStart.addEventListener('change', applyBudgetFilters);
+    if (filterName) filterName.addEventListener('input', applyBudgetFilters);
+    if (filterBlock) filterBlock.addEventListener('input', applyBudgetFilters);
+    if (filterContract) filterContract.addEventListener('input', applyBudgetFilters);
+    if (filterVersion) filterVersion.addEventListener('input', applyBudgetFilters);
+    if (filterStatus) filterStatus.addEventListener('change', applyBudgetFilters);
+    if (filterDateModified) filterDateModified.addEventListener('change', applyBudgetFilters);
+    if (filterAmount) filterAmount.addEventListener('input', applyBudgetFilters);
+    if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearBudgetFilters);
     
     // Initial render
     renderBudgetList();

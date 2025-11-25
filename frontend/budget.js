@@ -1115,4 +1115,8 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadBudget();
         };
     }
+    
+    // Export functions for use in other modules
+    window.renderBudget = renderBudget;
+    window.loadBudget = loadBudget;
 });

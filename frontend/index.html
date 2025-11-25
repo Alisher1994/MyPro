@@ -510,26 +510,54 @@
             
             <!-- Budget List View (default) -->
             <div id="budget-list-view">
-                <div class="budget-list-navbar">
-                    <div class="budget-list-navbar-right">
-                        <div class="budget-search-box">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"/>
-                                <path d="m21 21-4.35-4.35"/>
-                            </svg>
-                            <input type="search" id="budget-list-search" placeholder="Поиск смет...">
-                        </div>
-                        <label class="budget-filter-checkbox">
-                            <input type="checkbox" id="show-inactive-budgets" checked>
-                            <span>Показать не активные</span>
-                        </label>
-                    </div>
-                </div>
-                
                 <div class="budget-list-table-wrapper">
                     <table class="budget-list-table">
                         <thead>
-                            <tr>
+                            <tr class="filter-row">
+                                <th>
+                                    <label>Дата начала:</label>
+                                    <input type="date" id="filter-budget-date-start" class="filter-input">
+                                </th>
+                                <th>
+                                    <label>Название:</label>
+                                    <input type="text" id="filter-budget-name" class="filter-input" placeholder="Поиск...">
+                                </th>
+                                <th>
+                                    <label>Блок:</label>
+                                    <input type="text" id="filter-budget-block" class="filter-input" placeholder="Поиск...">
+                                </th>
+                                <th>
+                                    <label>№ Договора:</label>
+                                    <input type="text" id="filter-budget-contract" class="filter-input" placeholder="Поиск...">
+                                </th>
+                                <th>
+                                    <label>Версия:</label>
+                                    <input type="text" id="filter-budget-version" class="filter-input" placeholder="v1...">
+                                </th>
+                                <th>
+                                    <label>Статус:</label>
+                                    <select id="filter-budget-status" class="filter-input">
+                                        <option value="">Все</option>
+                                        <option value="draft">Черновик</option>
+                                        <option value="new">Новый</option>
+                                        <option value="approved">Утвержден</option>
+                                        <option value="inactive">Не активный</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <label>Дата изм.:</label>
+                                    <input type="date" id="filter-budget-date-modified" class="filter-input">
+                                </th>
+                                <th>
+                                    <label>Сумма:</label>
+                                    <input type="text" id="filter-budget-amount" class="filter-input" placeholder="0">
+                                </th>
+                                <th>
+                                    <button id="clear-budget-filters" class="clear-filters-btn" title="Очистить фильтры">✕</button>
+                                </th>
+                            </tr>
+                            <tr class="header-row">
+                                <th>№</th>
                                 <th>Дата начала</th>
                                 <th>Название сметы</th>
                                 <th>Блок</th>
@@ -538,12 +566,19 @@
                                 <th>Статус</th>
                                 <th>Дата редактирования</th>
                                 <th>Сумма</th>
-                                <th>Управление</th>
+                                <th>Комментарии</th>
                             </tr>
                         </thead>
                         <tbody id="budget-list-tbody">
                             <!-- Budget rows will be rendered here -->
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="8" style="text-align:right;font-weight:600;">Итого:</td>
+                                <td id="budget-total" style="font-weight:600;">0</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
