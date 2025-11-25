@@ -203,6 +203,163 @@ body {
     text-overflow: ellipsis;
 }
 
+/* Hierarchical Menu Styles */
+.object-item {
+    margin-bottom: 4px;
+}
+
+.object-item > .object-header {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-md);
+    height: var(--height-row);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background 0.05s ease;
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+.object-item > .object-header:hover {
+    background: var(--office-gray-100);
+}
+
+.object-item > .object-header.selected {
+    background: var(--excel-primary-lighter);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary-hover);
+    font-weight: 600;
+}
+
+.object-expand-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+    stroke: var(--office-gray-600);
+}
+
+.object-expand-icon.expanded {
+    transform: rotate(90deg);
+}
+
+.object-header.selected .object-expand-icon {
+    stroke: var(--excel-primary);
+}
+
+.blocks-container {
+    display: none;
+    padding-left: 24px;
+    margin-top: 2px;
+}
+
+.blocks-container.expanded {
+    display: block;
+}
+
+.block-item {
+    margin-bottom: 2px;
+}
+
+.block-header {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-md);
+    height: 36px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background 0.05s ease;
+    font-size: var(--font-size-sm);
+    position: relative;
+}
+
+.block-header:hover {
+    background: var(--office-gray-100);
+}
+
+.block-header.selected {
+    background: var(--excel-primary-lighter);
+    color: var(--excel-primary-hover);
+    font-weight: 600;
+}
+
+.block-color-indicator {
+    width: 3px;
+    height: 20px;
+    border-radius: 2px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.block-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.block-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.block-status-dot.active {
+    background: #28a745;
+}
+
+.block-status-dot.paused {
+    background: #ffc107;
+}
+
+.block-status-dot.inactive {
+    background: #6c757d;
+}
+
+.sections-container {
+    display: none;
+    padding-left: 20px;
+    margin-top: 2px;
+}
+
+.sections-container.expanded {
+    display: block;
+}
+
+.section-item {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-md);
+    height: 32px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background 0.05s ease;
+    font-size: var(--font-size-sm);
+    color: var(--office-gray-700);
+    margin-bottom: 1px;
+}
+
+.section-item:hover {
+    background: var(--office-gray-100);
+}
+
+.section-item.active {
+    background: var(--excel-primary-light);
+    color: var(--excel-primary);
+    font-weight: 600;
+}
+
+.section-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    stroke: currentColor;
+    flex-shrink: 0;
+}
+
 /* ========================================
    MAIN CONTENT (Office Ribbon Style)
    ======================================== */

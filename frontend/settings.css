@@ -1,0 +1,197 @@
+/* ============================
+   SETTINGS TAB STYLES
+   ============================ */
+
+.settings-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Blocks Table */
+#blocks-table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#blocks-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#blocks-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+#blocks-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#blocks-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.15s;
+}
+
+#blocks-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+#blocks-table td {
+    padding: 12px 16px;
+    color: #212529;
+    font-size: 14px;
+}
+
+/* Status Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.badge-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.badge-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.badge-secondary {
+    background-color: #e9ecef;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+/* Icon Buttons */
+.btn-icon {
+    background: none;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background-color: #e9ecef;
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: #495057;
+}
+
+.btn-icon.btn-danger:hover {
+    background-color: #f8d7da;
+}
+
+.btn-icon.btn-danger:hover svg {
+    stroke: #dc3545;
+}
+
+/* Block Modal */
+#block-modal .modal-content {
+    max-width: 500px;
+}
+
+#block-modal form label {
+    display: block;
+    margin: 16px 0 6px 0;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+}
+
+#block-modal form input[type="text"],
+#block-modal form input[type="number"],
+#block-modal form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#block-modal form input:focus,
+#block-modal form select:focus {
+    outline: none;
+    border-color: #0057d8;
+    box-shadow: 0 0 0 3px rgba(0, 87, 216, 0.1);
+}
+
+#block-modal .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+#block-modal .btn-primary,
+#block-modal .btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#block-modal .btn-primary {
+    background-color: #0057d8;
+    color: white;
+}
+
+#block-modal .btn-primary:hover {
+    background-color: #0046b3;
+}
+
+#block-modal .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+#block-modal .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 10px;
+    }
+    
+    #blocks-table th,
+    #blocks-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    .badge {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+}

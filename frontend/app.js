@@ -375,29 +375,211 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Global state for current block and section
+window.currentObjectId = null;
+window.currentBlockId = null;
+window.currentSection = null;
+
+const SECTIONS = [
+    { id: 'analysis', name: 'Аналитика', icon: 'bar-chart' },
+    { id: 'budget', name: 'Смета', icon: 'file-text' },
+    { id: 'finances', name: 'Финансы', icon: 'dollar-sign' },
+    { id: 'gpr', name: 'ГПР', icon: 'calendar' },
+    { id: 'smr', name: 'СМР', icon: 'tool' }
+];
+
 async function renderList() {
     const list = document.getElementById('object-list');
     list.innerHTML = '';
     const objects = await fetchObjects();
-    objects.forEach((obj, index) => {
-        const li = document.createElement('li');
-        // Icon SVG
-        const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house-plus-icon lucide-house-plus" style="margin-right: 8px; color: #555;"><path d="M12.35 21H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 .71-1.53l7-6a2 2 0 0 1 2.58 0l7 6A2 2 0 0 1 21 10v2.35"/><path d="M14.8 12.4A1 1 0 0 0 14 12h-4a1 1 0 0 0-1 1v8"/><path d="M15 18h6"/><path d="M18 15v6"/></svg>`;
-        li.innerHTML = `${icon} <span>${index + 1}. ${obj.name}</span>`;
-        li.dataset.id = obj.id; // Store ID for restoration
-        li.onclick = () => {
-            selectObject(obj.id, li);
-            // Close sidebar on mobile selection
-            if (window.innerWidth <= 700) {
-                sidebar.classList.remove('open');
+    
+    for (let i = 0; i < objects.length; i++) {
+        const obj = objects[i];
+        const objectItem = document.createElement('div');
+        objectItem.className = 'object-item';
+        objectItem.dataset.id = obj.id;
+        
+        // Object header
+        const objectHeader = document.createElement('div');
+        objectHeader.className = 'object-header';
+        if (obj.id === selectedId) objectHeader.classList.add('selected');
+        
+        objectHeader.innerHTML = `
+            <svg class="object-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span>${i + 1}. ${obj.name}</span>
+        `;
+        
+        // Blocks container
+        const blocksContainer = document.createElement('div');
+        blocksContainer.className = 'blocks-container';
+        
+        // Click handler for object header
+        objectHeader.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            
+            // Toggle expansion
+            const expandIcon = objectHeader.querySelector('.object-expand-icon');
+            const isExpanded = blocksContainer.classList.contains('expanded');
+            
+            if (!isExpanded) {
+                // Expand and load blocks
+                expandIcon.classList.add('expanded');
+                blocksContainer.classList.add('expanded');
+                await loadBlocksForObject(obj.id, blocksContainer);
+            } else {
+                // Collapse
+                expandIcon.classList.remove('expanded');
+                blocksContainer.classList.remove('expanded');
             }
-        };
-        if (obj.id === selectedId) li.classList.add('selected');
-        list.appendChild(li);
-    });
+            
+            // Select object
+            selectObject(obj.id, objectHeader);
+        });
+        
+        objectItem.appendChild(objectHeader);
+        objectItem.appendChild(blocksContainer);
+        list.appendChild(objectItem);
+    }
 
     // Restore state after list render
     restoreState();
+}
+
+async function loadBlocksForObject(objectId, container) {
+    try {
+        const response = await fetch(`/objects/${objectId}/blocks/`);
+        if (!response.ok) throw new Error('Failed to load blocks');
+        
+        const blocks = await response.json();
+        container.innerHTML = '';
+        
+        if (blocks.length === 0) {
+            container.innerHTML = '<div style="padding: 8px 12px; color: #999; font-size: 12px;">Нет блоков. Добавьте в Настройках.</div>';
+            return;
+        }
+        
+        blocks.forEach(block => {
+            const blockItem = document.createElement('div');
+            blockItem.className = 'block-item';
+            blockItem.dataset.blockId = block.id;
+            
+            const blockHeader = document.createElement('div');
+            blockHeader.className = 'block-header';
+            if (block.id === window.currentBlockId) blockHeader.classList.add('selected');
+            
+            blockHeader.innerHTML = `
+                <div class="block-color-indicator" style="background: ${block.color};"></div>
+                <span class="block-name">${block.name}</span>
+                <span class="block-status-dot ${block.status}"></span>
+            `;
+            
+            const sectionsContainer = document.createElement('div');
+            sectionsContainer.className = 'sections-container';
+            
+            // Render sections
+            SECTIONS.forEach(section => {
+                const sectionItem = document.createElement('div');
+                sectionItem.className = 'section-item';
+                sectionItem.dataset.section = section.id;
+                
+                if (block.id === window.currentBlockId && section.id === window.currentSection) {
+                    sectionItem.classList.add('active');
+                }
+                
+                sectionItem.innerHTML = `
+                    <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        ${getSectionIcon(section.icon)}
+                    </svg>
+                    <span>${section.name}</span>
+                `;
+                
+                sectionItem.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectBlockSection(objectId, block.id, section.id);
+                });
+                
+                sectionsContainer.appendChild(sectionItem);
+            });
+            
+            blockHeader.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Toggle sections
+                const isExpanded = sectionsContainer.classList.contains('expanded');
+                if (!isExpanded) {
+                    sectionsContainer.classList.add('expanded');
+                } else {
+                    sectionsContainer.classList.remove('expanded');
+                }
+                
+                // Select block
+                document.querySelectorAll('.block-header').forEach(h => h.classList.remove('selected'));
+                blockHeader.classList.add('selected');
+                window.currentBlockId = block.id;
+            });
+            
+            blockItem.appendChild(blockHeader);
+            blockItem.appendChild(sectionsContainer);
+            container.appendChild(blockItem);
+        });
+    } catch (error) {
+        console.error('Error loading blocks:', error);
+        container.innerHTML = '<div style="padding: 8px 12px; color: #d13438; font-size: 12px;">Ошибка загрузки блоков</div>';
+    }
+}
+
+function getSectionIcon(iconName) {
+    const icons = {
+        'bar-chart': '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+        'file-text': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>',
+        'dollar-sign': '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+        'calendar': '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+        'tool': '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'
+    };
+    return icons[iconName] || icons['file-text'];
+}
+
+function selectBlockSection(objectId, blockId, sectionId) {
+    window.currentObjectId = objectId;
+    window.currentBlockId = blockId;
+    window.currentSection = sectionId;
+    
+    // Update UI
+    document.querySelectorAll('.section-item').forEach(item => item.classList.remove('active'));
+    const selectedSection = document.querySelector(`[data-block-id="${blockId}"] [data-section="${sectionId}"]`);
+    if (selectedSection) selectedSection.classList.add('active');
+    
+    // Switch to corresponding ribbon tab
+    const ribbonMap = {
+        'analysis': 'analysis',
+        'budget': 'budget',
+        'finances': 'finances',
+        'gpr': 'gpr',
+        'smr': 'smr'
+    };
+    
+    const ribbonTab = ribbonMap[sectionId];
+    if (ribbonTab) {
+        const ribbonButton = document.querySelector(`[data-ribbon="${ribbonTab}"]`);
+        if (ribbonButton) ribbonButton.click();
+    }
+    
+    // Update blocks module if settings
+    if (sectionId === 'settings' && typeof BlocksModule !== 'undefined') {
+        BlocksModule.setCurrentObject(objectId);
+    }
+    
+    // Close sidebar on mobile
+    if (window.innerWidth <= 700) {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) sidebar.classList.remove('open');
+    }
 }
 
 function showTabs(show) {
@@ -429,13 +611,14 @@ window.addEventListener('resize', () => {
     }
 });
 
-function selectObject(id, li) {
+function selectObject(id, headerElement) {
     selectedId = id;
+    window.currentObjectId = id;
     // Save selected object
     localStorage.setItem('selectedId', id);
 
-    document.querySelectorAll('#object-list li').forEach(el => el.classList.remove('selected'));
-    if (li) li.classList.add('selected');
+    document.querySelectorAll('.object-header').forEach(el => el.classList.remove('selected'));
+    if (headerElement) headerElement.classList.add('selected');
 
     showTabs(true);
 
@@ -462,9 +645,12 @@ function selectObject(id, li) {
 
 function clearSelection() {
     selectedId = null;
+    window.currentObjectId = null;
+    window.currentBlockId = null;
+    window.currentSection = null;
     localStorage.removeItem('selectedId');
     showTabs(false);
-    document.querySelectorAll('#object-list li').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.object-header').forEach(el => el.classList.remove('selected'));
 }
 
 // --- State Restoration ---
@@ -472,10 +658,13 @@ function restoreState() {
     const savedId = localStorage.getItem('selectedId');
     if (savedId) {
         const id = parseInt(savedId);
-        // Find list item
-        const li = document.querySelector(`#object-list li[data-id="${id}"]`);
-        if (li) {
-            selectObject(id, li);
+        // Find object header
+        const objectItem = document.querySelector(`.object-item[data-id="${id}"]`);
+        if (objectItem) {
+            const objectHeader = objectItem.querySelector('.object-header');
+            if (objectHeader) {
+                selectObject(id, objectHeader);
+            }
         }
     }
 }
@@ -540,7 +729,7 @@ function downloadIncome() {
     }
 
     // Получаем название объекта
-    const objectName = document.querySelector('#object-list li.selected')?.textContent.trim() || 'Объект';
+    const objectName = document.querySelector('.object-header.selected span')?.textContent.trim() || 'Объект';
 
     // Форматируем дату
     const now = new Date();
@@ -869,15 +1058,17 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     function populateDropdown() {
         if (!objectDropdown || !objectListEl) return;
         objectDropdown.innerHTML = '';
-        objectListEl.querySelectorAll('li').forEach(li => {
+        objectListEl.querySelectorAll('.object-item').forEach(objectItem => {
+            const objectHeader = objectItem.querySelector('.object-header');
+            const objectNameSpan = objectHeader.querySelector('span');
             const item = document.createElement('div');
             item.className = 'dropdown-item';
-            item.dataset.id = li.dataset.id;
-            item.innerHTML = li.innerHTML;
+            item.dataset.id = objectItem.dataset.id;
+            item.innerHTML = objectHeader.innerHTML;
             item.onclick = () => {
                 const id = item.dataset.id;
-                const liEl = document.querySelector(`#object-list li[data-id="${id}"]`);
-                if (liEl) selectObject(Number(id), liEl);
+                const targetHeader = document.querySelector(`.object-item[data-id="${id}"] .object-header`);
+                if (targetHeader) selectObject(Number(id), targetHeader);
                 objectDropdown.style.display = 'none';
             };
             objectDropdown.appendChild(item);
@@ -1086,10 +1277,18 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                     financeCreationGroup.style.display = '';
                 }
             }
-        } else if (tabName === 'gpr' || tabName === 'smr' || tabName === 'settings') {
+        } else if (tabName === 'gpr' || tabName === 'smr') {
             // Clear all content tabs for undeveloped sections
             const allContentTabs = document.querySelectorAll('.content-tab');
             allContentTabs.forEach(tab => tab.classList.remove('active'));
+        } else if (tabName === 'settings') {
+            setActiveTab('settings');
+            // Load blocks for current object
+            if (typeof BlocksModule !== 'undefined' && window.currentObjectId) {
+                BlocksModule.setCurrentObject(window.currentObjectId);
+            } else if (typeof BlocksModule !== 'undefined' && selectedId) {
+                BlocksModule.setCurrentObject(selectedId);
+            }
         }
         // Home tab doesn't switch content
     }
