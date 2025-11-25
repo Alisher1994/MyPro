@@ -1493,3 +1493,89 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         });
     }
 })();
+
+// =====================
+// BUDGET LIST/DETAIL VIEW SWITCHING
+// =====================
+(function() {
+    const budgetListView = document.getElementById('budget-list-view');
+    const budgetDetailView = document.getElementById('budget-detail-view');
+    const backToBudgetList = document.getElementById('back-to-budget-list');
+    
+    // Ribbon controls
+    const budgetListControls = document.getElementById('budget-list-controls');
+    const budgetDetailControls = document.getElementById('budget-detail-controls');
+    const budgetDetailSeparator1 = document.getElementById('budget-detail-separator-1');
+    const budgetDetailToggleGroup = document.getElementById('budget-detail-toggle-group');
+    const budgetDetailSeparator2 = document.getElementById('budget-detail-separator-2');
+    const budgetDetailPhotoGroup = document.getElementById('budget-detail-photo-group');
+    const budgetDetailSeparator3 = document.getElementById('budget-detail-separator-3');
+    const budgetDetailFilterGroup = document.getElementById('budget-detail-filter-group');
+    
+    const ribbonAddBudget = document.getElementById('ribbon-add-budget');
+    
+    // Function to show budget list view
+    function showBudgetListView() {
+        if (budgetListView) budgetListView.style.display = 'block';
+        if (budgetDetailView) budgetDetailView.style.display = 'none';
+        
+        // Show list controls, hide detail controls
+        if (budgetListControls) budgetListControls.style.display = '';
+        if (budgetDetailControls) budgetDetailControls.style.display = 'none';
+        if (budgetDetailSeparator1) budgetDetailSeparator1.style.display = 'none';
+        if (budgetDetailToggleGroup) budgetDetailToggleGroup.style.display = 'none';
+        if (budgetDetailSeparator2) budgetDetailSeparator2.style.display = 'none';
+        if (budgetDetailPhotoGroup) budgetDetailPhotoGroup.style.display = 'none';
+        if (budgetDetailSeparator3) budgetDetailSeparator3.style.display = 'none';
+        if (budgetDetailFilterGroup) budgetDetailFilterGroup.style.display = 'none';
+    }
+    
+    // Function to show budget detail view
+    function showBudgetDetailView(budgetData) {
+        if (budgetListView) budgetListView.style.display = 'none';
+        if (budgetDetailView) budgetDetailView.style.display = 'block';
+        
+        // Hide list controls, show detail controls
+        if (budgetListControls) budgetListControls.style.display = 'none';
+        if (budgetDetailControls) budgetDetailControls.style.display = '';
+        if (budgetDetailSeparator1) budgetDetailSeparator1.style.display = '';
+        if (budgetDetailToggleGroup) budgetDetailToggleGroup.style.display = '';
+        if (budgetDetailSeparator2) budgetDetailSeparator2.style.display = '';
+        if (budgetDetailPhotoGroup) budgetDetailPhotoGroup.style.display = '';
+        if (budgetDetailSeparator3) budgetDetailSeparator3.style.display = '';
+        if (budgetDetailFilterGroup) budgetDetailFilterGroup.style.display = '';
+        
+        // Update detail view title and status
+        const titleEl = document.getElementById('budget-detail-title');
+        const statusEl = document.getElementById('budget-detail-status');
+        if (budgetData && titleEl) {
+            titleEl.textContent = budgetData.name || 'Название сметы';
+        }
+        if (budgetData && statusEl) {
+            statusEl.textContent = budgetData.status || 'Черновик';
+            statusEl.className = 'budget-status-badge ' + (budgetData.statusClass || 'draft');
+        }
+    }
+    
+    // Back button
+    if (backToBudgetList) {
+        backToBudgetList.addEventListener('click', () => {
+            showBudgetListView();
+        });
+    }
+    
+    // Ribbon "Add Budget" button
+    if (ribbonAddBudget) {
+        ribbonAddBudget.addEventListener('click', () => {
+            // TODO: Show add budget modal
+            console.log('Add budget clicked');
+        });
+    }
+    
+    // Initialize - show list view by default
+    showBudgetListView();
+    
+    // Export functions for use in other modules
+    window.showBudgetListView = showBudgetListView;
+    window.showBudgetDetailView = showBudgetDetailView;
+})();

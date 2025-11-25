@@ -617,17 +617,12 @@
 /* Budget List Navbar */
 .budget-list-navbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding: var(--spacing-md) var(--spacing-lg);
     background: var(--office-white);
     border-bottom: 1px solid var(--office-gray-300);
     margin-bottom: var(--spacing-lg);
-}
-
-.budget-list-navbar-left {
-    display: flex;
-    gap: var(--spacing-md);
 }
 
 .budget-list-navbar-right {
