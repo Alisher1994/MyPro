@@ -483,6 +483,63 @@
             </div>
         </div>
 
+        <!-- Budget Modal -->
+        <div id="budget-modal" class="modal" style="display:none;">
+            <div class="modal-content income-modal-enhanced">
+                <span class="modal-close" id="budget-modal-close">&times;</span>
+                <h3 id="budget-modal-title">Добавить смету</h3>
+                <form id="budget-form" class="income-form-grid">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Дата начала разработки</label>
+                            <input type="date" id="budget-date-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label>№ Договора</label>
+                            <input type="text" id="budget-contract-number" required placeholder="ДГП-123">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Название сметы</label>
+                            <input type="text" id="budget-name" required placeholder="ЖК Березка Корпус 1">
+                        </div>
+                        <div class="form-group">
+                            <label>Блок</label>
+                            <input type="text" id="budget-block" placeholder="Блок А">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Версия</label>
+                            <input type="text" id="budget-version" required placeholder="v1" value="v1">
+                        </div>
+                        <div class="form-group">
+                            <label>Статус</label>
+                            <select id="budget-status" required>
+                                <option value="draft">Черновик</option>
+                                <option value="new">Новый</option>
+                                <option value="approved">Утвержден</option>
+                                <option value="inactive">Не активный</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Комментарии</label>
+                            <textarea id="budget-comment" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Сохранить</button>
+                </form>
+                <input type="hidden" id="budget-edit-id">
+            </div>
+        </div>
+
         <div id="tab-budget" class="tab-content" style="display:none;">
             <div class="tab-actions">
                 <button class="icon-btn" id="add-budget-group" title="Добавить этап">
@@ -552,6 +609,7 @@
                                     <label>Сумма:</label>
                                     <input type="text" id="filter-budget-amount" class="filter-input" placeholder="0">
                                 </th>
+                                <th></th>
                                 <th>
                                     <button id="clear-budget-filters" class="clear-filters-btn" title="Очистить фильтры">✕</button>
                                 </th>
@@ -567,6 +625,7 @@
                                 <th>Дата редактирования</th>
                                 <th>Сумма</th>
                                 <th>Комментарии</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="budget-list-tbody">
@@ -576,6 +635,7 @@
                             <tr>
                                 <td colspan="8" style="text-align:right;font-weight:600;">Итого:</td>
                                 <td id="budget-total" style="font-weight:600;">0</td>
+                                <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                             </tr>
                         </tfoot>

@@ -1769,11 +1769,45 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 <td>${formatDate(budget.dateModified)}</td>
                 <td>${formatNumber(budget.totalAmount)} ${budget.currency}</td>
                 <td>${budget.comment || ''}</td>
+                <td>
+                    <button class="office-icon-btn" onclick="event.stopPropagation(); window.toggleBudgetActionsMenu(event, ${budget.id})" title="Управление">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1"/>
+                            <circle cx="19" cy="12" r="1"/>
+                            <circle cx="5" cy="12" r="1"/>
+                        </svg>
+                    </button>
+                    <div class="budget-actions-menu" id="budget-actions-${budget.id}" style="display:none;">
+                        <button onclick="event.stopPropagation(); window.editBudgetItem(${budget.id})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                            </svg>
+                            Изменить
+                        </button>
+                        <button onclick="event.stopPropagation(); window.duplicateBudgetItem(${budget.id})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                            </svg>
+                            Дублировать
+                        </button>
+                        <button onclick="event.stopPropagation(); window.deleteBudgetItem(${budget.id})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"/>
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            </svg>
+                            Удалить
+                        </button>
+                    </div>
+                </td>
             `;
             
-            // Click on row to open detail view
-            row.addEventListener('click', () => {
-                openBudgetDetail(budget);
+            // Click on row to open detail view (except on last cell)
+            row.addEventListener('click', (e) => {
+                if (!e.target.closest('td:last-child')) {
+                    openBudgetDetail(budget);
+                }
             });
             
             budgetListTbody.appendChild(row);
@@ -1819,7 +1853,170 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     if (filterAmount) filterAmount.addEventListener('input', applyBudgetFilters);
     if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearBudgetFilters);
     
+    // Toggle actions menu
+    window.toggleBudgetActionsMenu = function(event, budgetId) {
+        event.stopPropagation();
+        const menu = document.getElementById(`budget-actions-${budgetId}`);
+        
+        // Close all other menus
+        document.querySelectorAll('.budget-actions-menu').forEach(m => {
+            if (m.id !== `budget-actions-${budgetId}`) {
+                m.style.display = 'none';
+            }
+        });
+        
+        // Toggle current menu
+        if (menu) {
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+    };
+    
+    // Close menus when clicking outside
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.budget-actions-menu').forEach(m => {
+            m.style.display = 'none';
+        });
+    });
+    
+    // Edit budget
+    window.editBudgetItem = function(budgetId) {
+        const budget = budgets.find(b => b.id === budgetId);
+        if (!budget) return;
+        
+        document.getElementById('budget-modal-title').textContent = 'Изменить смету';
+        document.getElementById('budget-date-start').value = budget.dateStart;
+        document.getElementById('budget-name').value = budget.name;
+        document.getElementById('budget-block').value = budget.block;
+        document.getElementById('budget-contract-number').value = budget.contractNumber;
+        document.getElementById('budget-version').value = budget.version;
+        document.getElementById('budget-status').value = budget.status;
+        document.getElementById('budget-comment').value = budget.comment;
+        document.getElementById('budget-edit-id').value = budget.id;
+        
+        document.getElementById('budget-modal').style.display = 'flex';
+    };
+    
+    // Duplicate budget
+    window.duplicateBudgetItem = function(budgetId) {
+        const budget = budgets.find(b => b.id === budgetId);
+        if (!budget) return;
+        
+        const newBudget = {
+            ...budget,
+            id: Math.max(...budgets.map(b => b.id)) + 1,
+            contractNumber: '', // Reset contract number
+            dateStart: new Date().toISOString().split('T')[0],
+            dateModified: new Date().toISOString().split('T')[0]
+        };
+        
+        budgets.push(newBudget);
+        renderBudgetList();
+    };
+    
+    // Delete budget
+    window.deleteBudgetItem = function(budgetId) {
+        if (confirm('Вы уверены, что хотите удалить эту смету?')) {
+            budgets = budgets.filter(b => b.id !== budgetId);
+            renderBudgetList();
+        }
+    };
+    
     // Initial render
     renderBudgetList();
+    
+    // Export budgets array for external use
+    window.budgetsData = budgets;
+})();
+
+// =====================
+// BUDGET MODAL - ADD/EDIT
+// =====================
+(function() {
+    const modal = document.getElementById('budget-modal');
+    const closeBtn = document.getElementById('budget-modal-close');
+    const form = document.getElementById('budget-form');
+    const ribbonAddBudget = document.getElementById('ribbon-add-budget');
+    const editIdInput = document.getElementById('budget-edit-id');
+    
+    // Open modal for new budget
+    if (ribbonAddBudget) {
+        ribbonAddBudget.addEventListener('click', () => {
+            document.getElementById('budget-modal-title').textContent = 'Добавить смету';
+            form.reset();
+            editIdInput.value = '';
+            document.getElementById('budget-date-start').value = new Date().toISOString().split('T')[0];
+            modal.style.display = 'flex';
+        });
+    }
+    
+    // Close modal
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+    
+    // Close on outside click
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // Submit form
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const budgetData = {
+                dateStart: document.getElementById('budget-date-start').value,
+                name: document.getElementById('budget-name').value,
+                block: document.getElementById('budget-block').value,
+                contractNumber: document.getElementById('budget-contract-number').value,
+                version: document.getElementById('budget-version').value,
+                status: document.getElementById('budget-status').value,
+                comment: document.getElementById('budget-comment').value,
+                dateModified: new Date().toISOString().split('T')[0],
+                currency: 'UZS',
+                totalAmount: 0
+            };
+            
+            // Set status text based on status value
+            const statusMap = {
+                'draft': 'Черновик',
+                'new': 'Новый',
+                'approved': 'Утвержден',
+                'inactive': 'Не активный'
+            };
+            budgetData.statusText = statusMap[budgetData.status];
+            
+            const editId = editIdInput.value;
+            
+            if (editId) {
+                // Edit existing budget
+                const budget = window.budgetsData.find(b => b.id === parseInt(editId));
+                if (budget) {
+                    Object.assign(budget, budgetData);
+                }
+            } else {
+                // Add new budget
+                budgetData.id = window.budgetsData.length > 0 ? Math.max(...window.budgetsData.map(b => b.id)) + 1 : 1;
+                window.budgetsData.push(budgetData);
+            }
+            
+            // Re-render list
+            if (typeof window.renderBudgetList === 'function') {
+                // Find the render function in the budget list module
+                const event = new CustomEvent('budgetUpdated');
+                document.dispatchEvent(event);
+            }
+            
+            modal.style.display = 'none';
+            form.reset();
+            
+            // Trigger re-render by dispatching event
+            window.location.reload(); // Temporary solution, will be replaced with proper state management
+        });
+    }
 })();
 

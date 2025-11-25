@@ -659,18 +659,25 @@
 }
 
 .clear-filters-btn {
+    width: 28px;
+    height: 28px;
     background: #dc3545;
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
+    border-radius: 3px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.2s;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
 }
 
 .clear-filters-btn:hover {
     background: #c82333;
+    transform: scale(1.05);
 }
 
 /* Header Row */
@@ -710,6 +717,11 @@
     vertical-align: middle;
 }
 
+.budget-list-table td:first-child {
+    padding-left: var(--spacing-lg);
+    text-align: left;
+}
+
 /* Footer */
 .budget-list-table tfoot {
     background: var(--office-gray-50);
@@ -723,31 +735,36 @@
 
 .budget-status-badge {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 12px;
+    padding: 3px 10px;
+    border-radius: 3px;
     font-size: var(--font-size-xs);
     font-weight: 600;
     white-space: nowrap;
+    border: 1px solid transparent;
 }
 
 .budget-status-badge.draft {
-    background: #fff3cd;
-    color: #856404;
+    background: #fff4e5;
+    color: #996515;
+    border-color: #ffd966;
 }
 
 .budget-status-badge.new {
-    background: #d1ecf1;
-    color: #0c5460;
+    background: #e7f3ff;
+    color: #0066cc;
+    border-color: #99ccff;
 }
 
 .budget-status-badge.approved {
-    background: #d4edda;
-    color: #155724;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-color: #81c784;
 }
 
 .budget-status-badge.inactive {
-    background: #f8d7da;
-    color: #721c24;
+    background: #fbe9e7;
+    color: #c62828;
+    border-color: #ef9a9a;
 }
 
 /* Budget Detail View Navbar */
@@ -759,6 +776,26 @@
     background: var(--office-white);
     border-bottom: 1px solid var(--office-gray-300);
     margin-bottom: var(--spacing-lg);
+}
+
+.budget-detail-navbar .budget-navbar-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--office-gray-400);
+    background: var(--office-white);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.budget-detail-navbar .budget-navbar-btn:hover {
+    background: var(--office-gray-100);
+    border-color: var(--office-gray-500);
 }
 
 .budget-detail-info {
@@ -773,4 +810,45 @@
     font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--text-primary);
+}
+
+/* Budget Actions Dropdown */
+.budget-actions-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    min-width: 160px;
+    z-index: 1000;
+    padding: 4px 0;
+}
+
+.budget-actions-menu button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.budget-actions-menu button:hover {
+    background: var(--office-gray-100);
+}
+
+.budget-actions-menu button svg {
+    flex-shrink: 0;
+}
+
+.budget-list-table td:last-child {
+    position: relative;
 }
