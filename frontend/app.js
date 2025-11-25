@@ -191,6 +191,35 @@ function renderIncomeTable() {
     });
 }
 
+// Load budget blocks from approved budgets
+async function loadBudgetBlocks() {
+    try {
+        const objectId = window.currentObjectId || 1;
+        const response = await fetch(`/objects/${objectId}/budgets/`);
+        if (response.ok) {
+            const budgets = await response.json();
+            // Filter only approved budgets and get unique blocks
+            const approvedBudgets = budgets.filter(b => b.status === 'approved');
+            const blocks = [...new Set(approvedBudgets.map(b => b.block).filter(b => b && b.trim()))];
+            
+            const select = document.getElementById('income-budget-block');
+            if (select) {
+                // Keep first option
+                select.innerHTML = '<option value="">Выберите блок</option>';
+                // Add blocks
+                blocks.forEach(block => {
+                    const option = document.createElement('option');
+                    option.value = block;
+                    option.textContent = block;
+                    select.appendChild(option);
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error loading budget blocks:', error);
+    }
+}
+
 document.getElementById('add-income').onclick = function () {
     document.getElementById('income-modal').style.display = 'flex';
     document.getElementById('income-form').reset();
@@ -198,6 +227,9 @@ document.getElementById('add-income').onclick = function () {
     document.getElementById('income-modal').dataset.photo = '';
     document.getElementById('income-edit-index').value = '';
     document.getElementById('income-date').value = new Date().toISOString().slice(0, 10);
+    
+    // Load budget blocks from approved budgets
+    loadBudgetBlocks();
     editingIncomeId = null;
 };
 
@@ -250,6 +282,13 @@ document.getElementById('income-form').onsubmit = async function (e) {
         formData.append('source_object_id', sourceObjectId);
     }
     formData.append('currency', document.getElementById('income-currency').value);
+    
+    // Add budget block
+    const budgetBlock = document.getElementById('income-budget-block').value;
+    if (budgetBlock) {
+        formData.append('block', budgetBlock);
+    }
+    
     if (photoInput.files[0]) {
         formData.append('photo', photoInput.files[0]);
     }

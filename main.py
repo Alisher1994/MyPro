@@ -37,7 +37,7 @@ async def get_incomes(object_id: int):
     try:
         query = """
             SELECT i.id, i.date, i.photo, i.amount, i.sender, i.receiver, i.comment, 
-                   i.operation_type, i.source_object_id, i.currency, o.name as source_object_name
+                   i.operation_type, i.source_object_id, i.currency, i.block, o.name as source_object_name
             FROM incomes i
             LEFT JOIN objects o ON i.source_object_id = o.id
             WHERE i.object_id=$1 
@@ -57,7 +57,8 @@ async def get_incomes(object_id: int):
                 "operation_type": row["operation_type"],
                 "source_object_id": row["source_object_id"],
                 "source_object_name": row["source_object_name"],
-                "currency": row["currency"]
+                "currency": row["currency"],
+                "block": row["block"]
             } for row in rows
         ]
     except Exception as e:
@@ -90,7 +91,7 @@ async def uploads_list():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/objects/{object_id}/incomes/")
-async def add_income(object_id: int, date: str = Form(...), amount: float = Form(...), sender: str = Form(...), receiver: str = Form(...), comment: str = Form(""), photo: UploadFile = File(None), operation_type: str = Form("income"), source_object_id: int = Form(None), currency: str = Form("UZS")):
+async def add_income(object_id: int, date: str = Form(...), amount: float = Form(...), sender: str = Form(...), receiver: str = Form(...), comment: str = Form(""), photo: UploadFile = File(None), operation_type: str = Form("income"), source_object_id: int = Form(None), currency: str = Form("UZS"), block: str = Form("")):
     try:
         print(f"Adding income for object {object_id}. Date: {date}, Amount: {amount}, Photo: {photo.filename if photo else 'None'}")
         from datetime import date as dtdateclass
@@ -112,12 +113,12 @@ async def add_income(object_id: int, date: str = Form(...), amount: float = Form
         except Exception:
             raise HTTPException(status_code=400, detail="Некорректный формат даты (ожидается YYYY-MM-DD)")
         query = """
-            INSERT INTO incomes (object_id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-            RETURNING id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency;
+            INSERT INTO incomes (object_id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency, block)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING id, date, photo, amount, sender, receiver, comment, operation_type, source_object_id, currency, block;
         """
         async with app.state.db.acquire() as connection:
-            row = await connection.fetchrow(query, object_id, date_obj, photo_path, amount, sender, receiver, comment, operation_type, source_object_id, currency)
+            row = await connection.fetchrow(query, object_id, date_obj, photo_path, amount, sender, receiver, comment, operation_type, source_object_id, currency, block)
         return {
             "id": row["id"],
             "date": row["date"].isoformat() if row["date"] else None,
@@ -128,7 +129,8 @@ async def add_income(object_id: int, date: str = Form(...), amount: float = Form
             "comment": row["comment"],
             "operation_type": row["operation_type"],
             "source_object_id": row["source_object_id"],
-            "currency": row["currency"]
+            "currency": row["currency"],
+            "block": row["block"]
         }
     except Exception as e:
         import traceback
@@ -363,6 +365,7 @@ async def create_tables():
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS operation_type TEXT DEFAULT 'income';")
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS source_object_id INTEGER REFERENCES objects(id) ON DELETE SET NULL;")
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS';")
+        await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS block TEXT DEFAULT '';")
         
         # Таблица budgets (сметы)
         await connection.execute("""
