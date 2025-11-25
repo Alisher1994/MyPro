@@ -1910,22 +1910,23 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         };
         
         budgets.push(newBudget);
-        renderBudgetList();
+        window.renderBudgetList();
     };
     
     // Delete budget
     window.deleteBudgetItem = function(budgetId) {
         if (confirm('Вы уверены, что хотите удалить эту смету?')) {
             budgets = budgets.filter(b => b.id !== budgetId);
-            renderBudgetList();
+            window.renderBudgetList();
         }
     };
     
     // Initial render
     renderBudgetList();
     
-    // Export budgets array for external use
+    // Export budgets array and render function for external use
     window.budgetsData = budgets;
+    window.renderBudgetList = renderBudgetList;
 })();
 
 // =====================
@@ -2006,16 +2007,11 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             
             // Re-render list
             if (typeof window.renderBudgetList === 'function') {
-                // Find the render function in the budget list module
-                const event = new CustomEvent('budgetUpdated');
-                document.dispatchEvent(event);
+                window.renderBudgetList();
             }
             
             modal.style.display = 'none';
             form.reset();
-            
-            // Trigger re-render by dispatching event
-            window.location.reload(); // Temporary solution, will be replaced with proper state management
         });
     }
 })();
