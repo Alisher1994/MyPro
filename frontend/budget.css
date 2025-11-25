@@ -618,6 +618,7 @@
 .budget-list-table-wrapper {
     padding: 0 var(--spacing-lg) var(--spacing-lg);
     overflow-x: auto;
+    overflow-y: visible;
 }
 
 .budget-list-table {
@@ -626,6 +627,7 @@
     background: var(--office-white);
     box-shadow: var(--shadow-sm);
     font-size: var(--font-size-sm);
+    overflow: visible;
 }
 
 /* Filter Row */
@@ -850,6 +852,11 @@
     overflow: visible;
 }
 
+.budget-list-table tbody {
+    overflow: visible;
+}
+
 .budget-list-table tbody tr {
     position: relative;
+    overflow: visible;
 }
