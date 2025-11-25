@@ -818,7 +818,7 @@
     border-radius: 3px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     min-width: 160px;
-    z-index: 1000;
+    z-index: 9999;
     padding: 4px 0;
 }
 
@@ -846,5 +846,10 @@
 }
 
 .budget-list-table td:last-child {
+    position: relative;
+    overflow: visible;
+}
+
+.budget-list-table tbody tr {
     position: relative;
 }
