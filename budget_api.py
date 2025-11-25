@@ -8,7 +8,24 @@ async def get_budgets(object_id: int):
     query = "SELECT * FROM budgets WHERE object_id=$1 ORDER BY id DESC;"
     async with app.state.db.acquire() as conn:
         rows = await conn.fetch(query, object_id)
-    return [dict(row) for row in rows]
+    return [
+        {
+            "id": row["id"],
+            "object_id": row["object_id"],
+            "date_start": row["date_start"].isoformat() if row["date_start"] else None,
+            "name": row["name"],
+            "block": row["block"],
+            "contract_number": row["contract_number"],
+            "version": row["version"],
+            "status": row["status"],
+            "status_text": row["status_text"],
+            "date_modified": row["date_modified"].isoformat() if row["date_modified"] else None,
+            "total_amount": float(row["total_amount"]) if row["total_amount"] else 0,
+            "currency": row["currency"],
+            "comment": row["comment"]
+        }
+        for row in rows
+    ]
 
 @app.post("/objects/{object_id}/budgets/")
 async def add_budget(object_id: int, data: dict):
@@ -35,7 +52,21 @@ async def add_budget(object_id: int, data: dict):
             data.get("currency", "UZS"),
             data.get("comment", "")
         )
-    return dict(row)
+    return {
+        "id": row["id"],
+        "object_id": row["object_id"],
+        "date_start": row["date_start"].isoformat() if row["date_start"] else None,
+        "name": row["name"],
+        "block": row["block"],
+        "contract_number": row["contract_number"],
+        "version": row["version"],
+        "status": row["status"],
+        "status_text": row["status_text"],
+        "date_modified": row["date_modified"].isoformat() if row["date_modified"] else None,
+        "total_amount": float(row["total_amount"]) if row["total_amount"] else 0,
+        "currency": row["currency"],
+        "comment": row["comment"]
+    }
 
 @app.put("/objects/{object_id}/budgets/{budget_id}")
 async def update_budget(object_id: int, budget_id: int, data: dict):
@@ -74,7 +105,21 @@ async def update_budget(object_id: int, budget_id: int, data: dict):
         row = await conn.fetchrow(query, *params)
     if not row:
         raise HTTPException(status_code=404, detail="Budget not found")
-    return dict(row)
+    return {
+        "id": row["id"],
+        "object_id": row["object_id"],
+        "date_start": row["date_start"].isoformat() if row["date_start"] else None,
+        "name": row["name"],
+        "block": row["block"],
+        "contract_number": row["contract_number"],
+        "version": row["version"],
+        "status": row["status"],
+        "status_text": row["status_text"],
+        "date_modified": row["date_modified"].isoformat() if row["date_modified"] else None,
+        "total_amount": float(row["total_amount"]) if row["total_amount"] else 0,
+        "currency": row["currency"],
+        "comment": row["comment"]
+    }
 
 @app.delete("/objects/{object_id}/budgets/{budget_id}")
 async def delete_budget(object_id: int, budget_id: int):
