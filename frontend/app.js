@@ -1596,6 +1596,12 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     // Initialize empty budgets array
     let budgets = [];
     
+    // Initialize global budgets data
+    if (!window.budgetsData) {
+        window.budgetsData = [];
+    }
+    budgets = window.budgetsData;
+    
     const budgetListTbody = document.getElementById('budget-list-tbody');
     const budgetTotalEl = document.getElementById('budget-total');
     
@@ -1823,7 +1829,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Edit budget
     window.editBudgetItem = function(budgetId) {
-        const budget = budgets.find(b => b.id === budgetId);
+        const budget = window.budgetsData.find(b => b.id === budgetId);
         if (!budget) return;
         
         document.getElementById('budget-modal-title').textContent = 'Изменить смету';
@@ -1841,25 +1847,25 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Duplicate budget
     window.duplicateBudgetItem = function(budgetId) {
-        const budget = budgets.find(b => b.id === budgetId);
+        const budget = window.budgetsData.find(b => b.id === budgetId);
         if (!budget) return;
         
         const newBudget = {
             ...budget,
-            id: Math.max(...budgets.map(b => b.id)) + 1,
+            id: Math.max(...window.budgetsData.map(b => b.id)) + 1,
             contractNumber: '', // Reset contract number
             dateStart: new Date().toISOString().split('T')[0],
             dateModified: new Date().toISOString().split('T')[0]
         };
         
-        budgets.push(newBudget);
+        window.budgetsData.push(newBudget);
         window.renderBudgetList();
     };
     
     // Delete budget
     window.deleteBudgetItem = function(budgetId) {
         if (confirm('Вы уверены, что хотите удалить эту смету?')) {
-            budgets = budgets.filter(b => b.id !== budgetId);
+            window.budgetsData = window.budgetsData.filter(b => b.id !== budgetId);
             window.renderBudgetList();
         }
     };
@@ -1938,18 +1944,18 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             
             if (editId) {
                 // Edit existing budget
-                const budget = budgets.find(b => b.id === parseInt(editId));
+                const budget = window.budgetsData.find(b => b.id === parseInt(editId));
                 if (budget) {
                     Object.assign(budget, budgetData);
                 }
             } else {
                 // Add new budget
-                budgetData.id = budgets.length > 0 ? Math.max(...budgets.map(b => b.id)) + 1 : 1;
-                budgets.push(budgetData);
+                budgetData.id = window.budgetsData.length > 0 ? Math.max(...window.budgetsData.map(b => b.id)) + 1 : 1;
+                window.budgetsData.push(budgetData);
             }
             
-            // Update window reference
-            window.budgetsData = budgets;
+            // Update window reference (in case it was reassigned)
+            window.budgetsData = window.budgetsData;
             
             // Re-render list
             if (typeof window.renderBudgetList === 'function') {
