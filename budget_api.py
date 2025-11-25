@@ -1,6 +1,93 @@
 
 # === Budget API Endpoints ===
 
+# ===== BUDGETS (Сметы) =====
+@app.get("/objects/{object_id}/budgets/")
+async def get_budgets(object_id: int):
+    """Получить все сметы для объекта"""
+    query = "SELECT * FROM budgets WHERE object_id=$1 ORDER BY id DESC;"
+    async with app.state.db.acquire() as conn:
+        rows = await conn.fetch(query, object_id)
+    return [dict(row) for row in rows]
+
+@app.post("/objects/{object_id}/budgets/")
+async def add_budget(object_id: int, data: dict):
+    """Добавить новую смету"""
+    query = """
+        INSERT INTO budgets (
+            object_id, date_start, name, block, contract_number, 
+            version, status, status_text, date_modified, total_amount, currency, comment
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *
+    """
+    async with app.state.db.acquire() as conn:
+        row = await conn.fetchrow(
+            query,
+            object_id,
+            data.get("dateStart"),
+            data.get("name"),
+            data.get("block", ""),
+            data.get("contractNumber", ""),
+            data.get("version", "v1"),
+            data.get("status", "draft"),
+            data.get("statusText", "Черновик"),
+            data.get("dateModified"),
+            data.get("totalAmount", 0),
+            data.get("currency", "UZS"),
+            data.get("comment", "")
+        )
+    return dict(row)
+
+@app.put("/objects/{object_id}/budgets/{budget_id}")
+async def update_budget(object_id: int, budget_id: int, data: dict):
+    """Обновить смету"""
+    updates = []
+    params = []
+    param_count = 1
+    
+    fields_map = {
+        "dateStart": "date_start",
+        "name": "name",
+        "block": "block",
+        "contractNumber": "contract_number",
+        "version": "version",
+        "status": "status",
+        "statusText": "status_text",
+        "dateModified": "date_modified",
+        "totalAmount": "total_amount",
+        "currency": "currency",
+        "comment": "comment"
+    }
+    
+    for js_field, db_field in fields_map.items():
+        if js_field in data:
+            updates.append(f"{db_field}=${param_count}")
+            params.append(data[js_field])
+            param_count += 1
+    
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    
+    params.extend([budget_id, object_id])
+    query = f"UPDATE budgets SET {', '.join(updates)} WHERE id=${param_count} AND object_id=${param_count+1} RETURNING *"
+    
+    async with app.state.db.acquire() as conn:
+        row = await conn.fetchrow(query, *params)
+    if not row:
+        raise HTTPException(status_code=404, detail="Budget not found")
+    return dict(row)
+
+@app.delete("/objects/{object_id}/budgets/{budget_id}")
+async def delete_budget(object_id: int, budget_id: int):
+    """Удалить смету"""
+    async with app.state.db.acquire() as conn:
+        row = await conn.fetchrow(
+            "DELETE FROM budgets WHERE id=$1 AND object_id=$2 RETURNING id",
+            budget_id, object_id
+        )
+    if not row:
+        raise HTTPException(status_code=404, detail="Budget not found")
+    return {"status": "deleted"}
+
 # ===== STAGES (Этапы) =====
 @app.get("/objects/{object_id}/budget/stages/")
 async def get_stages(object_id: int):

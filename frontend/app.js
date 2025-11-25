@@ -1610,6 +1610,24 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const budgetListTbody = document.getElementById('budget-list-tbody');
     const budgetTotalEl = document.getElementById('budget-total');
     
+    // Load budgets from API
+    async function loadBudgets() {
+        try {
+            const objectId = window.currentObjectId || 1;
+            const response = await fetch(`/objects/${objectId}/budgets/`);
+            if (response.ok) {
+                budgets = await response.json();
+                window.budgetsData = budgets;
+                renderBudgetList();
+            }
+        } catch (error) {
+            console.error('Error loading budgets:', error);
+        }
+    }
+    
+    const budgetListTbody = document.getElementById('budget-list-tbody');
+    const budgetTotalEl = document.getElementById('budget-total');
+    
     // Filter inputs
     const filterDateStart = document.getElementById('filter-budget-date-start');
     const filterName = document.getElementById('filter-budget-name');
@@ -1710,18 +1728,25 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 row.classList.add('inactive-budget');
             }
             
-            totalSum += budget.totalAmount;
+            // Handle both camelCase and snake_case
+            const totalAmount = budget.total_amount || budget.totalAmount || 0;
+            const dateStart = budget.date_start || budget.dateStart;
+            const dateModified = budget.date_modified || budget.dateModified;
+            const statusText = budget.status_text || budget.statusText;
+            const contractNumber = budget.contract_number || budget.contractNumber;
+            
+            totalSum += totalAmount;
             
             row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${formatDate(budget.dateStart)}</td>
+                <td>${formatDate(dateStart)}</td>
                 <td>${budget.name}</td>
                 <td>${budget.block || '—'}</td>
-                <td>${budget.contractNumber}</td>
+                <td>${contractNumber}</td>
                 <td>${budget.version}</td>
-                <td>${getStatusBadge(budget.status, budget.statusText)}</td>
-                <td>${formatDate(budget.dateModified)}</td>
-                <td>${formatNumber(budget.totalAmount)} ${budget.currency}</td>
+                <td>${getStatusBadge(budget.status, statusText)}</td>
+                <td>${formatDate(dateModified)}</td>
+                <td>${formatNumber(totalAmount)} ${budget.currency}</td>
                 <td>${budget.comment || ''}</td>
                 <td>
                     <button class="office-icon-btn" onclick="event.stopPropagation(); window.toggleBudgetActionsMenu(event, ${budget.id})" title="Управление">
@@ -1851,35 +1876,64 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     };
     
     // Duplicate budget
-    window.duplicateBudgetItem = function(budgetId) {
+    window.duplicateBudgetItem = async function(budgetId) {
         const budget = window.budgetsData.find(b => b.id === budgetId);
         if (!budget) return;
         
-        const newBudget = {
-            ...budget,
-            id: Math.max(...window.budgetsData.map(b => b.id)) + 1,
-            contractNumber: '', // Reset contract number
+        const newBudgetData = {
             dateStart: new Date().toISOString().split('T')[0],
-            dateModified: new Date().toISOString().split('T')[0]
+            name: budget.name,
+            block: budget.block,
+            contractNumber: '',
+            version: budget.version,
+            status: budget.status,
+            statusText: budget.status_text || budget.statusText,
+            dateModified: new Date().toISOString().split('T')[0],
+            totalAmount: budget.total_amount || budget.totalAmount || 0,
+            currency: budget.currency || 'UZS',
+            comment: budget.comment
         };
         
-        window.budgetsData.push(newBudget);
-        window.renderBudgetList();
-    };
-    
-    // Delete budget
-    window.deleteBudgetItem = function(budgetId) {
-        if (confirm('Вы уверены, что хотите удалить эту смету?')) {
-            window.budgetsData = window.budgetsData.filter(b => b.id !== budgetId);
-            window.renderBudgetList();
+        try {
+            const objectId = window.currentObjectId || 1;
+            const response = await fetch(`/objects/${objectId}/budgets/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newBudgetData)
+            });
+            
+            if (response.ok) {
+                await loadBudgets();
+            }
+        } catch (error) {
+            console.error('Error duplicating budget:', error);
         }
     };
     
-    // Initial render
-    renderBudgetList();
+    // Delete budget
+    window.deleteBudgetItem = async function(budgetId) {
+        if (confirm('Вы уверены, что хотите удалить эту смету?')) {
+            try {
+                const objectId = window.currentObjectId || 1;
+                const response = await fetch(`/objects/${objectId}/budgets/${budgetId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    await loadBudgets();
+                }
+            } catch (error) {
+                console.error('Error deleting budget:', error);
+            }
+        }
+    };
     
-    // Export budgets array and render function for external use
+    // Initial load
+    loadBudgets();
+    
+    // Export budgets array and functions for external use
     window.budgetsData = budgets;
+    window.loadBudgets = loadBudgets;
     window.renderBudgetList = renderBudgetList;
 })();
 
@@ -1920,7 +1974,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Submit form
     if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const budgetData = {
@@ -1946,29 +2000,40 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             budgetData.statusText = statusMap[budgetData.status];
             
             const editId = editIdInput.value;
+            const objectId = window.currentObjectId || 1;
             
-            if (editId) {
-                // Edit existing budget
-                const budget = window.budgetsData.find(b => b.id === parseInt(editId));
-                if (budget) {
-                    Object.assign(budget, budgetData);
+            try {
+                let response;
+                if (editId) {
+                    // Edit existing budget
+                    response = await fetch(`/objects/${objectId}/budgets/${editId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(budgetData)
+                    });
+                } else {
+                    // Add new budget
+                    response = await fetch(`/objects/${objectId}/budgets/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(budgetData)
+                    });
                 }
-            } else {
-                // Add new budget
-                budgetData.id = window.budgetsData.length > 0 ? Math.max(...window.budgetsData.map(b => b.id)) + 1 : 1;
-                window.budgetsData.push(budgetData);
+                
+                if (response.ok) {
+                    // Reload budgets from database
+                    if (typeof window.loadBudgets === 'function') {
+                        await window.loadBudgets();
+                    }
+                    modal.style.display = 'none';
+                    form.reset();
+                } else {
+                    alert('Ошибка при сохранении сметы');
+                }
+            } catch (error) {
+                console.error('Error saving budget:', error);
+                alert('Ошибка при сохранении сметы');
             }
-            
-            // Update window reference (in case it was reassigned)
-            window.budgetsData = window.budgetsData;
-            
-            // Re-render list
-            if (typeof window.renderBudgetList === 'function') {
-                window.renderBudgetList();
-            }
-            
-            modal.style.display = 'none';
-            form.reset();
         });
     }
 })();

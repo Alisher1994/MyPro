@@ -364,16 +364,40 @@ async def create_tables():
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS source_object_id INTEGER REFERENCES objects(id) ON DELETE SET NULL;")
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS';")
         
+        # Таблица budgets (сметы)
+        await connection.execute("""
+            CREATE TABLE IF NOT EXISTS budgets (
+                id SERIAL PRIMARY KEY,
+                object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
+                date_start DATE NOT NULL,
+                name TEXT NOT NULL,
+                block TEXT DEFAULT '',
+                contract_number TEXT DEFAULT '',
+                version TEXT DEFAULT 'v1',
+                status TEXT DEFAULT 'draft',
+                status_text TEXT DEFAULT 'Черновик',
+                date_modified DATE NOT NULL,
+                total_amount NUMERIC(15,2) DEFAULT 0,
+                currency TEXT DEFAULT 'UZS',
+                comment TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        
         # Таблица budget_stages (этапы)
         await connection.execute("""
             CREATE TABLE IF NOT EXISTS budget_stages (
                 id SERIAL PRIMARY KEY,
-                object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
+                budget_id INTEGER REFERENCES budgets(id) ON DELETE CASCADE,
+                object_id INTEGER REFERENCES objects(id) ON DELETE CASCADE,
                 name TEXT NOT NULL,
                 order_index INTEGER NOT NULL DEFAULT 0,
                 collapsed BOOLEAN DEFAULT FALSE
             );
         """)
+        
+        # Add budget_id column if it doesn't exist (for migration)
+        await connection.execute("ALTER TABLE budget_stages ADD COLUMN IF NOT EXISTS budget_id INTEGER REFERENCES budgets(id) ON DELETE CASCADE;")
         
         # Таблица budget_work_types (виды работ)
         await connection.execute("""
