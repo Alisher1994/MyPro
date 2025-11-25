@@ -1579,3 +1579,220 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     window.showBudgetListView = showBudgetListView;
     window.showBudgetDetailView = showBudgetDetailView;
 })();
+
+// =====================
+// BUDGET LIST - DATA & RENDERING
+// =====================
+(function() {
+    // Sample budget data
+    let budgets = [
+        {
+            id: 1,
+            dateStart: '2024-11-01',
+            name: 'ЖК Березка Корпус 1',
+            block: 'Блок А',
+            contractNumber: 'ДГП-123',
+            version: 'v3',
+            status: 'approved',
+            statusText: 'Утвержден',
+            dateModified: '2024-11-15',
+            totalAmount: 50000000,
+            currency: 'UZS'
+        },
+        {
+            id: 2,
+            dateStart: '2024-11-10',
+            name: 'Офисное здание',
+            block: '',
+            contractNumber: 'ДГП-125',
+            version: 'v1',
+            status: 'draft',
+            statusText: 'Черновик',
+            dateModified: '2024-11-20',
+            totalAmount: 25000000,
+            currency: 'UZS'
+        },
+        {
+            id: 3,
+            dateStart: '2024-10-15',
+            name: 'Торговый центр',
+            block: 'Блок B',
+            contractNumber: 'ДГП-120',
+            version: 'v2',
+            status: 'inactive',
+            statusText: 'Не активный',
+            dateModified: '2024-10-30',
+            totalAmount: 75000000,
+            currency: 'UZS'
+        },
+        {
+            id: 4,
+            dateStart: '2024-11-18',
+            name: 'Коттеджный поселок',
+            block: 'Участок 5',
+            contractNumber: 'ДГП-130',
+            version: 'v1',
+            status: 'new',
+            statusText: 'Новый',
+            dateModified: '2024-11-22',
+            totalAmount: 120000000,
+            currency: 'UZS'
+        }
+    ];
+    
+    const budgetListTbody = document.getElementById('budget-list-tbody');
+    const budgetListSearch = document.getElementById('budget-list-search');
+    const showInactiveBudgets = document.getElementById('show-inactive-budgets');
+    
+    // Format number with spaces
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+    
+    // Format date
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}.${month}.${year}`;
+    }
+    
+    // Get status badge HTML
+    function getStatusBadge(status, statusText) {
+        return `<span class="budget-status-badge ${status}">${statusText}</span>`;
+    }
+    
+    // Render budget list
+    function renderBudgetList(filteredBudgets = null) {
+        if (!budgetListTbody) return;
+        
+        const budgetsToRender = filteredBudgets || budgets;
+        budgetListTbody.innerHTML = '';
+        
+        budgetsToRender.forEach(budget => {
+            // Skip inactive if checkbox is unchecked
+            if (!showInactiveBudgets.checked && budget.status === 'inactive') {
+                return;
+            }
+            
+            const row = document.createElement('tr');
+            if (budget.status === 'inactive') {
+                row.classList.add('inactive-budget');
+            }
+            
+            row.innerHTML = `
+                <td>${formatDate(budget.dateStart)}</td>
+                <td>${budget.name}</td>
+                <td>${budget.block || '-'}</td>
+                <td>${budget.contractNumber}</td>
+                <td>${budget.version}</td>
+                <td>${getStatusBadge(budget.status, budget.statusText)}</td>
+                <td>${formatDate(budget.dateModified)}</td>
+                <td>${formatNumber(budget.totalAmount)} ${budget.currency}</td>
+                <td>
+                    <div class="budget-actions-dropdown">
+                        <button class="budget-actions-btn" onclick="toggleBudgetActions(event, ${budget.id})">⋮</button>
+                        <div class="budget-actions-menu" id="budget-actions-${budget.id}" style="display:none;">
+                            <button onclick="duplicateBudget(${budget.id})">Дублировать</button>
+                            <button onclick="editBudget(${budget.id})">Изменить</button>
+                            <button onclick="deleteBudget(${budget.id})">Удалить</button>
+                        </div>
+                    </div>
+                </td>
+            `;
+            
+            // Click on row to open detail view (except on actions column)
+            row.addEventListener('click', (e) => {
+                if (!e.target.closest('.budget-actions-dropdown')) {
+                    openBudgetDetail(budget);
+                }
+            });
+            
+            budgetListTbody.appendChild(row);
+        });
+    }
+    
+    // Search filter
+    function applyBudgetSearch() {
+        const searchTerm = budgetListSearch.value.toLowerCase();
+        const filtered = budgets.filter(b => {
+            return b.name.toLowerCase().includes(searchTerm) ||
+                   b.contractNumber.toLowerCase().includes(searchTerm) ||
+                   b.block.toLowerCase().includes(searchTerm);
+        });
+        renderBudgetList(filtered);
+    }
+    
+    // Toggle actions dropdown
+    window.toggleBudgetActions = function(event, budgetId) {
+        event.stopPropagation();
+        const menu = document.getElementById(`budget-actions-${budgetId}`);
+        
+        // Close all other menus
+        document.querySelectorAll('.budget-actions-menu').forEach(m => {
+            if (m.id !== `budget-actions-${budgetId}`) {
+                m.style.display = 'none';
+            }
+        });
+        
+        // Toggle current menu
+        if (menu) {
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+    };
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.budget-actions-dropdown')) {
+            document.querySelectorAll('.budget-actions-menu').forEach(m => {
+                m.style.display = 'none';
+            });
+        }
+    });
+    
+    // Budget actions
+    window.duplicateBudget = function(budgetId) {
+        console.log('Duplicate budget:', budgetId);
+        // TODO: Implement duplicate logic
+    };
+    
+    window.editBudget = function(budgetId) {
+        console.log('Edit budget:', budgetId);
+        // TODO: Show edit modal
+    };
+    
+    window.deleteBudget = function(budgetId) {
+        if (confirm('Вы уверены, что хотите удалить эту смету?')) {
+            budgets = budgets.filter(b => b.id !== budgetId);
+            renderBudgetList();
+            console.log('Deleted budget:', budgetId);
+        }
+    };
+    
+    // Open budget detail
+    function openBudgetDetail(budget) {
+        const budgetData = {
+            name: budget.name,
+            status: budget.statusText,
+            statusClass: budget.status
+        };
+        window.showBudgetDetailView(budgetData);
+    }
+    
+    // Event listeners
+    if (budgetListSearch) {
+        budgetListSearch.addEventListener('input', applyBudgetSearch);
+    }
+    
+    if (showInactiveBudgets) {
+        showInactiveBudgets.addEventListener('change', () => {
+            renderBudgetList();
+        });
+    }
+    
+    // Initial render
+    renderBudgetList();
+})();
+
