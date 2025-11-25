@@ -122,6 +122,7 @@ function renderIncomeTable() {
             <td>${sourceObject}</td>
             <td>${formatNumber(row.amount)}</td>
             <td>${currency}</td>
+            <td>${row.block || '—'}</td>
             <td>${row.sender || row.from || ''}</td>
             <td>${row.receiver || row.to || ''}</td>
             <td>${row.comment || ''}</td>
@@ -170,9 +171,14 @@ function renderIncomeTable() {
             document.getElementById('income-operation-type').value = row.operation_type || 'income';
             document.getElementById('income-source-object').value = row.source_object_id || '';
             document.getElementById('income-currency').value = row.currency || 'UZS';
+            document.getElementById('income-budget-block').value = row.block || '';
             document.getElementById('income-edit-index').value = idx;
             document.getElementById('income-modal').dataset.photo = row.photo || '';
             editingIncomeId = row.id;
+            
+            // Load budget blocks for editing
+            loadBudgetBlocks();
+            
             document.getElementById('income-modal').style.display = 'flex';
         };
     });
