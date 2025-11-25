@@ -554,6 +554,34 @@ async def delete_object(object_id: int):
 def root_redirect():
     return RedirectResponse(url="/frontend/index.html")
 
+# === Debug endpoint ===
+@app.get("/debug/tables")
+async def debug_tables():
+    """Проверка существования таблиц"""
+    try:
+        async with app.state.db.acquire() as conn:
+            tables = await conn.fetch("""
+                SELECT table_name 
+                FROM information_schema.tables 
+                WHERE table_schema = 'public'
+                ORDER BY table_name;
+            """)
+            
+            budgets_exists = await conn.fetchval("""
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = 'public' 
+                    AND table_name = 'budgets'
+                );
+            """)
+            
+            return {
+                "all_tables": [row["table_name"] for row in tables],
+                "budgets_exists": budgets_exists
+            }
+    except Exception as e:
+        return {"error": str(e)}
+
 # === Budget API ===
 exec(open("budget_api.py", encoding="utf-8").read())
 

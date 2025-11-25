@@ -5,11 +5,61 @@
 @app.get("/objects/{object_id}/budgets/")
 async def get_budgets(object_id: int):
     """Получить все сметы для объекта"""
-    query = "SELECT * FROM budgets WHERE object_id=$1 ORDER BY id DESC;"
-    async with app.state.db.acquire() as conn:
-        rows = await conn.fetch(query, object_id)
-    return [
-        {
+    try:
+        query = "SELECT * FROM budgets WHERE object_id=$1 ORDER BY id DESC;"
+        async with app.state.db.acquire() as conn:
+            rows = await conn.fetch(query, object_id)
+        return [
+            {
+                "id": row["id"],
+                "object_id": row["object_id"],
+                "date_start": row["date_start"].isoformat() if row["date_start"] else None,
+                "name": row["name"],
+                "block": row["block"],
+                "contract_number": row["contract_number"],
+                "version": row["version"],
+                "status": row["status"],
+                "status_text": row["status_text"],
+                "date_modified": row["date_modified"].isoformat() if row["date_modified"] else None,
+                "total_amount": float(row["total_amount"]) if row["total_amount"] else 0,
+                "currency": row["currency"],
+                "comment": row["comment"]
+            }
+            for row in rows
+        ]
+    except Exception as e:
+        print(f"Error getting budgets: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error getting budgets: {str(e)}")
+
+@app.post("/objects/{object_id}/budgets/")
+async def add_budget(object_id: int, data: dict):
+    """Добавить новую смету"""
+    try:
+        query = """
+            INSERT INTO budgets (
+                object_id, date_start, name, block, contract_number, 
+                version, status, status_text, date_modified, total_amount, currency, comment
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *
+        """
+        async with app.state.db.acquire() as conn:
+            row = await conn.fetchrow(
+                query,
+                object_id,
+                data.get("dateStart"),
+                data.get("name"),
+                data.get("block", ""),
+                data.get("contractNumber", ""),
+                data.get("version", "v1"),
+                data.get("status", "draft"),
+                data.get("statusText", "Черновик"),
+                data.get("dateModified"),
+                data.get("totalAmount", 0),
+                data.get("currency", "UZS"),
+                data.get("comment", "")
+            )
+        return {
             "id": row["id"],
             "object_id": row["object_id"],
             "date_start": row["date_start"].isoformat() if row["date_start"] else None,
@@ -24,49 +74,11 @@ async def get_budgets(object_id: int):
             "currency": row["currency"],
             "comment": row["comment"]
         }
-        for row in rows
-    ]
-
-@app.post("/objects/{object_id}/budgets/")
-async def add_budget(object_id: int, data: dict):
-    """Добавить новую смету"""
-    query = """
-        INSERT INTO budgets (
-            object_id, date_start, name, block, contract_number, 
-            version, status, status_text, date_modified, total_amount, currency, comment
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *
-    """
-    async with app.state.db.acquire() as conn:
-        row = await conn.fetchrow(
-            query,
-            object_id,
-            data.get("dateStart"),
-            data.get("name"),
-            data.get("block", ""),
-            data.get("contractNumber", ""),
-            data.get("version", "v1"),
-            data.get("status", "draft"),
-            data.get("statusText", "Черновик"),
-            data.get("dateModified"),
-            data.get("totalAmount", 0),
-            data.get("currency", "UZS"),
-            data.get("comment", "")
-        )
-    return {
-        "id": row["id"],
-        "object_id": row["object_id"],
-        "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-        "name": row["name"],
-        "block": row["block"],
-        "contract_number": row["contract_number"],
-        "version": row["version"],
-        "status": row["status"],
-        "status_text": row["status_text"],
-        "date_modified": row["date_modified"].isoformat() if row["date_modified"] else None,
-        "total_amount": float(row["total_amount"]) if row["total_amount"] else 0,
-        "currency": row["currency"],
-        "comment": row["comment"]
-    }
+    except Exception as e:
+        print(f"Error adding budget: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error adding budget: {str(e)}")
 
 @app.put("/objects/{object_id}/budgets/{budget_id}")
 async def update_budget(object_id: int, budget_id: int, data: dict):
