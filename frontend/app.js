@@ -1593,65 +1593,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
 // BUDGET LIST - DATA & RENDERING
 // =====================
 (function() {
-    // Sample budget data
-    let budgets = [
-        {
-            id: 1,
-            dateStart: '2024-11-01',
-            name: 'ЖК Березка Корпус 1',
-            block: 'Блок А',
-            contractNumber: 'ДГП-123',
-            version: 'v3',
-            status: 'approved',
-            statusText: 'Утвержден',
-            dateModified: '2024-11-15',
-            totalAmount: 50000000,
-            currency: 'UZS',
-            comment: ''
-        },
-        {
-            id: 2,
-            dateStart: '2024-11-10',
-            name: 'Офисное здание',
-            block: '',
-            contractNumber: 'ДГП-125',
-            version: 'v1',
-            status: 'draft',
-            statusText: 'Черновик',
-            dateModified: '2024-11-20',
-            totalAmount: 25000000,
-            currency: 'UZS',
-            comment: 'В процессе согласования'
-        },
-        {
-            id: 3,
-            dateStart: '2024-10-15',
-            name: 'Торговый центр',
-            block: 'Блок B',
-            contractNumber: 'ДГП-120',
-            version: 'v2',
-            status: 'inactive',
-            statusText: 'Не активный',
-            dateModified: '2024-10-30',
-            totalAmount: 75000000,
-            currency: 'UZS',
-            comment: 'Старая версия'
-        },
-        {
-            id: 4,
-            dateStart: '2024-11-18',
-            name: 'Коттеджный поселок',
-            block: 'Участок 5',
-            contractNumber: 'ДГП-130',
-            version: 'v1',
-            status: 'new',
-            statusText: 'Новый',
-            dateModified: '2024-11-22',
-            totalAmount: 120000000,
-            currency: 'UZS',
-            comment: ''
-        }
-    ];
+    // Initialize empty budgets array
+    let budgets = [];
     
     const budgetListTbody = document.getElementById('budget-list-tbody');
     const budgetTotalEl = document.getElementById('budget-total');
@@ -1995,15 +1938,18 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             
             if (editId) {
                 // Edit existing budget
-                const budget = window.budgetsData.find(b => b.id === parseInt(editId));
+                const budget = budgets.find(b => b.id === parseInt(editId));
                 if (budget) {
                     Object.assign(budget, budgetData);
                 }
             } else {
                 // Add new budget
-                budgetData.id = window.budgetsData.length > 0 ? Math.max(...window.budgetsData.map(b => b.id)) + 1 : 1;
-                window.budgetsData.push(budgetData);
+                budgetData.id = budgets.length > 0 ? Math.max(...budgets.map(b => b.id)) + 1 : 1;
+                budgets.push(budgetData);
             }
+            
+            // Update window reference
+            window.budgetsData = budgets;
             
             // Re-render list
             if (typeof window.renderBudgetList === 'function') {
