@@ -495,7 +495,74 @@
                     </svg>
                 </button>
             </div>
-            <div id="budget-container"></div>
+            
+            <!-- Budget List View (default) -->
+            <div id="budget-list-view">
+                <div class="budget-list-navbar">
+                    <div class="budget-list-navbar-left">
+                        <button id="add-budget-btn" class="budget-navbar-btn primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            <span>Добавить смету</span>
+                        </button>
+                    </div>
+                    <div class="budget-list-navbar-right">
+                        <div class="budget-search-box">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                            <input type="search" id="budget-list-search" placeholder="Поиск смет...">
+                        </div>
+                        <label class="budget-filter-checkbox">
+                            <input type="checkbox" id="show-inactive-budgets" checked>
+                            <span>Показать не активные</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="budget-list-table-wrapper">
+                    <table class="budget-list-table">
+                        <thead>
+                            <tr>
+                                <th>Дата начала</th>
+                                <th>Название сметы</th>
+                                <th>Блок</th>
+                                <th>№ Договора</th>
+                                <th>Версия</th>
+                                <th>Статус</th>
+                                <th>Дата редактирования</th>
+                                <th>Сумма</th>
+                                <th>Управление</th>
+                            </tr>
+                        </thead>
+                        <tbody id="budget-list-tbody">
+                            <!-- Budget rows will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Budget Detail View (hidden by default) -->
+            <div id="budget-detail-view" style="display:none;">
+                <div class="budget-detail-navbar">
+                    <button id="back-to-budget-list" class="budget-navbar-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="19" y1="12" x2="5" y2="12"/>
+                            <polyline points="12 19 5 12 12 5"/>
+                        </svg>
+                        <span>Назад к списку смет</span>
+                    </button>
+                    <div class="budget-detail-info">
+                        <h2 id="budget-detail-title">Название сметы</h2>
+                        <span id="budget-detail-status" class="budget-status-badge">Черновик</span>
+                    </div>
+                </div>
+                
+                <div id="budget-container"></div>
+            </div>
         </div>
 
         <div id="tab-expense" class="tab-content" style="display:none;">

@@ -609,3 +609,254 @@
         margin: 2px var(--spacing-lg);
     }
 }
+
+/* ========================================
+   BUDGET LIST VIEW - Navbar & Table
+   ======================================== */
+
+/* Budget List Navbar */
+.budget-list-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--office-white);
+    border-bottom: 1px solid var(--office-gray-300);
+    margin-bottom: var(--spacing-lg);
+}
+
+.budget-list-navbar-left {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.budget-list-navbar-right {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+}
+
+.budget-navbar-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--office-gray-300);
+    background: var(--office-white);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.budget-navbar-btn:hover {
+    background: var(--office-gray-100);
+    border-color: var(--office-gray-400);
+}
+
+.budget-navbar-btn.primary {
+    background: var(--excel-primary);
+    color: var(--office-white);
+    border-color: var(--excel-primary);
+}
+
+.budget-navbar-btn.primary:hover {
+    background: var(--excel-primary-hover);
+    border-color: var(--excel-primary-hover);
+}
+
+.budget-search-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    background: var(--office-white);
+}
+
+.budget-search-box svg {
+    color: var(--text-secondary);
+}
+
+.budget-search-box input {
+    border: none;
+    outline: none;
+    font-size: var(--font-size-sm);
+    min-width: 200px;
+}
+
+.budget-filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.budget-filter-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Budget List Table */
+.budget-list-table-wrapper {
+    padding: 0 var(--spacing-lg);
+    overflow-x: auto;
+}
+
+.budget-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--office-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.budget-list-table thead {
+    background: var(--office-gray-100);
+    border-bottom: 2px solid var(--office-gray-300);
+}
+
+.budget-list-table th {
+    padding: var(--spacing-md) var(--spacing-sm);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.budget-list-table tbody tr {
+    border-bottom: 1px solid var(--office-gray-200);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.budget-list-table tbody tr:hover {
+    background: var(--office-gray-50);
+}
+
+.budget-list-table tbody tr.inactive-budget {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.budget-list-table td {
+    padding: var(--spacing-md) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    vertical-align: middle;
+}
+
+.budget-status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.budget-status-badge.draft {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.budget-status-badge.new {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.budget-status-badge.approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.budget-status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.budget-actions-dropdown {
+    position: relative;
+}
+
+.budget-actions-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    color: var(--text-secondary);
+}
+
+.budget-actions-btn:hover {
+    color: var(--text-primary);
+    background: var(--office-gray-100);
+    border-radius: 4px;
+}
+
+.budget-actions-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--office-white);
+    border: 1px solid var(--office-gray-300);
+    border-radius: 4px;
+    box-shadow: var(--shadow-md);
+    min-width: 150px;
+    z-index: 1000;
+}
+
+.budget-actions-menu button {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.budget-actions-menu button:hover {
+    background: var(--office-gray-100);
+}
+
+.budget-actions-menu button:first-child {
+    border-radius: 4px 4px 0 0;
+}
+
+.budget-actions-menu button:last-child {
+    border-radius: 0 0 4px 4px;
+}
+
+/* Budget Detail View Navbar */
+.budget-detail-navbar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--office-white);
+    border-bottom: 1px solid var(--office-gray-300);
+    margin-bottom: var(--spacing-lg);
+}
+
+.budget-detail-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.budget-detail-info h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
