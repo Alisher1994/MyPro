@@ -1990,14 +1990,16 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             // Set status text based on status value
             const statusMap = {
                 'draft': 'Черновик',
-                'new': 'Новый',
+                'active': 'Новый',
                 'approved': 'Утвержден',
                 'inactive': 'Не активный'
             };
-            budgetData.statusText = statusMap[budgetData.status];
+            budgetData.statusText = statusMap[budgetData.status] || 'Черновик';
             
             const editId = editIdInput.value;
             const objectId = window.currentObjectId || 1;
+            
+            console.log('Budget data to send:', budgetData);
             
             try {
                 let response;
@@ -2010,12 +2012,15 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                     });
                 } else {
                     // Add new budget
+                    console.log('Sending POST to:', `/objects/${objectId}/budgets/`);
                     response = await fetch(`/objects/${objectId}/budgets/`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(budgetData)
                     });
                 }
+                
+                console.log('Response status:', response.status);
                 
                 if (response.ok) {
                     // Reload budgets from database
@@ -2025,7 +2030,9 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                     modal.style.display = 'none';
                     form.reset();
                 } else {
-                    alert('Ошибка при сохранении сметы');
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    alert('Ошибка при сохранении сметы: ' + errorText);
                 }
             } catch (error) {
                 console.error('Error saving budget:', error);

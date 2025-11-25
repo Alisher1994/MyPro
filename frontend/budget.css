@@ -745,7 +745,7 @@
     border-color: #ffd966;
 }
 
-.budget-status-badge.new {
+.budget-status-badge.active {
     background: #e7f3ff;
     color: #0066cc;
     border-color: #99ccff;
