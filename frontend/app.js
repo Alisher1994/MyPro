@@ -1532,6 +1532,11 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         if (budgetDetailPhotoGroup) budgetDetailPhotoGroup.style.display = 'none';
         if (budgetDetailSeparator3) budgetDetailSeparator3.style.display = 'none';
         if (budgetDetailFilterGroup) budgetDetailFilterGroup.style.display = 'none';
+        
+        // Re-render budget list
+        if (typeof window.renderBudgetList === 'function') {
+            window.renderBudgetList();
+        }
     }
     
     // Function to show budget detail view
