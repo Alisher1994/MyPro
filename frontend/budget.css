@@ -6,7 +6,8 @@
 /* Assumes :root variables are available */
 
 /* Budget Sub-tabs */
-.budget-sub-tabs {
+.budget-sub-tabs,
+.finance-sub-tabs {
     display: flex;
     gap: 4px;
     margin-bottom: 16px;
@@ -14,7 +15,8 @@
     padding: 0;
 }
 
-.budget-sub-tab {
+.budget-sub-tab,
+.finance-sub-tab {
     padding: 10px 20px;
     background: transparent;
     border: none;
@@ -26,12 +28,14 @@
     transition: all 0.2s ease;
 }
 
-.budget-sub-tab:hover {
+.budget-sub-tab:hover,
+.finance-sub-tab:hover {
     background: var(--office-gray-100);
     color: var(--excel-primary);
 }
 
-.budget-sub-tab.active {
+.budget-sub-tab.active,
+.finance-sub-tab.active {
     color: var(--excel-primary);
     border-bottom-color: var(--excel-primary);
 }

@@ -1068,24 +1068,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 window.showBudgetListView();
             }
         } else if (tabName === 'finances') {
-            // Activate first finances subtab
-            const financeSubtabs = document.querySelectorAll('.finances-subtab');
-            financeSubtabs.forEach(b => b.classList.remove('active'));
-            const firstSub = financeSubtabs[0];
-            if (firstSub) {
-                firstSub.classList.add('active');
-                const subtab = firstSub.dataset.subtab;
-                localStorage.setItem('financesSubtab', subtab);
-                setActiveTab(subtab);
-                
-                // Hide "Создание" group if first subtab is expense
-                const financeCreationGroup = document.getElementById('finance-creation-group');
-                if (financeCreationGroup && subtab === 'expense') {
-                    financeCreationGroup.style.display = 'none';
-                } else if (financeCreationGroup) {
-                    financeCreationGroup.style.display = '';
-                }
-            }
+            // Show income tab by default
+            setActiveTab('income');
         } else if (tabName === 'gpr' || tabName === 'smr' || tabName === 'settings') {
             // Clear all content tabs for undeveloped sections
             const allContentTabs = document.querySelectorAll('.content-tab');
@@ -1097,30 +1081,6 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     ribbonTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             setActiveRibbonTab(tab.dataset.ribbon);
-        });
-    });
-    
-    // Finances subtab switching (inside ribbon)
-    const financeSubtabs = document.querySelectorAll('.finances-subtab');
-    const addFinanceBtn = document.getElementById('ribbon-add-finance');
-    const financeCreationGroup = document.getElementById('finance-creation-group');
-    
-    financeSubtabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            financeSubtabs.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const subtab = btn.dataset.subtab;
-            localStorage.setItem('financesSubtab', subtab);
-            setActiveTab(subtab);
-            
-            // Hide entire "Создание" group for expense
-            if (financeCreationGroup) {
-                if (subtab === 'expense') {
-                    financeCreationGroup.style.display = 'none';
-                } else {
-                    financeCreationGroup.style.display = '';
-                }
-            }
         });
     });
     
@@ -1309,11 +1269,17 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const ribbonAddFinance = document.getElementById('ribbon-add-finance');
     if (ribbonAddFinance) {
         ribbonAddFinance.addEventListener('click', () => {
-            const sub = localStorage.getItem('financesSubtab') || 'income';
-            if (sub === 'income') {
+            // Determine which finance tab is currently visible
+            const tabIncome = document.getElementById('tab-income');
+            const tabExpense = document.getElementById('tab-expense');
+            
+            if (tabIncome && tabIncome.style.display !== 'none') {
                 document.getElementById('add-income')?.click();
-            } else {
+            } else if (tabExpense && tabExpense.style.display !== 'none') {
                 document.getElementById('add-expense')?.click();
+            } else {
+                // Default to income
+                document.getElementById('add-income')?.click();
             }
         });
     }
@@ -1327,15 +1293,6 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             setActiveRibbonTab('budget');
         } else if (saved === 'income' || saved === 'expense') {
             setActiveRibbonTab('finances');
-            // Also update finances subtab
-            financeSubtabs.forEach(b => {
-                b.classList.toggle('active', b.dataset.subtab === saved);
-            });
-            // Hide "Создание" group if expense is active
-            const financeCreationGroup = document.getElementById('finance-creation-group');
-            if (financeCreationGroup && saved === 'expense') {
-                financeCreationGroup.style.display = 'none';
-            }
         } else {
             // Default to analysis now that Home is removed
             setActiveRibbonTab('analysis');
@@ -2138,6 +2095,36 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             });
             if (views[viewType]) {
                 views[viewType].classList.add('active');
+            }
+        });
+    });
+})();
+
+// ===== Finance Sub-tabs Handler =====
+(function() {
+    const financeSubTabs = document.querySelectorAll('.finance-sub-tab');
+    const tabIncome = document.getElementById('tab-income');
+    const tabExpense = document.getElementById('tab-expense');
+    
+    financeSubTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const viewType = this.getAttribute('data-finance-view');
+            
+            // Update all finance sub-tabs (both in income and expense tabs)
+            financeSubTabs.forEach(t => t.classList.remove('active'));
+            
+            // Activate all tabs with the same view type
+            document.querySelectorAll(`[data-finance-view="${viewType}"]`).forEach(t => {
+                t.classList.add('active');
+            });
+            
+            // Switch main tab content
+            if (viewType === 'income') {
+                if (tabIncome) tabIncome.style.display = 'block';
+                if (tabExpense) tabExpense.style.display = 'none';
+            } else if (viewType === 'expense') {
+                if (tabIncome) tabIncome.style.display = 'none';
+                if (tabExpense) tabExpense.style.display = 'block';
             }
         });
     });

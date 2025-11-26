@@ -198,20 +198,6 @@
 
                 <!-- Finances Ribbon Panel -->
                 <div class="ribbon-panel" data-panel="finances">
-                    <div class="ribbon-group">
-                        <div class="ribbon-group-content row">
-                            <button class="ribbon-btn finances-subtab large active" data-subtab="income">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-                                <span>Приход</span>
-                            </button>
-                            <button class="ribbon-btn finances-subtab large" data-subtab="expense">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
-                                <span>Расход</span>
-                            </button>
-                        </div>
-                        <span class="ribbon-group-label">Раздел</span>
-                    </div>
-                    <div class="ribbon-separator"></div>
                     <div class="ribbon-group" id="finance-creation-group">
                         <div class="ribbon-group-content">
                             <button id="ribbon-add-finance" class="ribbon-btn large">
@@ -270,6 +256,12 @@
             <div id="analysis-container"></div>
         </div>
         <div id="tab-income" class="tab-content" style="display:none;">
+            <!-- Sub-tabs for Income -->
+            <div class="finance-sub-tabs">
+                <button class="finance-sub-tab active" data-finance-view="income">Приход</button>
+                <button class="finance-sub-tab" data-finance-view="expense">Расход</button>
+            </div>
+            
             <div class="tab-actions">
                 <button class="icon-btn" id="add-income" title="Добавить">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -706,6 +698,12 @@
         </div>
 
         <div id="tab-expense" class="tab-content" style="display:none;">
+            <!-- Sub-tabs for Expense -->
+            <div class="finance-sub-tabs">
+                <button class="finance-sub-tab" data-finance-view="income">Приход</button>
+                <button class="finance-sub-tab active" data-finance-view="expense">Расход</button>
+            </div>
+            
             <div class="tab-actions">
                 <button class="icon-btn" id="download-expense" title="Скачать">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
