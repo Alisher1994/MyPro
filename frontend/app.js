@@ -1578,9 +1578,9 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         if (budgetDetailSeparator3) budgetDetailSeparator3.style.display = 'none';
         if (budgetDetailFilterGroup) budgetDetailFilterGroup.style.display = 'none';
         
-        // Re-render budget list
-        if (typeof window.renderBudgetList === 'function') {
-            window.renderBudgetList();
+        // Load budgets from API
+        if (typeof window.loadBudgets === 'function') {
+            window.loadBudgets();
         }
     }
     
@@ -1908,14 +1908,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         if (!budget) return;
         
         document.getElementById('budget-modal-title').textContent = 'Изменить смету';
-        document.getElementById('budget-date-start').value = budget.dateStart;
-        document.getElementById('budget-type').value = budget.budgetType || budget.budget_type || 'СМР';
+        document.getElementById('budget-date-start').value = budget.date_start || budget.dateStart || '';
+        document.getElementById('budget-type').value = budget.budget_type || budget.budgetType || 'СМР';
         document.getElementById('budget-section').value = budget.section || '';
-        document.getElementById('budget-block').value = budget.block;
-        document.getElementById('budget-contract-number').value = budget.contractNumber;
-        document.getElementById('budget-version').value = budget.version;
-        document.getElementById('budget-status').value = budget.status;
-        document.getElementById('budget-comment').value = budget.comment;
+        document.getElementById('budget-block').value = budget.block || '';
+        document.getElementById('budget-contract-number').value = budget.contract_number || budget.contractNumber || '';
+        document.getElementById('budget-version').value = budget.version || '';
+        document.getElementById('budget-status').value = budget.status || 'draft';
+        document.getElementById('budget-comment').value = budget.comment || '';
         document.getElementById('budget-edit-id').value = budget.id;
         
         // Toggle section field visibility
