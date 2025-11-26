@@ -127,30 +127,6 @@
 
                 <!-- Budget Ribbon Panel -->
                 <div class="ribbon-panel" data-panel="budget">
-                    <!-- Budget Subtabs -->
-                    <div class="ribbon-group">
-                        <div class="ribbon-group-content row">
-                            <button class="ribbon-btn budget-subtab large active" data-subtab="smr">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M3 12h18"/></svg>
-                                <span>СМР</span>
-                            </button>
-                            <button class="ribbon-btn budget-subtab large" data-subtab="pir">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                <span>ПИР</span>
-                            </button>
-                            <button class="ribbon-btn budget-subtab large" data-subtab="overhead">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-                                <span>Накладные</span>
-                            </button>
-                            <button class="ribbon-btn budget-subtab large" data-subtab="other">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01"/><path d="M12 12v4"/></svg>
-                                <span>Прочие</span>
-                            </button>
-                        </div>
-                        <span class="ribbon-group-label">Тип сметы</span>
-                    </div>
-                    <div class="ribbon-separator"></div>
-                    
                     <!-- Budget List Controls (shown only in list view) -->
                     <div class="ribbon-group" id="budget-list-controls">
                         <div class="ribbon-group-content">
@@ -228,30 +204,12 @@
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
                                 <span>Приход</span>
                             </button>
-                        </div>
-                        <span class="ribbon-group-label">Поступления</span>
-                    </div>
-                    <div class="ribbon-separator"></div>
-                    <div class="ribbon-group">
-                        <div class="ribbon-group-content row">
-                            <button class="ribbon-btn finances-subtab large" data-subtab="expense-smr">
+                            <button class="ribbon-btn finances-subtab large" data-subtab="expense">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
-                                <span>СМР</span>
-                            </button>
-                            <button class="ribbon-btn finances-subtab large" data-subtab="expense-pir">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                <span>ПИР</span>
-                            </button>
-                            <button class="ribbon-btn finances-subtab large" data-subtab="expense-overhead">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
-                                <span>Накладные</span>
-                            </button>
-                            <button class="ribbon-btn finances-subtab large" data-subtab="expense-other">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01"/></svg>
-                                <span>Прочие</span>
+                                <span>Расход</span>
                             </button>
                         </div>
-                        <span class="ribbon-group-label">Расходы</span>
+                        <span class="ribbon-group-label">Раздел</span>
                     </div>
                     <div class="ribbon-separator"></div>
                     <div class="ribbon-group" id="finance-creation-group">
@@ -548,26 +506,42 @@
                             <input type="date" id="budget-date-start" required>
                         </div>
                         <div class="form-group">
-                            <label>№ Договора</label>
-                            <input type="text" id="budget-contract-number" required placeholder="ДГП-123">
+                            <label>Тип сметы</label>
+                            <select id="budget-type" required>
+                                <option value="smr">СМР</option>
+                                <option value="pir">ПИР</option>
+                                <option value="overhead">Накладные</option>
+                                <option value="other">Прочие</option>
+                            </select>
                         </div>
                     </div>
                     
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Тип сметы</label>
-                            <select id="budget-type" required>
-                                <option value="СМР">СМР (Строительно-монтажные работы)</option>
-                                <option value="ПИР">ПИР (Проектно-изыскательские работы)</option>
-                                <option value="Накладные">Накладные расходы</option>
-                                <option value="Прочие">Прочие затраты</option>
+                        <div class="form-group" id="budget-section-group">
+                            <label>Раздел</label>
+                            <select id="budget-section" required>
+                                <option value="">Выберите раздел</option>
+                                <option value="AR">АР - Архитектура</option>
+                                <option value="AS">АС - Архитектурно-строительные решения</option>
+                                <option value="KZH">КЖ - Конструкция железобетонные</option>
+                                <option value="KM">КМ - Конструкция металлические</option>
+                                <option value="KMD">КМД - Конструкция металлические детализация</option>
+                                <option value="OV">ОВ - Отопление и вентиляция</option>
+                                <option value="VK">ВК - Водоснабжение и канализация</option>
+                                <option value="EO">ЭО - Электроосвещение</option>
+                                <option value="ES">ЭС - Электроснабжение</option>
+                                <option value="GP">ГП - Генеральный план</option>
+                                <option value="БЛАГ">Благоустройство</option>
+                                <option value="APT">АПТ - Автоматизация технологических процессов</option>
+                                <option value="EN">ЭН - Энергоснабжение</option>
+                                <option value="SS">СС - Сети связи</option>
+                                <option value="PB">ПБ - Пожарная безопасность</option>
+                                <option value="TH">ТХ - Технология производства</option>
                             </select>
                         </div>
-                        <div class="form-group" id="budget-section-group">
-                            <label>Раздел проектной документации</label>
-                            <select id="budget-section">
-                                <option value="">Выберите раздел...</option>
-                            </select>
+                        <div class="form-group">
+                            <label>№ Договора</label>
+                            <input type="text" id="budget-contract-number" placeholder="ДГП-123">
                         </div>
                     </div>
                     
@@ -592,6 +566,10 @@
                                 <option value="inactive">Не активный</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Дата редактирования</label>
+                            <input type="date" id="budget-date-modified" required>
+                        </div>
                     </div>
                     
                     <div class="form-row">
@@ -608,6 +586,14 @@
         </div>
 
         <div id="tab-budget" class="tab-content" style="display:none;">
+            <!-- Budget Sub-tabs -->
+            <div class="budget-sub-tabs" style="display: flex; gap: 2px; border-bottom: 1px solid var(--office-gray-100); margin-bottom: 16px; background: var(--office-gray-20); padding: 4px;">
+                <button class="budget-sub-tab active" data-budget-type="smr" style="flex: 1; padding: 8px 16px; background: var(--office-white); border: none; border-bottom: 2px solid #217C3E; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 500;">СМР</button>
+                <button class="budget-sub-tab" data-budget-type="pir" style="flex: 1; padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 400;">ПИР</button>
+                <button class="budget-sub-tab" data-budget-type="overhead" style="flex: 1; padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 400;">Накладные</button>
+                <button class="budget-sub-tab" data-budget-type="other" style="flex: 1; padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 400;">Прочие</button>
+            </div>
+            
             <div class="tab-actions">
                 <button class="icon-btn" id="add-budget-group" title="Добавить этап">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -641,16 +627,6 @@
                                 <th>
                                     <label>Дата начала:</label>
                                     <input type="date" id="filter-budget-date-start" class="filter-input">
-                                </th>
-                                <th>
-                                    <label>Тип:</label>
-                                    <select id="filter-budget-type" class="filter-input">
-                                        <option value="">Все</option>
-                                        <option value="СМР">СМР</option>
-                                        <option value="ПИР">ПИР</option>
-                                        <option value="Накладные">Накладные</option>
-                                        <option value="Прочие">Прочие</option>
-                                    </select>
                                 </th>
                                 <th>
                                     <label>Раздел:</label>
@@ -696,7 +672,6 @@
                             <tr class="header-row">
                                 <th>№</th>
                                 <th>Дата начала</th>
-                                <th>Тип сметы</th>
                                 <th>Раздел</th>
                                 <th>Блок</th>
                                 <th>№ Договора</th>

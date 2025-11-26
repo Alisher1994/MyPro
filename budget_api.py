@@ -14,7 +14,7 @@ async def get_budgets(object_id: int):
                 "id": row["id"],
                 "object_id": row["object_id"],
                 "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-                "budget_type": row.get("budget_type", "СМР"),
+                "budget_type": row.get("budget_type", "smr"),
                 "section": row.get("section", ""),
                 "block": row["block"],
                 "contract_number": row["contract_number"],
@@ -55,7 +55,7 @@ async def add_budget(object_id: int, data: dict):
                 query,
                 object_id,
                 date_start,
-                data.get("budgetType", "СМР"),
+                data.get("budgetType", "smr"),
                 data.get("section", ""),
                 data.get("block", ""),
                 data.get("contractNumber", ""),
@@ -71,8 +71,8 @@ async def add_budget(object_id: int, data: dict):
             "id": row["id"],
             "object_id": row["object_id"],
             "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-            "budget_type": row.get("budget_type", "СМР"),
-            "section": row.get("section", ""),
+            "budget_type": row["budget_type"],
+            "section": row["section"],
             "block": row["block"],
             "contract_number": row["contract_number"],
             "version": row["version"],
@@ -137,8 +137,8 @@ async def update_budget(object_id: int, budget_id: int, data: dict):
         "id": row["id"],
         "object_id": row["object_id"],
         "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-        "budget_type": row.get("budget_type", "СМР"),
-        "section": row.get("section", ""),
+        "budget_type": row["budget_type"],
+        "section": row["section"],
         "block": row["block"],
         "contract_number": row["contract_number"],
         "version": row["version"],
@@ -161,25 +161,6 @@ async def delete_budget(object_id: int, budget_id: int):
     if not row:
         raise HTTPException(status_code=404, detail="Budget not found")
     return {"status": "deleted"}
-
-# ===== PROJECT SECTIONS (Справочник разделов) =====
-@app.get("/project-sections/")
-async def get_project_sections():
-    """Получить справочник разделов проектной документации"""
-    try:
-        query = "SELECT * FROM project_sections ORDER BY order_index;"
-        async with app.state.db.acquire() as conn:
-            rows = await conn.fetch(query)
-        return [
-            {
-                "code": row["code"],
-                "name": row["name"]
-            }
-            for row in rows
-        ]
-    except Exception as e:
-        print(f"Error getting project sections: {e}")
-        raise HTTPException(status_code=500, detail=f"Error getting project sections: {str(e)}")
 
 # ===== STAGES (Этапы) =====
 @app.get("/objects/{object_id}/budget/stages/")

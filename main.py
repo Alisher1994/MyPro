@@ -367,41 +367,13 @@ async def create_tables():
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS';")
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS block TEXT DEFAULT '';")
         
-        # Таблица expenses (расходы)
-        await connection.execute("""
-            CREATE TABLE IF NOT EXISTS expenses (
-                id SERIAL PRIMARY KEY,
-                object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
-                budget_id INTEGER REFERENCES budgets(id) ON DELETE SET NULL,
-                expense_type TEXT DEFAULT 'СМР',
-                date DATE NOT NULL,
-                expense_item TEXT NOT NULL,
-                planned_amount NUMERIC(15,2) DEFAULT 0,
-                actual_amount NUMERIC(15,2) NOT NULL,
-                currency TEXT DEFAULT 'UZS',
-                document_path TEXT,
-                document_status TEXT DEFAULT 'draft',
-                comment TEXT DEFAULT '',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        
-        # Add new columns to expenses table if they don't exist
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS budget_id INTEGER REFERENCES budgets(id) ON DELETE SET NULL;")
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS expense_type TEXT DEFAULT 'СМР';")
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS expense_item TEXT DEFAULT '';")
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS planned_amount NUMERIC(15,2) DEFAULT 0;")
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS actual_amount NUMERIC(15,2) DEFAULT 0;")
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS document_path TEXT;")
-        await connection.execute("ALTER TABLE expenses ADD COLUMN IF NOT EXISTS document_status TEXT DEFAULT 'draft';")
-        
         # Таблица budgets (сметы)
         await connection.execute("""
             CREATE TABLE IF NOT EXISTS budgets (
                 id SERIAL PRIMARY KEY,
                 object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
                 date_start DATE NOT NULL,
-                budget_type TEXT DEFAULT 'СМР',
+                budget_type TEXT DEFAULT 'smr',
                 section TEXT DEFAULT '',
                 block TEXT DEFAULT '',
                 contract_number TEXT DEFAULT '',
@@ -417,48 +389,9 @@ async def create_tables():
         """)
         
         # Add new columns to budgets table if they don't exist
-        await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS budget_type TEXT DEFAULT 'СМР';")
+        await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS budget_type TEXT DEFAULT 'smr';")
         await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS section TEXT DEFAULT '';")
-        
-        # Migrate existing data: if name exists but budget_type is empty, copy name to budget_type
-        try:
-            await connection.execute("""
-                UPDATE budgets 
-                SET budget_type = 'СМР' 
-                WHERE budget_type IS NULL OR budget_type = '';
-            """)
-        except:
-            pass
-        
-        # Таблица project_sections (справочник разделов проектной документации)
-        await connection.execute("""
-            CREATE TABLE IF NOT EXISTS project_sections (
-                id SERIAL PRIMARY KEY,
-                code TEXT UNIQUE NOT NULL,
-                name TEXT NOT NULL,
-                order_index INTEGER NOT NULL DEFAULT 0
-            );
-        """)
-        
-        # Заполним справочник разделов, если он пустой
-        await connection.execute("""
-            INSERT INTO project_sections (code, name, order_index)
-            VALUES 
-                ('АР', 'Архитектура', 1),
-                ('АС', 'Архитектурно-строительные решения', 2),
-                ('КЖ', 'Конструкция железобетонные', 3),
-                ('КМ', 'Конструкция металлические', 4),
-                ('КМД', 'Конструкция металлические деталировка', 5),
-                ('ОВ', 'Отопление и вентиляция', 6),
-                ('ВК', 'Водоснабжение и канализация', 7),
-                ('ЭО', 'Электрооборудование', 8),
-                ('ЭС', 'Электроснабжение', 9),
-                ('ГП', 'Генеральный план', 10),
-                ('Благоустройство', 'Благоустройство территории', 11),
-                ('АПТ', 'Автоматизация технологических процессов', 12),
-                ('ЭН', 'Энергоэффективность', 13)
-            ON CONFLICT (code) DO NOTHING;
-        """)
+        await connection.execute("ALTER TABLE budgets DROP COLUMN IF EXISTS name;")
         
         # Таблица budget_stages (этапы)
         await connection.execute("""
