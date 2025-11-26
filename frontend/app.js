@@ -1293,6 +1293,27 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             setActiveRibbonTab('budget');
         } else if (saved === 'income' || saved === 'expense') {
             setActiveRibbonTab('finances');
+            
+            // Show correct finance tab and activate correct sub-tab
+            const tabIncome = document.getElementById('tab-income');
+            const tabExpense = document.getElementById('tab-expense');
+            const financeSubTabs = document.querySelectorAll('.finance-sub-tab');
+            
+            if (saved === 'expense') {
+                if (tabIncome) tabIncome.style.display = 'none';
+                if (tabExpense) tabExpense.style.display = 'block';
+                // Activate expense sub-tabs
+                financeSubTabs.forEach(t => {
+                    t.classList.toggle('active', t.getAttribute('data-finance-view') === 'expense');
+                });
+            } else {
+                if (tabIncome) tabIncome.style.display = 'block';
+                if (tabExpense) tabExpense.style.display = 'none';
+                // Activate income sub-tabs
+                financeSubTabs.forEach(t => {
+                    t.classList.toggle('active', t.getAttribute('data-finance-view') === 'income');
+                });
+            }
         } else {
             // Default to analysis now that Home is removed
             setActiveRibbonTab('analysis');
@@ -2122,9 +2143,23 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             if (viewType === 'income') {
                 if (tabIncome) tabIncome.style.display = 'block';
                 if (tabExpense) tabExpense.style.display = 'none';
+                
+                // Update active tab and load data
+                localStorage.setItem('activeTab', 'income');
+                const selectedId = window.currentObjectId;
+                if (selectedId && window.loadIncomes) {
+                    window.loadIncomes(selectedId);
+                }
             } else if (viewType === 'expense') {
                 if (tabIncome) tabIncome.style.display = 'none';
                 if (tabExpense) tabExpense.style.display = 'block';
+                
+                // Update active tab and load data
+                localStorage.setItem('activeTab', 'expense');
+                const selectedId = window.currentObjectId;
+                if (selectedId && window.loadExpenses) {
+                    window.loadExpenses(selectedId);
+                }
             }
         });
     });
