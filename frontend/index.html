@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="budget.css">
     <link rel="stylesheet" href="expense.css">
     <link rel="stylesheet" href="analysis.css">
-    <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="income_modal.css">
     <link rel="stylesheet" href="income_table_buttons.css">
 </head>
@@ -63,7 +62,7 @@
 
         <!-- Ribbon Tabs -->
         <div class="office-ribbon">
-            <div class="ribbon-tabs" style="display:none;">
+            <div class="ribbon-tabs">
                 <button class="ribbon-tab active" data-ribbon="analysis">Аналитика</button>
                 <button class="ribbon-tab" data-ribbon="budget">Смета</button>
                 <button class="ribbon-tab" data-ribbon="finances">Финансы</button>
@@ -73,7 +72,7 @@
             </div>
             
             <!-- Ribbon Panels -->
-            <div class="ribbon-content" style="display:none;">
+            <div class="ribbon-content">
                 <!-- Analysis Ribbon Panel -->
                 <div class="ribbon-panel active" data-panel="analysis">
                     <div class="ribbon-group">
@@ -246,39 +245,11 @@
                 <!-- Settings Ribbon Panel (empty for now) -->
                 <div class="ribbon-panel" data-panel="settings">
                     <div class="ribbon-group">
-                        <div class="ribbon-group-content row">
-                            <button id="ribbon-add-block" class="ribbon-btn" onclick="BlocksModule.editBlock()">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="7" height="7"/>
-                                    <rect x="14" y="3" width="7" height="7"/>
-                                    <rect x="14" y="14" width="7" height="7"/>
-                                    <rect x="3" y="14" width="7" height="7"/>
-                                </svg>
-                                <span>Добавить<br>блок</span>
-                            </button>
-                            <button id="ribbon-refresh-blocks" class="ribbon-btn" onclick="BlocksModule.loadBlocks()">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 4 23 10 17 10"/>
-                                    <polyline points="1 20 1 14 7 14"/>
-                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-                                </svg>
-                                <span>Обновить</span>
-                            </button>
+                        <div class="ribbon-group-content">
+                            <span class="ribbon-placeholder">Настройки — в разработке</span>
                         </div>
-                        <span class="ribbon-group-label">Блоки</span>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Blocks View (shown when object is selected but no block chosen) -->
-        <div id="blocks-view" class="blocks-view" style="display:none;">
-            <div class="blocks-view-header">
-                <h2>Выберите блок</h2>
-                <p>Выберите блок из списка ниже для просмотра разделов</p>
-            </div>
-            <div id="blocks-grid" class="blocks-grid">
-                <!-- Blocks will be loaded here -->
             </div>
         </div>
 
@@ -547,32 +518,16 @@
                             <input type="text" id="budget-name" required placeholder="ЖК Березка Корпус 1">
                         </div>
                         <div class="form-group">
-                            <label>Раздел сметы *</label>
-                            <select id="budget-section" required>
-                                <option value="">Выберите раздел</option>
-                                <option value="АР">АР - Архитектура</option>
-                                <option value="КР">КР - Конструкция</option>
-                                <option value="ЭО">ЭО - Электрика</option>
-                                <option value="ОВ">ОВ - Отопление и Вентиляция</option>
-                                <option value="ВК">ВК - Водоснабжение и канализация</option>
-                                <option value="БЛ">БЛ - Благоустройство</option>
-                            </select>
+                            <label>Блок</label>
+                            <input type="text" id="budget-block" placeholder="Блок А">
                         </div>
                     </div>
                     
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Блок</label>
-                            <input type="text" id="budget-block" placeholder="Блок А" readonly>
-                            <small style="color: #666; font-size: 12px;">Автоматически заполняется из выбранного блока</small>
-                        </div>
                         <div class="form-group">
                             <label>Версия</label>
                             <input type="text" id="budget-version" required placeholder="v1" value="v1">
                         </div>
-                    </div>
-                    
-                    <div class="form-row">
                         <div class="form-group">
                             <label>Статус</label>
                             <select id="budget-status" required>
@@ -738,75 +693,8 @@
             </div>
             <div id="expense-container"></div>
         </div>
-        
-        <!-- Settings Tab -->
-        <div id="tab-settings" class="tab-content" style="display:none;">
-            <div class="settings-container">
-                <h2 style="margin: 20px 0; color: #1a1a1a; font-weight: 600;">Управление блоками объекта</h2>
-                
-                <div class="tab-actions" style="margin-bottom: 20px;">
-                    <button class="icon-btn" id="add-block" title="Добавить блок">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <circle cx="10" cy="10" r="9" stroke="#0057d8" stroke-width="2" />
-                            <path d="M10 6v8M6 10h8" stroke="#0057d8" stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                    </button>
-                </div>
-                
-                <div id="blocks-table-container">
-                    <table class="data-table" id="blocks-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px;">№</th>
-                                <th style="width: 300px;">Название блока</th>
-                                <th style="width: 150px;">Статус</th>
-                                <th style="width: 100px;">Цвет</th>
-                                <th style="width: 100px;">Порядок</th>
-                                <th style="width: 150px;">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody id="blocks-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
     <button id="sidebar-close" class="sidebar-close" style="display:none;">✕</button>
-
-    <!-- Block Modal -->
-    <div id="block-modal" class="modal" style="display:none;">
-        <div class="modal-content" style="max-width: 500px;">
-            <span class="modal-close" id="block-modal-close">&times;</span>
-            <h2 id="block-modal-title">Добавить блок</h2>
-            <form id="block-form">
-                <input type="hidden" id="block-id">
-                
-                <label for="block-name">Название блока *</label>
-                <input type="text" id="block-name" required placeholder="Например: Корпус А">
-                
-                <label for="block-status">Статус *</label>
-                <select id="block-status" required>
-                    <option value="active">Активный</option>
-                    <option value="paused">Приостановлен</option>
-                    <option value="inactive">Неактивный</option>
-                </select>
-                
-                <label for="block-color">Цвет *</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="color" id="block-color" value="#3B82F6" style="width: 60px; height: 40px; cursor: pointer; border: 1px solid #ddd; border-radius: 4px;">
-                    <span id="block-color-hex" style="font-family: monospace; color: #666;">#3B82F6</span>
-                </div>
-                
-                <label for="block-order">Порядок сортировки</label>
-                <input type="number" id="block-order" value="0" min="0" step="1">
-                
-                <div class="modal-actions">
-                    <button type="submit" class="btn-primary">Сохранить</button>
-                    <button type="button" class="btn-secondary" id="block-cancel">Отмена</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Модалка для просмотра фото -->
     <div id="photo-modal" class="modal" style="display:none;">
@@ -822,7 +710,6 @@
     <script src="budget.js"></script>
     <script src="expense.js"></script>
     <script src="analysis.js"></script>
-    <script src="blocks.js"></script>
 </body>
 
 </html>

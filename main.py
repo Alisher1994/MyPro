@@ -367,19 +367,6 @@ async def create_tables():
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS';")
         await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS block TEXT DEFAULT '';")
         
-        # Таблица object_blocks (блоки объектов)
-        await connection.execute("""
-            CREATE TABLE IF NOT EXISTS object_blocks (
-                id SERIAL PRIMARY KEY,
-                object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
-                name TEXT NOT NULL,
-                status TEXT DEFAULT 'active',
-                color TEXT DEFAULT '#4CAF50',
-                order_index INTEGER NOT NULL DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        
         # Таблица budgets (сметы)
         await connection.execute("""
             CREATE TABLE IF NOT EXISTS budgets (
@@ -399,13 +386,6 @@ async def create_tables():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
-        
-        # Add block_id column to budgets (migration)
-        await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS block_id INTEGER REFERENCES object_blocks(id) ON DELETE SET NULL;")
-        await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS section TEXT DEFAULT '';")
-        
-        # Add block_id column to incomes (migration)
-        await connection.execute("ALTER TABLE incomes ADD COLUMN IF NOT EXISTS block_id INTEGER REFERENCES object_blocks(id) ON DELETE SET NULL;")
         
         # Таблица budget_stages (этапы)
         await connection.execute("""
@@ -610,7 +590,4 @@ exec(open("budget_api.py", encoding="utf-8").read())
 
 # === Expense API ===
 exec(open("expense_api.py", encoding="utf-8").read())
-
-# === Blocks API ===
-exec(open("blocks_api.py", encoding="utf-8").read())
 
