@@ -81,7 +81,14 @@ if (amountInput) {
 async function loadIncomes() {
     if (!selectedId) return;
     try {
-        const res = await fetch(`/objects/${selectedId}/incomes/`);
+        let url = `/objects/${selectedId}/incomes/`;
+        
+        // Filter by block if currentBlockId is set
+        if (window.currentBlockId) {
+            url = `/blocks/${window.currentBlockId}/incomes/`;
+        }
+        
+        const res = await fetch(url);
         if (!res.ok) {
             throw new Error(`Server error: ${res.status}`);
         }
@@ -568,6 +575,21 @@ function selectBlockSection(objectId, blockId, sectionId) {
     if (ribbonTab) {
         const ribbonButton = document.querySelector(`[data-ribbon="${ribbonTab}"]`);
         if (ribbonButton) ribbonButton.click();
+    }
+    
+    // Load filtered data for the selected section
+    if (sectionId === 'budget') {
+        if (typeof window.loadBudgets === 'function') {
+            window.loadBudgets();
+        }
+    } else if (sectionId === 'finances') {
+        if (typeof loadIncomes === 'function') {
+            loadIncomes();
+        }
+    } else if (sectionId === 'analysis') {
+        if (typeof window.loadAnalysis === 'function') {
+            window.loadAnalysis(objectId);
+        }
     }
     
     // Update blocks module if settings
@@ -1858,7 +1880,20 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     async function loadBudgets() {
         try {
             const objectId = window.currentObjectId || 1;
-            const response = await fetch(`/objects/${objectId}/budgets/`);
+            let url = `/objects/${objectId}/budgets/`;
+            
+            // Filter by block if currentBlockId is set
+            if (window.currentBlockId) {
+                url = `/blocks/${window.currentBlockId}/budgets/`;
+                
+                // Further filter by section if currentSection is 'budget'
+                if (window.currentSection === 'budget') {
+                    // Section filtering can be added as query param if needed
+                    // url += `?section=${selectedSection}`;
+                }
+            }
+            
+            const response = await fetch(url);
             if (response.ok) {
                 budgets = await response.json();
                 window.budgetsData = budgets;
