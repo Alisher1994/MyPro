@@ -513,8 +513,23 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Название сметы</label>
-                            <input type="text" id="budget-name" required placeholder="ЖК Березка Корпус 1">
+                            <label>Раздел</label>
+                            <select id="budget-section" required>
+                                <option value="">Выберите раздел</option>
+                                <option value="АР">АР - Архитектура</option>
+                                <option value="АС">АС - Архитектурно-строительный</option>
+                                <option value="КЖ">КЖ - Конструкция железобетонные</option>
+                                <option value="КМ">КМ - Конструкция металлические</option>
+                                <option value="КМД">КМД - Конструкция металлические детали</option>
+                                <option value="ОВ">ОВ - Отопление и вентиляция</option>
+                                <option value="ВК">ВК - Водоснабжение и канализация</option>
+                                <option value="ЭО">ЭО - Электрооборудование</option>
+                                <option value="ЭС">ЭС - Электроснабжение</option>
+                                <option value="ГП">ГП - Генеральный план</option>
+                                <option value="Благоустройство">Благоустройство</option>
+                                <option value="АПТ">АПТ - Автоматизация и противопожарная безопасность</option>
+                                <option value="ЭН">ЭН - Энергетика</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Блок</label>
@@ -552,6 +567,12 @@
         </div>
 
         <div id="tab-budget" class="tab-content" style="display:none;">
+            <!-- Sub-tabs for Budget -->
+            <div class="budget-sub-tabs">
+                <button class="budget-sub-tab active" data-budget-view="list">Список смет</button>
+                <button class="budget-sub-tab" data-budget-view="reference">Справочник</button>
+            </div>
+            
             <div class="tab-actions">
                 <button class="icon-btn" id="add-budget-group" title="Добавить этап">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -577,7 +598,7 @@
             </div>
             
             <!-- Budget List View (default) -->
-            <div id="budget-list-view">
+            <div id="budget-list-view" class="budget-view active">
                 <div class="budget-list-table-wrapper">
                     <table class="budget-list-table">
                         <thead>
@@ -587,8 +608,8 @@
                                     <input type="date" id="filter-budget-date-start" class="filter-input">
                                 </th>
                                 <th>
-                                    <label>Название:</label>
-                                    <input type="text" id="filter-budget-name" class="filter-input" placeholder="Поиск...">
+                                    <label>Раздел:</label>
+                                    <input type="text" id="filter-budget-section" class="filter-input" placeholder="Поиск...">
                                 </th>
                                 <th>
                                     <label>Блок:</label>
@@ -630,7 +651,7 @@
                             <tr class="header-row">
                                 <th>№</th>
                                 <th>Дата начала</th>
-                                <th>Название сметы</th>
+                                <th>Раздел</th>
                                 <th>Блок</th>
                                 <th>№ Договора</th>
                                 <th>Версия</th>
@@ -653,6 +674,14 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
+            </div>
+            
+            <!-- Budget Reference View -->
+            <div id="budget-reference-view" class="budget-view" style="display:none;">
+                <div class="reference-container">
+                    <h3>Справочник</h3>
+                    <p style="color: #666; padding: 20px;">Раздел в разработке...</p>
                 </div>
             </div>
             

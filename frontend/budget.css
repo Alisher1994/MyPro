@@ -5,6 +5,52 @@
 /* Import variables from main style.css */
 /* Assumes :root variables are available */
 
+/* Budget Sub-tabs */
+.budget-sub-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--office-gray-300);
+    padding: 0;
+}
+
+.budget-sub-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--office-gray-700);
+    transition: all 0.2s ease;
+}
+
+.budget-sub-tab:hover {
+    background: var(--office-gray-100);
+    color: var(--excel-primary);
+}
+
+.budget-sub-tab.active {
+    color: var(--excel-primary);
+    border-bottom-color: var(--excel-primary);
+}
+
+.budget-view {
+    display: none;
+}
+
+.budget-view.active {
+    display: block;
+}
+
+.reference-container {
+    padding: 20px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: var(--shadow-sm);
+}
+
 #budget-container {
     padding: var(--spacing-lg) 0;
 }

@@ -1672,7 +1672,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Filter inputs
     const filterDateStart = document.getElementById('filter-budget-date-start');
-    const filterName = document.getElementById('filter-budget-name');
+    const filterSection = document.getElementById('filter-budget-section');
     const filterBlock = document.getElementById('filter-budget-block');
     const filterContract = document.getElementById('filter-budget-contract');
     const filterVersion = document.getElementById('filter-budget-version');
@@ -1680,6 +1680,28 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const filterDateModified = document.getElementById('filter-budget-date-modified');
     const filterAmount = document.getElementById('filter-budget-amount');
     const clearFiltersBtn = document.getElementById('clear-budget-filters');
+    
+    // Section mapping
+    const sectionNames = {
+        'АР': 'АР - Архитектура',
+        'АС': 'АС - Архитектурно-строительный',
+        'КЖ': 'КЖ - Конструкция железобетонные',
+        'КМ': 'КМ - Конструкция металлические',
+        'КМД': 'КМД - Конструкция металлические детали',
+        'ОВ': 'ОВ - Отопление и вентиляция',
+        'ВК': 'ВК - Водоснабжение и канализация',
+        'ЭО': 'ЭО - Электрооборудование',
+        'ЭС': 'ЭС - Электроснабжение',
+        'ГП': 'ГП - Генеральный план',
+        'Благоустройство': 'Благоустройство',
+        'АПТ': 'АПТ - Автоматизация и противопожарная безопасность',
+        'ЭН': 'ЭН - Энергетика'
+    };
+    
+    // Get full section name
+    function getSectionName(code) {
+        return sectionNames[code] || code;
+    }
     
     // Format number with spaces
     function formatNumber(num) {
@@ -1710,10 +1732,13 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             filtered = filtered.filter(b => b.dateStart === filterDateStart.value);
         }
         
-        // Filter by name
-        if (filterName && filterName.value) {
-            const term = filterName.value.toLowerCase();
-            filtered = filtered.filter(b => b.name.toLowerCase().includes(term));
+        // Filter by section
+        if (filterSection && filterSection.value) {
+            const term = filterSection.value.toLowerCase();
+            filtered = filtered.filter(b => {
+                const section = b.section || b.name;
+                return section.toLowerCase().includes(term);
+            });
         }
         
         // Filter by block
@@ -1779,10 +1804,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             
             totalSum += totalAmount;
             
+            // Get section code and full name
+            const sectionCode = budget.section || budget.name;
+            const sectionFullName = getSectionName(sectionCode);
+            
             row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${formatDate(dateStart)}</td>
-                <td>${budget.name}</td>
+                <td>${sectionFullName}</td>
                 <td>${budget.block || '—'}</td>
                 <td>${contractNumber}</td>
                 <td>${budget.version}</td>
@@ -1853,7 +1882,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     // Clear filters
     function clearBudgetFilters() {
         if (filterDateStart) filterDateStart.value = '';
-        if (filterName) filterName.value = '';
+        if (filterSection) filterSection.value = '';
         if (filterBlock) filterBlock.value = '';
         if (filterContract) filterContract.value = '';
         if (filterVersion) filterVersion.value = '';
@@ -1865,7 +1894,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Event listeners for filters
     if (filterDateStart) filterDateStart.addEventListener('change', applyBudgetFilters);
-    if (filterName) filterName.addEventListener('input', applyBudgetFilters);
+    if (filterSection) filterSection.addEventListener('input', applyBudgetFilters);
     if (filterBlock) filterBlock.addEventListener('input', applyBudgetFilters);
     if (filterContract) filterContract.addEventListener('input', applyBudgetFilters);
     if (filterVersion) filterVersion.addEventListener('input', applyBudgetFilters);
@@ -1906,7 +1935,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         
         document.getElementById('budget-modal-title').textContent = 'Изменить смету';
         document.getElementById('budget-date-start').value = budget.dateStart;
-        document.getElementById('budget-name').value = budget.name;
+        document.getElementById('budget-section').value = budget.section || budget.name;
         document.getElementById('budget-block').value = budget.block;
         document.getElementById('budget-contract-number').value = budget.contractNumber;
         document.getElementById('budget-version').value = budget.version;
@@ -1924,7 +1953,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         
         const newBudgetData = {
             dateStart: new Date().toISOString().split('T')[0],
-            name: budget.name,
+            section: budget.section || budget.name,
             block: budget.block,
             contractNumber: '',
             version: budget.version,
@@ -2021,7 +2050,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             
             const budgetData = {
                 dateStart: document.getElementById('budget-date-start').value,
-                name: document.getElementById('budget-name').value,
+                section: document.getElementById('budget-section').value,
                 block: document.getElementById('budget-block').value,
                 contractNumber: document.getElementById('budget-contract-number').value,
                 version: document.getElementById('budget-version').value,
@@ -2085,5 +2114,32 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             }
         });
     }
+})();
+
+// ===== Budget Sub-tabs Handler =====
+(function() {
+    const subTabs = document.querySelectorAll('.budget-sub-tab');
+    const views = {
+        'list': document.getElementById('budget-list-view'),
+        'reference': document.getElementById('budget-reference-view')
+    };
+    
+    subTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const viewType = this.getAttribute('data-budget-view');
+            
+            // Update active tab
+            subTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update active view
+            Object.values(views).forEach(view => {
+                if (view) view.classList.remove('active');
+            });
+            if (views[viewType]) {
+                views[viewType].classList.add('active');
+            }
+        });
+    });
 })();
 

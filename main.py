@@ -373,7 +373,7 @@ async def create_tables():
                 id SERIAL PRIMARY KEY,
                 object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
                 date_start DATE NOT NULL,
-                name TEXT NOT NULL,
+                section TEXT NOT NULL,
                 block TEXT DEFAULT '',
                 contract_number TEXT DEFAULT '',
                 version TEXT DEFAULT 'v1',
