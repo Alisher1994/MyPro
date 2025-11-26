@@ -2023,3 +2023,131 @@ body {
     background: var(--excel-primary-light);
     color: var(--excel-primary);
 }
+
+/* ========================================
+   BLOCKS VIEW (shown after object selection)
+   ======================================== */
+.blocks-view {
+    padding: var(--spacing-2xl);
+    background: var(--office-gray-50);
+    min-height: calc(100vh - 120px);
+}
+
+.blocks-view-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.blocks-view-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--office-gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.blocks-view-header p {
+    font-size: var(--font-size-base);
+    color: var(--office-gray-600);
+}
+
+.blocks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.block-card {
+    background: var(--office-white);
+    border: 2px solid var(--office-gray-300);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.block-card:hover {
+    border-color: var(--excel-primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.block-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.block-card-color {
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
+    margin-right: var(--spacing-md);
+}
+
+.block-card-info {
+    flex: 1;
+}
+
+.block-card-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--office-gray-900);
+    margin-bottom: 4px;
+}
+
+.block-card-status {
+    font-size: var(--font-size-sm);
+    color: var(--office-gray-600);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.block-card-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.block-card-status-dot.active {
+    background: #28a745;
+}
+
+.block-card-status-dot.paused {
+    background: #ffc107;
+}
+
+.block-card-status-dot.inactive {
+    background: #6c757d;
+}
+
+.block-card-sections {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--office-gray-200);
+}
+
+.block-card-sections-title {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--office-gray-600);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-sm);
+}
+
+.block-card-sections-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.block-card-section-tag {
+    font-size: var(--font-size-xs);
+    padding: 4px 8px;
+    background: var(--office-gray-100);
+    color: var(--office-gray-700);
+    border-radius: var(--radius-sm);
+}

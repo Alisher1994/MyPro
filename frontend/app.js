@@ -557,6 +557,16 @@ function selectBlockSection(objectId, blockId, sectionId) {
     window.currentBlockId = blockId;
     window.currentSection = sectionId;
     
+    // Show ribbon tabs and content
+    const ribbonTabs = document.querySelector('.ribbon-tabs');
+    const ribbonContent = document.querySelector('.ribbon-content');
+    if (ribbonTabs) ribbonTabs.style.display = 'flex';
+    if (ribbonContent) ribbonContent.style.display = 'flex';
+    
+    // Hide blocks view
+    const blocksView = document.getElementById('blocks-view');
+    if (blocksView) blocksView.style.display = 'none';
+    
     // Update UI
     document.querySelectorAll('.section-item').forEach(item => item.classList.remove('active'));
     const selectedSection = document.querySelector(`[data-block-id="${blockId}"] [data-section="${sectionId}"]`);
@@ -568,7 +578,8 @@ function selectBlockSection(objectId, blockId, sectionId) {
         'budget': 'budget',
         'finances': 'finances',
         'gpr': 'gpr',
-        'smr': 'smr'
+        'smr': 'smr',
+        'settings': 'settings'
     };
     
     const ribbonTab = ribbonMap[sectionId];
@@ -636,13 +647,24 @@ window.addEventListener('resize', () => {
 function selectObject(id, headerElement) {
     selectedId = id;
     window.currentObjectId = id;
+    window.currentBlockId = null; // Reset block selection
     // Save selected object
     localStorage.setItem('selectedId', id);
 
     document.querySelectorAll('.object-header').forEach(el => el.classList.remove('selected'));
     if (headerElement) headerElement.classList.add('selected');
 
-    showTabs(true);
+    // Hide ribbon tabs and show blocks view
+    const ribbonTabs = document.querySelector('.ribbon-tabs');
+    const ribbonContent = document.querySelector('.ribbon-content');
+    if (ribbonTabs) ribbonTabs.style.display = 'none';
+    if (ribbonContent) ribbonContent.style.display = 'none';
+    
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+    
+    // Show blocks view
+    showBlocksView();
 
     // Close object dropdown if open (covers selection from sidebar or dropdown)
     try {
@@ -651,18 +673,6 @@ function selectObject(id, headerElement) {
         // also remove focus from selector button
         const selBtn = document.getElementById('object-select'); if (selBtn) selBtn.blur();
     } catch (e) { /* ignore */ }
-
-    // Restore tab or default to 'income'
-    const savedTab = localStorage.getItem('activeTab') || 'income';
-    setActiveTab(savedTab);
-
-    loadIncomes().then(() => {
-        // Restore scroll position after data load
-        const scrollY = localStorage.getItem('scrollY');
-        if (scrollY) {
-            window.scrollTo(0, parseInt(scrollY));
-        }
-    });
 }
 
 function clearSelection() {
@@ -673,6 +683,86 @@ function clearSelection() {
     localStorage.removeItem('selectedId');
     showTabs(false);
     document.querySelectorAll('.object-header').forEach(el => el.classList.remove('selected'));
+    
+    // Hide blocks view
+    const blocksView = document.getElementById('blocks-view');
+    if (blocksView) blocksView.style.display = 'none';
+}
+
+// Show blocks view with grid of available blocks
+async function showBlocksView() {
+    const blocksView = document.getElementById('blocks-view');
+    const blocksGrid = document.getElementById('blocks-grid');
+    
+    if (!blocksView || !blocksGrid) return;
+    
+    blocksView.style.display = 'block';
+    blocksGrid.innerHTML = '<div style="text-align:center;color:#999;">Загрузка блоков...</div>';
+    
+    try {
+        const response = await fetch(`/objects/${window.currentObjectId}/blocks/`);
+        if (!response.ok) throw new Error('Failed to load blocks');
+        
+        const blocks = await response.json();
+        
+        if (blocks.length === 0) {
+            blocksGrid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+                    <p style="font-size: 16px; margin-bottom: 12px;">Блоки не найдены</p>
+                    <p style="font-size: 14px;">Добавьте блоки через вкладку "Настройки"</p>
+                </div>
+            `;
+            return;
+        }
+        
+        blocksGrid.innerHTML = '';
+        
+        blocks.forEach(block => {
+            const blockCard = document.createElement('div');
+            blockCard.className = 'block-card';
+            blockCard.dataset.blockId = block.id;
+            
+            const statusLabels = {
+                'active': 'Активный',
+                'paused': 'На паузе',
+                'inactive': 'Не активный'
+            };
+            
+            blockCard.innerHTML = `
+                <div class="block-card-header">
+                    <div class="block-card-color" style="background: ${block.color};"></div>
+                    <div class="block-card-info">
+                        <div class="block-card-name">${block.name}</div>
+                        <div class="block-card-status">
+                            <span class="block-card-status-dot ${block.status}"></span>
+                            ${statusLabels[block.status] || block.status}
+                        </div>
+                    </div>
+                </div>
+                <div class="block-card-sections">
+                    <div class="block-card-sections-title">Разделы</div>
+                    <div class="block-card-sections-list">
+                        <span class="block-card-section-tag">Аналитика</span>
+                        <span class="block-card-section-tag">Смета</span>
+                        <span class="block-card-section-tag">Финансы</span>
+                        <span class="block-card-section-tag">ГПР</span>
+                        <span class="block-card-section-tag">СМР</span>
+                    </div>
+                </div>
+            `;
+            
+            blockCard.addEventListener('click', () => {
+                // Set current block and show first section (default to budget)
+                selectBlockSection(window.currentObjectId, block.id, 'budget');
+            });
+            
+            blocksGrid.appendChild(blockCard);
+        });
+        
+    } catch (error) {
+        console.error('Error loading blocks:', error);
+        blocksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #d13438;">Ошибка загрузки блоков</div>';
+    }
 }
 
 // --- State Restoration ---

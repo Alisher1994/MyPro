@@ -63,7 +63,7 @@
 
         <!-- Ribbon Tabs -->
         <div class="office-ribbon">
-            <div class="ribbon-tabs">
+            <div class="ribbon-tabs" style="display:none;">
                 <button class="ribbon-tab active" data-ribbon="analysis">Аналитика</button>
                 <button class="ribbon-tab" data-ribbon="budget">Смета</button>
                 <button class="ribbon-tab" data-ribbon="finances">Финансы</button>
@@ -73,7 +73,7 @@
             </div>
             
             <!-- Ribbon Panels -->
-            <div class="ribbon-content">
+            <div class="ribbon-content" style="display:none;">
                 <!-- Analysis Ribbon Panel -->
                 <div class="ribbon-panel active" data-panel="analysis">
                     <div class="ribbon-group">
@@ -268,6 +268,17 @@
                         <span class="ribbon-group-label">Блоки</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Blocks View (shown when object is selected but no block chosen) -->
+        <div id="blocks-view" class="blocks-view" style="display:none;">
+            <div class="blocks-view-header">
+                <h2>Выберите блок</h2>
+                <p>Выберите блок из списка ниже для просмотра разделов</p>
+            </div>
+            <div id="blocks-grid" class="blocks-grid">
+                <!-- Blocks will be loaded here -->
             </div>
         </div>
 
