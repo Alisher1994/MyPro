@@ -419,7 +419,16 @@ async def create_tables():
         # Add new columns to budgets table if they don't exist
         await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS budget_type TEXT DEFAULT 'СМР';")
         await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS section TEXT DEFAULT '';")
-        await connection.execute("ALTER TABLE budgets DROP COLUMN IF EXISTS name;")
+        
+        # Migrate existing data: if name exists but budget_type is empty, copy name to budget_type
+        try:
+            await connection.execute("""
+                UPDATE budgets 
+                SET budget_type = 'СМР' 
+                WHERE budget_type IS NULL OR budget_type = '';
+            """)
+        except:
+            pass
         
         # Таблица project_sections (справочник разделов проектной документации)
         await connection.execute("""

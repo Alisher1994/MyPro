@@ -1672,7 +1672,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Filter inputs
     const filterDateStart = document.getElementById('filter-budget-date-start');
-    const filterName = document.getElementById('filter-budget-name');
+    const filterType = document.getElementById('filter-budget-type');
+    const filterSection = document.getElementById('filter-budget-section');
     const filterBlock = document.getElementById('filter-budget-block');
     const filterContract = document.getElementById('filter-budget-contract');
     const filterVersion = document.getElementById('filter-budget-version');
@@ -1707,31 +1708,36 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         
         // Filter by date start
         if (filterDateStart && filterDateStart.value) {
-            filtered = filtered.filter(b => b.dateStart === filterDateStart.value);
+            filtered = filtered.filter(b => (b.date_start || b.dateStart) === filterDateStart.value);
         }
         
-        // Filter by name
-        if (filterName && filterName.value) {
-            const term = filterName.value.toLowerCase();
-            filtered = filtered.filter(b => b.name.toLowerCase().includes(term));
+        // Filter by budget type
+        if (filterType && filterType.value) {
+            filtered = filtered.filter(b => (b.budget_type || b.budgetType) === filterType.value);
+        }
+        
+        // Filter by section
+        if (filterSection && filterSection.value) {
+            const term = filterSection.value.toLowerCase();
+            filtered = filtered.filter(b => (b.section || '').toLowerCase().includes(term));
         }
         
         // Filter by block
         if (filterBlock && filterBlock.value) {
             const term = filterBlock.value.toLowerCase();
-            filtered = filtered.filter(b => b.block.toLowerCase().includes(term));
+            filtered = filtered.filter(b => (b.block || '').toLowerCase().includes(term));
         }
         
         // Filter by contract number
         if (filterContract && filterContract.value) {
             const term = filterContract.value.toLowerCase();
-            filtered = filtered.filter(b => b.contractNumber.toLowerCase().includes(term));
+            filtered = filtered.filter(b => (b.contract_number || b.contractNumber || '').toLowerCase().includes(term));
         }
         
         // Filter by version
         if (filterVersion && filterVersion.value) {
             const term = filterVersion.value.toLowerCase();
-            filtered = filtered.filter(b => b.version.toLowerCase().includes(term));
+            filtered = filtered.filter(b => (b.version || '').toLowerCase().includes(term));
         }
         
         // Filter by status
@@ -1741,14 +1747,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         
         // Filter by date modified
         if (filterDateModified && filterDateModified.value) {
-            filtered = filtered.filter(b => b.dateModified === filterDateModified.value);
+            filtered = filtered.filter(b => (b.date_modified || b.dateModified) === filterDateModified.value);
         }
         
         // Filter by amount
         if (filterAmount && filterAmount.value) {
             const amount = parseFloat(filterAmount.value.replace(/\s/g, ''));
             if (!isNaN(amount)) {
-                filtered = filtered.filter(b => b.totalAmount >= amount);
+                filtered = filtered.filter(b => (b.total_amount || b.totalAmount || 0) >= amount);
             }
         }
         
@@ -1856,7 +1862,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     // Clear filters
     function clearBudgetFilters() {
         if (filterDateStart) filterDateStart.value = '';
-        if (filterName) filterName.value = '';
+        if (filterType) filterType.value = '';
+        if (filterSection) filterSection.value = '';
         if (filterBlock) filterBlock.value = '';
         if (filterContract) filterContract.value = '';
         if (filterVersion) filterVersion.value = '';
@@ -1868,7 +1875,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Event listeners for filters
     if (filterDateStart) filterDateStart.addEventListener('change', applyBudgetFilters);
-    if (filterName) filterName.addEventListener('input', applyBudgetFilters);
+    if (filterType) filterType.addEventListener('change', applyBudgetFilters);
+    if (filterSection) filterSection.addEventListener('input', applyBudgetFilters);
     if (filterBlock) filterBlock.addEventListener('input', applyBudgetFilters);
     if (filterContract) filterContract.addEventListener('input', applyBudgetFilters);
     if (filterVersion) filterVersion.addEventListener('input', applyBudgetFilters);
