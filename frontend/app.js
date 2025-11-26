@@ -1068,8 +1068,24 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
                 window.showBudgetListView();
             }
         } else if (tabName === 'finances') {
-            // Show income tab by default
-            setActiveTab('income');
+            // Activate first finances subtab
+            const financeSubtabs = document.querySelectorAll('.finances-subtab');
+            financeSubtabs.forEach(b => b.classList.remove('active'));
+            const firstSub = financeSubtabs[0];
+            if (firstSub) {
+                firstSub.classList.add('active');
+                const subtab = firstSub.dataset.subtab;
+                localStorage.setItem('financesSubtab', subtab);
+                setActiveTab(subtab);
+                
+                // Hide "Создание" group if first subtab is expense
+                const financeCreationGroup = document.getElementById('finance-creation-group');
+                if (financeCreationGroup && subtab === 'expense') {
+                    financeCreationGroup.style.display = 'none';
+                } else if (financeCreationGroup) {
+                    financeCreationGroup.style.display = '';
+                }
+            }
         } else if (tabName === 'gpr' || tabName === 'smr' || tabName === 'settings') {
             // Clear all content tabs for undeveloped sections
             const allContentTabs = document.querySelectorAll('.content-tab');
@@ -1081,6 +1097,30 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     ribbonTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             setActiveRibbonTab(tab.dataset.ribbon);
+        });
+    });
+    
+    // Finances subtab switching (inside ribbon)
+    const financeSubtabs = document.querySelectorAll('.finances-subtab');
+    const addFinanceBtn = document.getElementById('ribbon-add-finance');
+    const financeCreationGroup = document.getElementById('finance-creation-group');
+    
+    financeSubtabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            financeSubtabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const subtab = btn.dataset.subtab;
+            localStorage.setItem('financesSubtab', subtab);
+            setActiveTab(subtab);
+            
+            // Hide entire "Создание" group for expense
+            if (financeCreationGroup) {
+                if (subtab === 'expense') {
+                    financeCreationGroup.style.display = 'none';
+                } else {
+                    financeCreationGroup.style.display = '';
+                }
+            }
         });
     });
     
@@ -1269,17 +1309,11 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const ribbonAddFinance = document.getElementById('ribbon-add-finance');
     if (ribbonAddFinance) {
         ribbonAddFinance.addEventListener('click', () => {
-            // Determine which finance tab is currently visible
-            const tabIncome = document.getElementById('tab-income');
-            const tabExpense = document.getElementById('tab-expense');
-            
-            if (tabIncome && tabIncome.style.display !== 'none') {
+            const sub = localStorage.getItem('financesSubtab') || 'income';
+            if (sub === 'income') {
                 document.getElementById('add-income')?.click();
-            } else if (tabExpense && tabExpense.style.display !== 'none') {
-                document.getElementById('add-expense')?.click();
             } else {
-                // Default to income
-                document.getElementById('add-income')?.click();
+                document.getElementById('add-expense')?.click();
             }
         });
     }
@@ -1293,26 +1327,14 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             setActiveRibbonTab('budget');
         } else if (saved === 'income' || saved === 'expense') {
             setActiveRibbonTab('finances');
-            
-            // Show correct finance tab and activate correct sub-tab
-            const tabIncome = document.getElementById('tab-income');
-            const tabExpense = document.getElementById('tab-expense');
-            const financeSubTabs = document.querySelectorAll('.finance-sub-tab');
-            
-            if (saved === 'expense') {
-                if (tabIncome) tabIncome.style.display = 'none';
-                if (tabExpense) tabExpense.style.display = 'block';
-                // Activate expense sub-tabs
-                financeSubTabs.forEach(t => {
-                    t.classList.toggle('active', t.getAttribute('data-finance-view') === 'expense');
-                });
-            } else {
-                if (tabIncome) tabIncome.style.display = 'block';
-                if (tabExpense) tabExpense.style.display = 'none';
-                // Activate income sub-tabs
-                financeSubTabs.forEach(t => {
-                    t.classList.toggle('active', t.getAttribute('data-finance-view') === 'income');
-                });
+            // Also update finances subtab
+            financeSubtabs.forEach(b => {
+                b.classList.toggle('active', b.dataset.subtab === saved);
+            });
+            // Hide "Создание" group if expense is active
+            const financeCreationGroup = document.getElementById('finance-creation-group');
+            if (financeCreationGroup && saved === 'expense') {
+                financeCreationGroup.style.display = 'none';
             }
         } else {
             // Default to analysis now that Home is removed
@@ -1650,7 +1672,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Filter inputs
     const filterDateStart = document.getElementById('filter-budget-date-start');
-    const filterSection = document.getElementById('filter-budget-section');
+    const filterName = document.getElementById('filter-budget-name');
     const filterBlock = document.getElementById('filter-budget-block');
     const filterContract = document.getElementById('filter-budget-contract');
     const filterVersion = document.getElementById('filter-budget-version');
@@ -1658,28 +1680,6 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const filterDateModified = document.getElementById('filter-budget-date-modified');
     const filterAmount = document.getElementById('filter-budget-amount');
     const clearFiltersBtn = document.getElementById('clear-budget-filters');
-    
-    // Section mapping
-    const sectionNames = {
-        'АР': 'АР - Архитектура',
-        'АС': 'АС - Архитектурно-строительный',
-        'КЖ': 'КЖ - Конструкция железобетонные',
-        'КМ': 'КМ - Конструкция металлические',
-        'КМД': 'КМД - Конструкция металлические детали',
-        'ОВ': 'ОВ - Отопление и вентиляция',
-        'ВК': 'ВК - Водоснабжение и канализация',
-        'ЭО': 'ЭО - Электрооборудование',
-        'ЭС': 'ЭС - Электроснабжение',
-        'ГП': 'ГП - Генеральный план',
-        'Благоустройство': 'Благоустройство',
-        'АПТ': 'АПТ - Автоматизация и противопожарная безопасность',
-        'ЭН': 'ЭН - Энергетика'
-    };
-    
-    // Get full section name
-    function getSectionName(code) {
-        return sectionNames[code] || code;
-    }
     
     // Format number with spaces
     function formatNumber(num) {
@@ -1710,13 +1710,10 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             filtered = filtered.filter(b => b.dateStart === filterDateStart.value);
         }
         
-        // Filter by section
-        if (filterSection && filterSection.value) {
-            const term = filterSection.value.toLowerCase();
-            filtered = filtered.filter(b => {
-                const section = b.section || b.name;
-                return section.toLowerCase().includes(term);
-            });
+        // Filter by name
+        if (filterName && filterName.value) {
+            const term = filterName.value.toLowerCase();
+            filtered = filtered.filter(b => b.name.toLowerCase().includes(term));
         }
         
         // Filter by block
@@ -1779,17 +1776,16 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             const dateModified = budget.date_modified || budget.dateModified;
             const statusText = budget.status_text || budget.statusText;
             const contractNumber = budget.contract_number || budget.contractNumber;
+            const budgetType = budget.budget_type || budget.budgetType || 'СМР';
+            const section = budget.section || '';
             
             totalSum += totalAmount;
-            
-            // Get section code and full name
-            const sectionCode = budget.section || budget.name;
-            const sectionFullName = getSectionName(sectionCode);
             
             row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${formatDate(dateStart)}</td>
-                <td>${sectionFullName}</td>
+                <td>${budgetType}</td>
+                <td>${section || '—'}</td>
                 <td>${budget.block || '—'}</td>
                 <td>${contractNumber}</td>
                 <td>${budget.version}</td>
@@ -1860,7 +1856,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     // Clear filters
     function clearBudgetFilters() {
         if (filterDateStart) filterDateStart.value = '';
-        if (filterSection) filterSection.value = '';
+        if (filterName) filterName.value = '';
         if (filterBlock) filterBlock.value = '';
         if (filterContract) filterContract.value = '';
         if (filterVersion) filterVersion.value = '';
@@ -1872,7 +1868,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     
     // Event listeners for filters
     if (filterDateStart) filterDateStart.addEventListener('change', applyBudgetFilters);
-    if (filterSection) filterSection.addEventListener('input', applyBudgetFilters);
+    if (filterName) filterName.addEventListener('input', applyBudgetFilters);
     if (filterBlock) filterBlock.addEventListener('input', applyBudgetFilters);
     if (filterContract) filterContract.addEventListener('input', applyBudgetFilters);
     if (filterVersion) filterVersion.addEventListener('input', applyBudgetFilters);
@@ -1913,13 +1909,21 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         
         document.getElementById('budget-modal-title').textContent = 'Изменить смету';
         document.getElementById('budget-date-start').value = budget.dateStart;
-        document.getElementById('budget-section').value = budget.section || budget.name;
+        document.getElementById('budget-type').value = budget.budgetType || budget.budget_type || 'СМР';
+        document.getElementById('budget-section').value = budget.section || '';
         document.getElementById('budget-block').value = budget.block;
         document.getElementById('budget-contract-number').value = budget.contractNumber;
         document.getElementById('budget-version').value = budget.version;
         document.getElementById('budget-status').value = budget.status;
         document.getElementById('budget-comment').value = budget.comment;
         document.getElementById('budget-edit-id').value = budget.id;
+        
+        // Toggle section field visibility
+        if (document.getElementById('budget-type').value === 'СМР') {
+            document.getElementById('budget-section-group').style.display = 'block';
+        } else {
+            document.getElementById('budget-section-group').style.display = 'none';
+        }
         
         document.getElementById('budget-modal').style.display = 'flex';
     };
@@ -1931,7 +1935,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
         
         const newBudgetData = {
             dateStart: new Date().toISOString().split('T')[0],
-            section: budget.section || budget.name,
+            budgetType: budget.budgetType || budget.budget_type || 'СМР',
+            section: budget.section || '',
             block: budget.block,
             contractNumber: '',
             version: budget.version,
@@ -1995,6 +2000,45 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
     const form = document.getElementById('budget-form');
     const ribbonAddBudget = document.getElementById('ribbon-add-budget');
     const editIdInput = document.getElementById('budget-edit-id');
+    const budgetTypeSelect = document.getElementById('budget-type');
+    const sectionGroup = document.getElementById('budget-section-group');
+    const sectionSelect = document.getElementById('budget-section');
+    
+    // Load project sections from API
+    async function loadProjectSections() {
+        try {
+            const response = await fetch('/project-sections/');
+            const sections = await response.json();
+            
+            sectionSelect.innerHTML = '<option value="">Выберите раздел...</option>';
+            sections.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.code;
+                option.textContent = `${section.code} - ${section.name}`;
+                sectionSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading project sections:', error);
+        }
+    }
+    
+    // Show/hide section field based on budget type
+    function toggleSectionField() {
+        if (budgetTypeSelect.value === 'СМР') {
+            sectionGroup.style.display = 'block';
+        } else {
+            sectionGroup.style.display = 'none';
+            sectionSelect.value = '';
+        }
+    }
+    
+    // Load sections on page load
+    loadProjectSections();
+    
+    // Listen to budget type changes
+    if (budgetTypeSelect) {
+        budgetTypeSelect.addEventListener('change', toggleSectionField);
+    }
     
     // Open modal for new budget
     if (ribbonAddBudget) {
@@ -2003,6 +2047,8 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             form.reset();
             editIdInput.value = '';
             document.getElementById('budget-date-start').value = new Date().toISOString().split('T')[0];
+            document.getElementById('budget-type').value = 'СМР';
+            toggleSectionField();
             modal.style.display = 'flex';
         });
     }
@@ -2028,6 +2074,7 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             
             const budgetData = {
                 dateStart: document.getElementById('budget-date-start').value,
+                budgetType: document.getElementById('budget-type').value,
                 section: document.getElementById('budget-section').value,
                 block: document.getElementById('budget-block').value,
                 contractNumber: document.getElementById('budget-contract-number').value,
@@ -2092,76 +2139,5 @@ document.getElementById('income-modal-close')?.addEventListener('click', () => {
             }
         });
     }
-})();
-
-// ===== Budget Sub-tabs Handler =====
-(function() {
-    const subTabs = document.querySelectorAll('.budget-sub-tab');
-    const views = {
-        'list': document.getElementById('budget-list-view'),
-        'reference': document.getElementById('budget-reference-view')
-    };
-    
-    subTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const viewType = this.getAttribute('data-budget-view');
-            
-            // Update active tab
-            subTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Update active view
-            Object.values(views).forEach(view => {
-                if (view) view.classList.remove('active');
-            });
-            if (views[viewType]) {
-                views[viewType].classList.add('active');
-            }
-        });
-    });
-})();
-
-// ===== Finance Sub-tabs Handler =====
-(function() {
-    const financeSubTabs = document.querySelectorAll('.finance-sub-tab');
-    const tabIncome = document.getElementById('tab-income');
-    const tabExpense = document.getElementById('tab-expense');
-    
-    financeSubTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const viewType = this.getAttribute('data-finance-view');
-            
-            // Update all finance sub-tabs (both in income and expense tabs)
-            financeSubTabs.forEach(t => t.classList.remove('active'));
-            
-            // Activate all tabs with the same view type
-            document.querySelectorAll(`[data-finance-view="${viewType}"]`).forEach(t => {
-                t.classList.add('active');
-            });
-            
-            // Switch main tab content
-            if (viewType === 'income') {
-                if (tabIncome) tabIncome.style.display = 'block';
-                if (tabExpense) tabExpense.style.display = 'none';
-                
-                // Update active tab and load data
-                localStorage.setItem('activeTab', 'income');
-                const selectedId = window.currentObjectId;
-                if (selectedId && window.loadIncomes) {
-                    window.loadIncomes(selectedId);
-                }
-            } else if (viewType === 'expense') {
-                if (tabIncome) tabIncome.style.display = 'none';
-                if (tabExpense) tabExpense.style.display = 'block';
-                
-                // Update active tab and load data
-                localStorage.setItem('activeTab', 'expense');
-                const selectedId = window.currentObjectId;
-                if (selectedId && window.loadExpenses) {
-                    window.loadExpenses(selectedId);
-                }
-            }
-        });
-    });
 })();
 

@@ -191,3 +191,204 @@ async def delete_expense(expense_id: int):
     async with app.state.db.acquire() as conn:
         await conn.execute("DELETE FROM resource_expenses WHERE id=$1", expense_id)
     return {"status": "deleted"}
+
+
+# ===== NEW EXPENSES API (Новая структура расходов) =====
+
+@app.get("/objects/{object_id}/expenses/")
+async def get_expenses(object_id: int, expense_type: str = None):
+    """Получить все расходы для объекта"""
+    try:
+        if expense_type:
+            query = "SELECT * FROM expenses WHERE object_id=$1 AND expense_type=$2 ORDER BY date DESC;"
+            async with app.state.db.acquire() as conn:
+                rows = await conn.fetch(query, object_id, expense_type)
+        else:
+            query = "SELECT * FROM expenses WHERE object_id=$1 ORDER BY date DESC;"
+            async with app.state.db.acquire() as conn:
+                rows = await conn.fetch(query, object_id)
+        
+        return [
+            {
+                "id": row["id"],
+                "object_id": row["object_id"],
+                "budget_id": row["budget_id"],
+                "expense_type": row["expense_type"],
+                "date": row["date"].isoformat() if row["date"] else None,
+                "expense_item": row["expense_item"],
+                "planned_amount": float(row["planned_amount"]) if row["planned_amount"] else 0,
+                "actual_amount": float(row["actual_amount"]) if row["actual_amount"] else 0,
+                "currency": row["currency"],
+                "document_path": row["document_path"],
+                "document_status": row["document_status"],
+                "comment": row["comment"]
+            }
+            for row in rows
+        ]
+    except Exception as e:
+        print(f"Error getting expenses: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error getting expenses: {str(e)}")
+
+@app.post("/objects/{object_id}/expenses/")
+async def add_expense(object_id: int, data: dict):
+    """Добавить новый расход"""
+    try:
+        from datetime import datetime
+        
+        expense_date = datetime.strptime(data.get("date"), "%Y-%m-%d").date() if data.get("date") else None
+        
+        query = """
+            INSERT INTO expenses (
+                object_id, budget_id, expense_type, date, expense_item,
+                planned_amount, actual_amount, currency, document_path, document_status, comment
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *
+        """
+        async with app.state.db.acquire() as conn:
+            row = await conn.fetchrow(
+                query,
+                object_id,
+                data.get("budgetId"),
+                data.get("expenseType", "СМР"),
+                expense_date,
+                data.get("expenseItem", ""),
+                data.get("plannedAmount", 0),
+                data.get("actualAmount", 0),
+                data.get("currency", "UZS"),
+                data.get("documentPath"),
+                data.get("documentStatus", "draft"),
+                data.get("comment", "")
+            )
+        
+        return {
+            "id": row["id"],
+            "object_id": row["object_id"],
+            "budget_id": row["budget_id"],
+            "expense_type": row["expense_type"],
+            "date": row["date"].isoformat() if row["date"] else None,
+            "expense_item": row["expense_item"],
+            "planned_amount": float(row["planned_amount"]) if row["planned_amount"] else 0,
+            "actual_amount": float(row["actual_amount"]) if row["actual_amount"] else 0,
+            "currency": row["currency"],
+            "document_path": row["document_path"],
+            "document_status": row["document_status"],
+            "comment": row["comment"]
+        }
+    except Exception as e:
+        print(f"Error adding expense: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error adding expense: {str(e)}")
+
+@app.put("/objects/{object_id}/expenses/{expense_id}")
+async def update_expense(object_id: int, expense_id: int, data: dict):
+    """Обновить расход"""
+    from datetime import datetime
+    
+    updates = []
+    params = []
+    param_count = 1
+    
+    fields_map = {
+        "budgetId": "budget_id",
+        "expenseType": "expense_type",
+        "date": "date",
+        "expenseItem": "expense_item",
+        "plannedAmount": "planned_amount",
+        "actualAmount": "actual_amount",
+        "currency": "currency",
+        "documentPath": "document_path",
+        "documentStatus": "document_status",
+        "comment": "comment"
+    }
+    
+    for js_field, db_field in fields_map.items():
+        if js_field in data:
+            value = data[js_field]
+            if db_field == "date" and isinstance(value, str):
+                value = datetime.strptime(value, "%Y-%m-%d").date()
+            updates.append(f"{db_field}=${param_count}")
+            params.append(value)
+            param_count += 1
+    
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    
+    params.extend([expense_id, object_id])
+    query = f"UPDATE expenses SET {', '.join(updates)} WHERE id=${param_count} AND object_id=${param_count+1} RETURNING *"
+    
+    async with app.state.db.acquire() as conn:
+        row = await conn.fetchrow(query, *params)
+    
+    if not row:
+        raise HTTPException(status_code=404, detail="Expense not found")
+    
+    return {
+        "id": row["id"],
+        "object_id": row["object_id"],
+        "budget_id": row["budget_id"],
+        "expense_type": row["expense_type"],
+        "date": row["date"].isoformat() if row["date"] else None,
+        "expense_item": row["expense_item"],
+        "planned_amount": float(row["planned_amount"]) if row["planned_amount"] else 0,
+        "actual_amount": float(row["actual_amount"]) if row["actual_amount"] else 0,
+        "currency": row["currency"],
+        "document_path": row["document_path"],
+        "document_status": row["document_status"],
+        "comment": row["comment"]
+    }
+
+@app.delete("/objects/{object_id}/expenses/{expense_id}")
+async def delete_new_expense(object_id: int, expense_id: int):
+    """Удалить расход"""
+    async with app.state.db.acquire() as conn:
+        row = await conn.fetchrow(
+            "DELETE FROM expenses WHERE id=$1 AND object_id=$2 RETURNING id",
+            expense_id, object_id
+        )
+    if not row:
+        raise HTTPException(status_code=404, detail="Expense not found")
+    return {"status": "deleted"}
+
+@app.post("/objects/{object_id}/expenses/{expense_id}/upload-document")
+async def upload_expense_document(object_id: int, expense_id: int, request: Request):
+    """Загрузить документ для расхода"""
+    try:
+        form = await request.form()
+        file = form.get("file")
+        
+        if not file:
+            raise HTTPException(status_code=400, detail="No file provided")
+        
+        # Создаем директорию uploads если её нет
+        os.makedirs("uploads", exist_ok=True)
+        
+        # Генерируем уникальное имя файла
+        timestamp = int(time.time())
+        filename = f"expense_{expense_id}_{timestamp}_{file.filename}"
+        filepath = os.path.join("uploads", filename)
+        
+        # Сохраняем файл
+        content = await file.read()
+        with open(filepath, "wb") as f:
+            f.write(content)
+        
+        # Обновляем базу данных
+        async with app.state.db.acquire() as conn:
+            row = await conn.fetchrow(
+                "UPDATE expenses SET document_path=$1 WHERE id=$2 AND object_id=$3 RETURNING *",
+                f"/uploads/{filename}", expense_id, object_id
+            )
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="Expense not found")
+        
+        return {
+            "id": row["id"],
+            "document_path": row["document_path"]
+        }
+    except Exception as e:
+        print(f"Error uploading document: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
