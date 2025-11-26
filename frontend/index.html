@@ -506,57 +506,27 @@
                             <input type="date" id="budget-date-start" required>
                         </div>
                         <div class="form-group">
-                            <label>Тип сметы</label>
-                            <select id="budget-type" required>
-                                <option value="smr">СМР</option>
-                                <option value="pir">ПИР</option>
-                                <option value="overhead">Накладные</option>
-                                <option value="other">Прочие</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group" id="budget-section-group">
-                            <label>Раздел</label>
-                            <select id="budget-section" required>
-                                <option value="">Выберите раздел</option>
-                                <option value="AR">АР - Архитектура</option>
-                                <option value="AS">АС - Архитектурно-строительные решения</option>
-                                <option value="KZH">КЖ - Конструкция железобетонные</option>
-                                <option value="KM">КМ - Конструкция металлические</option>
-                                <option value="KMD">КМД - Конструкция металлические детализация</option>
-                                <option value="OV">ОВ - Отопление и вентиляция</option>
-                                <option value="VK">ВК - Водоснабжение и канализация</option>
-                                <option value="EO">ЭО - Электроосвещение</option>
-                                <option value="ES">ЭС - Электроснабжение</option>
-                                <option value="GP">ГП - Генеральный план</option>
-                                <option value="БЛАГ">Благоустройство</option>
-                                <option value="APT">АПТ - Автоматизация технологических процессов</option>
-                                <option value="EN">ЭН - Энергоснабжение</option>
-                                <option value="SS">СС - Сети связи</option>
-                                <option value="PB">ПБ - Пожарная безопасность</option>
-                                <option value="TH">ТХ - Технология производства</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label>№ Договора</label>
-                            <input type="text" id="budget-contract-number" placeholder="ДГП-123">
+                            <input type="text" id="budget-contract-number" required placeholder="ДГП-123">
                         </div>
                     </div>
                     
                     <div class="form-row">
+                        <div class="form-group">
+                            <label>Название сметы</label>
+                            <input type="text" id="budget-name" required placeholder="ЖК Березка Корпус 1">
+                        </div>
                         <div class="form-group">
                             <label>Блок</label>
                             <input type="text" id="budget-block" placeholder="Блок А">
                         </div>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Версия</label>
                             <input type="text" id="budget-version" required placeholder="v1" value="v1">
                         </div>
-                    </div>
-                    
-                    <div class="form-row">
                         <div class="form-group">
                             <label>Статус</label>
                             <select id="budget-status" required>
@@ -565,10 +535,6 @@
                                 <option value="approved">Утвержден</option>
                                 <option value="inactive">Не активный</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Дата редактирования</label>
-                            <input type="date" id="budget-date-modified" required>
                         </div>
                     </div>
                     
@@ -586,14 +552,6 @@
         </div>
 
         <div id="tab-budget" class="tab-content" style="display:none;">
-            <!-- Budget Sub-tabs -->
-            <div class="budget-sub-tabs" style="display: flex; gap: 2px; border-bottom: 1px solid var(--office-gray-100); margin-bottom: 16px; background: var(--office-gray-20); padding: 4px;">
-                <button class="budget-sub-tab active" data-budget-type="smr" style="flex: 1; padding: 8px 16px; background: var(--office-white); border: none; border-bottom: 2px solid #217C3E; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 500;">СМР</button>
-                <button class="budget-sub-tab" data-budget-type="pir" style="flex: 1; padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 400;">ПИР</button>
-                <button class="budget-sub-tab" data-budget-type="overhead" style="flex: 1; padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 400;">Накладные</button>
-                <button class="budget-sub-tab" data-budget-type="other" style="flex: 1; padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px; color: var(--office-text); font-weight: 400;">Прочие</button>
-            </div>
-            
             <div class="tab-actions">
                 <button class="icon-btn" id="add-budget-group" title="Добавить этап">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -629,8 +587,8 @@
                                     <input type="date" id="filter-budget-date-start" class="filter-input">
                                 </th>
                                 <th>
-                                    <label>Раздел:</label>
-                                    <input type="text" id="filter-budget-section" class="filter-input" placeholder="Поиск...">
+                                    <label>Название:</label>
+                                    <input type="text" id="filter-budget-name" class="filter-input" placeholder="Поиск...">
                                 </th>
                                 <th>
                                     <label>Блок:</label>
@@ -672,7 +630,7 @@
                             <tr class="header-row">
                                 <th>№</th>
                                 <th>Дата начала</th>
-                                <th>Раздел</th>
+                                <th>Название сметы</th>
                                 <th>Блок</th>
                                 <th>№ Договора</th>
                                 <th>Версия</th>

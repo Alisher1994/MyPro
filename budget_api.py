@@ -14,8 +14,7 @@ async def get_budgets(object_id: int):
                 "id": row["id"],
                 "object_id": row["object_id"],
                 "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-                "budget_type": row.get("budget_type", "smr"),
-                "section": row.get("section", ""),
+                "name": row["name"],
                 "block": row["block"],
                 "contract_number": row["contract_number"],
                 "version": row["version"],
@@ -46,17 +45,16 @@ async def add_budget(object_id: int, data: dict):
         
         query = """
             INSERT INTO budgets (
-                object_id, date_start, budget_type, section, block, contract_number, 
+                object_id, date_start, name, block, contract_number, 
                 version, status, status_text, date_modified, total_amount, currency, comment
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *
         """
         async with app.state.db.acquire() as conn:
             row = await conn.fetchrow(
                 query,
                 object_id,
                 date_start,
-                data.get("budgetType", "smr"),
-                data.get("section", ""),
+                data.get("name"),
                 data.get("block", ""),
                 data.get("contractNumber", ""),
                 data.get("version", "v1"),
@@ -71,8 +69,7 @@ async def add_budget(object_id: int, data: dict):
             "id": row["id"],
             "object_id": row["object_id"],
             "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-            "budget_type": row["budget_type"],
-            "section": row["section"],
+            "name": row["name"],
             "block": row["block"],
             "contract_number": row["contract_number"],
             "version": row["version"],
@@ -100,8 +97,7 @@ async def update_budget(object_id: int, budget_id: int, data: dict):
     
     fields_map = {
         "dateStart": "date_start",
-        "budgetType": "budget_type",
-        "section": "section",
+        "name": "name",
         "block": "block",
         "contractNumber": "contract_number",
         "version": "version",
@@ -137,8 +133,7 @@ async def update_budget(object_id: int, budget_id: int, data: dict):
         "id": row["id"],
         "object_id": row["object_id"],
         "date_start": row["date_start"].isoformat() if row["date_start"] else None,
-        "budget_type": row["budget_type"],
-        "section": row["section"],
+        "name": row["name"],
         "block": row["block"],
         "contract_number": row["contract_number"],
         "version": row["version"],

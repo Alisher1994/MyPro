@@ -373,8 +373,7 @@ async def create_tables():
                 id SERIAL PRIMARY KEY,
                 object_id INTEGER NOT NULL REFERENCES objects(id) ON DELETE CASCADE,
                 date_start DATE NOT NULL,
-                budget_type TEXT DEFAULT 'smr',
-                section TEXT DEFAULT '',
+                name TEXT NOT NULL,
                 block TEXT DEFAULT '',
                 contract_number TEXT DEFAULT '',
                 version TEXT DEFAULT 'v1',
@@ -387,11 +386,6 @@ async def create_tables():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
-        
-        # Add new columns to budgets table if they don't exist
-        await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS budget_type TEXT DEFAULT 'smr';")
-        await connection.execute("ALTER TABLE budgets ADD COLUMN IF NOT EXISTS section TEXT DEFAULT '';")
-        await connection.execute("ALTER TABLE budgets DROP COLUMN IF EXISTS name;")
         
         # Таблица budget_stages (этапы)
         await connection.execute("""

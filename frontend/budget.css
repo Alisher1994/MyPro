@@ -5,39 +5,6 @@
 /* Import variables from main style.css */
 /* Assumes :root variables are available */
 
-/* Budget Sub-tabs Styling */
-.budget-sub-tabs {
-    display: flex;
-    gap: 2px;
-    border-bottom: 1px solid var(--office-gray-100);
-    margin-bottom: 16px;
-    background: var(--office-gray-20);
-    padding: 4px;
-}
-
-.budget-sub-tab {
-    flex: 1;
-    padding: 8px 16px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--office-text);
-    font-weight: 400;
-    transition: all 0.2s ease;
-}
-
-.budget-sub-tab:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.budget-sub-tab.active {
-    background: var(--office-white);
-    border-bottom-color: #217C3E;
-    font-weight: 500;
-}
-
 #budget-container {
     padding: var(--spacing-lg) 0;
 }
